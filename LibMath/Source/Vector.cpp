@@ -56,7 +56,7 @@ LibMath::Vector2& LibMath::Vector2::operator=(Vector2 const& other)
 	return *this;
 }
 
-LibMath::Vector2& LibMath::Vector2::operator=(Vector2 const&& other)
+LibMath::Vector2& LibMath::Vector2::operator=(Vector2 const&& other) noexcept
 {
 	m_x = other.m_x;
 	m_y = other.m_y;

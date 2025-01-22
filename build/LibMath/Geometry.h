@@ -41,11 +41,15 @@ namespace LibMath
 	{
 	public:
 
+		Rectangle();
+		Rectangle(Point2D, float, float);
+		Rectangle(Point2D, float, float, float);
+
 	private:
-		Point2D m_corner1;
-		Point2D m_corner2;
-		Point2D m_corner3;
-		Point2D m_corner4;
+		Point2D m_corner;
+		float m_width;
+		float m_height;
+		float m_rotation;
 	};
 
 
