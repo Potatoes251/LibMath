@@ -1,0 +1,8 @@
+#ifndef LIBMATH_MATRIX_MATRIX3_H_
+#define LIBMATH_MATRIX_MATRIX3_H_
+
+namespace LibMath
+{
+}
+
+#endif // !LIBMATH_MATRIX_MATRIX3_H_
