@@ -13,6 +13,16 @@ LibMath::Point2D::Point2D(float x, float y) :
 	m_y(y)
 {}
 
+float LibMath::Point2D::getX() const
+{
+	return m_x;
+}
+
+float LibMath::Point2D::getY() const
+{
+	return m_y;
+}
+
 float LibMath::Point2D::distance(Point2D other) const
 {
 	return sqrt((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
@@ -33,6 +43,16 @@ LibMath::Line2D::Line2D(Point2D start, Point2D end) :
 	m_end(end) 
 {}
 
+LibMath::Point2D LibMath::Line2D::getStart() const
+{
+	return m_start;
+}
+
+LibMath::Point2D LibMath::Line2D::getEnd() const
+{
+	return m_end;
+}
+
 float LibMath::Line2D::length() const
 {
 	return m_start.distance(m_end);
@@ -41,6 +61,16 @@ float LibMath::Line2D::length() const
 float LibMath::Line2D::lengthSquare() const
 {
 	return m_start.distanceSquare(m_end);
+}
+
+float LibMath::Line2D::slope() const
+{
+	return (m_start.getY() - m_end.getY()) / (m_start.getX() - m_end.getX());
+}
+
+float LibMath::Line2D::slopeIntercept() const
+{
+	return m_start.getY() - slope() * m_start.getX();
 }
 
 LibMath::Rectangle::Rectangle() : 
@@ -63,6 +93,16 @@ LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, float r
 	m_height(height), 
 	m_rotation(rotation)
 {}
+
+float LibMath::Rectangle::extentX() const
+{
+	return m_width;
+}
+
+float LibMath::Rectangle::extentY() const
+{
+	return m_height;
+}
 
 
 
@@ -90,18 +130,4 @@ float LibMath::Circle::getRadius() const
 LibMath::Point2D LibMath::Circle::getCenter() const
 {
 	return m_center;
-}
-
-
-
-
-
-bool LibMath::colisionPointCircle(Point2D point, Circle circle)
-{
-	return point.distance(circle.getCenter()) <= circle.getRadius();
-}
-
-bool LibMath::colisionTwoCircle(Circle circle1, Circle circle2)
-{
-	return circle1.getCenter().distance(circle2.getCenter()) <= (circle1.getRadius() + circle2.getRadius());
 }

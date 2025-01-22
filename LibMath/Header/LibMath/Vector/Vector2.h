@@ -13,7 +13,7 @@ namespace LibMath
 						~Vector2() = default;
 
 		Vector2&		operator=(Vector2 const&);
-		Vector2&		operator=(Vector2 const&&);
+		Vector2&		operator=(Vector2 const&&) noexcept;
 
 		Vector2&		operator-();
 

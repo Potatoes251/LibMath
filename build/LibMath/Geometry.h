@@ -12,6 +12,9 @@ namespace LibMath
 		Point2D();
 		Point2D(float, float);
 
+		float getX() const;
+		float getY() const;
+
 		float distance(Point2D) const;
 		float distanceSquare(Point2D) const;
 
@@ -28,8 +31,13 @@ namespace LibMath
 		Line2D();
 		Line2D(Point2D, Point2D);
 
+		Point2D getStart() const;
+		Point2D getEnd() const;
+
 		float length() const;
 		float lengthSquare() const;
+		float slope() const;
+		float slopeIntercept() const;
 
 	private:
 		Point2D m_start;
@@ -44,6 +52,9 @@ namespace LibMath
 		Rectangle();
 		Rectangle(Point2D, float, float);
 		Rectangle(Point2D, float, float, float);
+
+		float extentX() const;
+		float extentY() const;
 
 	private:
 		Point2D m_corner;
@@ -68,10 +79,4 @@ namespace LibMath
 		Point2D m_center;
 		float m_radius;
 	};
-
-	//2D collision
-
-	bool colisionPointCircle(Point2D, Circle);
-	bool colisionTwoCircle(Circle, Circle);
-	bool colisionTwoRectangle(Rectangle, Rectangle);
 }
