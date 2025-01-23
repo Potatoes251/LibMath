@@ -12,15 +12,21 @@ namespace LibMath
 		Matrix2x2(float);
 		Matrix2x2(float, float, float, float);
 
+		Matrix2x2&		operator=(Matrix2x2);
+
 		float*			operator[](int);
 
 		Matrix2x2&		operator+(Matrix2x2);
-		Matrix2x2&		operator*(float);
+		Matrix2x2		operator*(float);
 		Vector2			operator*(Vector2);
 		Matrix2x2&		operator*(Matrix2x2);
 
 		void			transpose();
 		float			determinant();
+		void			minors();
+		void			cofactors();
+		void			adjugate();
+		void			inverse();
 
 	private:
 		float m_values[2][2];
