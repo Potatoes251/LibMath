@@ -1,5 +1,5 @@
 #include "LibMath/Matrix.h"
-
+#include "LibMath/Trigonometry.h"
 
 LibMath::Matrix2x2::Matrix2x2()
 {
@@ -25,7 +25,7 @@ LibMath::Matrix2x2::Matrix2x2(float val1, float val2, float val3, float val4)
 	m_values[1][1] = val4;
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2& other)
+LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2 const other)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -42,7 +42,7 @@ float* LibMath::Matrix2x2::operator[](int index)
 	return m_values[index];
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator+(Matrix2x2 other)
+LibMath::Matrix2x2& LibMath::Matrix2x2::operator+(Matrix2x2 const other)
 {
 	m_values[0][0] += other.m_values[0][0];
 	m_values[0][1] += other.m_values[0][1];
@@ -52,7 +52,7 @@ LibMath::Matrix2x2& LibMath::Matrix2x2::operator+(Matrix2x2 other)
 	return *this;
 }
 
-LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float val)
+LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float const val)
 {
 	return Matrix2x2 (
 		m_values[0][0] * val,
@@ -62,7 +62,7 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float val)
 
 }
 
-LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 v)
+LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 const v)
 {
 	float x = v[0] * m_values[0][0] + v[1] * m_values[0][1];
 	float y = v[0] * m_values[1][0] + v[1] * m_values[1][1];
@@ -70,7 +70,7 @@ LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 v)
 	return product;
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator*(Matrix2x2 other)
+LibMath::Matrix2x2& LibMath::Matrix2x2::operator*(Matrix2x2 const other)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -148,6 +148,45 @@ LibMath::Matrix2x2& LibMath::Matrix2x2::identity()
 	return *this;
 }
 
+LibMath::Matrix2x2& LibMath::Matrix2x2::createScale(Vector2 v)
+{
+	m_values[0][0] = v[0];
+	m_values[1][1] = v[1];
+
+	return *this;
+}
+
+LibMath::Matrix2x2 LibMath::Matrix2x2::createRotation(Point2D point, Radian angle)
+{
+	Matrix2x2 toOrigin;
+	toOrigin[0][2] = -point.getX();
+	toOrigin[1][2] = -point.getY();
+
+	Matrix2x2 rotation;
+	float cosTheta = cos(angle);
+	float sinTheta = sin(angle);
+	rotation[0][0] = cosTheta;
+	rotation[0][1] = -sinTheta;
+	rotation[1][0] = sinTheta;
+	rotation[1][1] = cosTheta;
+
+	Matrix2x2 toPivot;
+	toPivot[0][2] = point.getX();
+	toPivot[1][2] = point.getY();
+
+	return toPivot * rotation * toOrigin;
+}
+
+LibMath::Matrix2x2 LibMath::Matrix2x2::createTransform(Radian angle, Vector2 scale)
+{
+	Matrix2x2 rotation = createRotation(Point2D(0, 0), angle);
+
+	Matrix2x2 scaler;
+	scaler.createScale(scale);
+
+	return rotation * scaler;
+}
+
 
 LibMath::Matrix3x3::Matrix3x3()
 {
@@ -178,7 +217,7 @@ LibMath::Matrix3x3::Matrix3x3(float val)
 	}
 }
 
-LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3& other)
+LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3 const other)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -187,6 +226,58 @@ LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3& other)
 			m_values[i][j] = other.m_values[i][j];
 		}
 	}
+	return *this;
+}
+
+float* LibMath::Matrix3x3::operator[](int index)
+{
+	return m_values[index];
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::operator+(Matrix3x3 const other)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			m_values[i][j] += other.m_values[i][j];
+		}
+	}
+
+	return *this;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val)
+{
+	Matrix3x3 res{};
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			res.m_values[i][j] = m_values[i][j] * val;
+		}
+	}
+	return res;
+}
+
+LibMath::Vector2 LibMath::Matrix3x3::operator*(Vector2 const v)
+{
+	float x = v[0] * m_values[0][0] + v[1] * m_values[0][1];
+	float y = v[0] * m_values[1][0] + v[1] * m_values[1][1];
+	Vector2 product(x, y);
+	return product;
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::operator*(Matrix3x3 const other)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			m_values[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
+		}
+	}
+	return *this;
 }
 
 LibMath::Matrix3x3& LibMath::Matrix3x3::identity()
@@ -206,4 +297,55 @@ LibMath::Matrix3x3& LibMath::Matrix3x3::identity()
 		}
 	}
 	return *this;
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::createScale(Vector2 v)
+{
+	m_values[0][0] = v[0];
+	m_values[1][1] = v[1];
+
+	return *this;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createTranslation(Vector2 v)
+{
+	Matrix3x3 TransMatrix{};
+	TransMatrix.identity();
+	TransMatrix[0][2] = v[0];
+	TransMatrix[1][2] = v[1];
+
+	return TransMatrix;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createRotation(Point2D point, Radian angle)
+{
+	Matrix3x3 toOrigin;
+	toOrigin[0][2] = -point.getX();
+	toOrigin[1][2] = -point.getY();
+
+	Matrix3x3 rotation;
+	float cosTheta = cos(angle);
+	float sinTheta = sin(angle);
+	rotation[0][0] = cosTheta;
+	rotation[0][1] = -sinTheta;
+	rotation[1][0] = sinTheta;
+	rotation[1][1] = cosTheta;
+
+	Matrix3x3 toPivot;
+	toPivot[0][2] = point.getX();
+	toPivot[1][2] = point.getY();
+
+	return toPivot * rotation * toOrigin;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translate, Radian angle, Vector2 scale)
+{
+	Matrix3x3 translation = createTranslation(translate);
+
+	Matrix3x3 rotation = createRotation(Point2D(0, 0), angle);
+
+	Matrix3x3 scaler;
+	scaler.createScale(scale);
+
+	return translation * rotation * scaler;
 }
