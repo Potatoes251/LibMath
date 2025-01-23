@@ -3,7 +3,6 @@
 
 LibMath::Matrix2x2::Matrix2x2()
 {
-	//m_values = { {0,0}, {0,0} };
 	m_values[0][0] = 0;
 	m_values[0][1] = 0;
 	m_values[1][0] = 0;
@@ -26,7 +25,7 @@ LibMath::Matrix2x2::Matrix2x2(float val1, float val2, float val3, float val4)
 	m_values[1][1] = val4;
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2 other)
+LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2& other)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -137,4 +136,74 @@ void LibMath::Matrix2x2::inverse()
 	m_values[0][1] /= det;
 	m_values[1][0] /= det;
 	m_values[1][1] /= det;
+}
+
+LibMath::Matrix2x2& LibMath::Matrix2x2::identity()
+{
+	m_values[0][0] = 1;
+	m_values[0][1] = 0;
+	m_values[1][0] = 0;
+	m_values[1][1] = 1;
+
+	return *this;
+}
+
+
+LibMath::Matrix3x3::Matrix3x3()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			m_values[i][j] = 0;
+		}
+	}
+}
+
+LibMath::Matrix3x3::Matrix3x3(float val)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (i == j)
+			{
+				m_values[i][j] = val;
+			}
+			else
+			{
+				m_values[i][j] = 0;
+			}
+		}
+	}
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3& other)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			m_values[i][j] = other.m_values[i][j];
+		}
+	}
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::identity()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (i == j)
+			{
+				m_values[i][j] = 1;
+			}
+			else
+			{
+				m_values[i][j] = 0;
+			}
+		}
+	}
+	return *this;
 }
