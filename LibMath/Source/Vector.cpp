@@ -72,29 +72,37 @@ LibMath::Vector2& LibMath::Vector2::operator-()
 	return *this;
 }
 
-//LibMath::Vector2& LibMath::Vector2::operator+(Vector2 other)
-//{
-//	Vector2 res(m_x + other.m_x, m_y + other.m_y);
-//	return res;
-//}
-//
-//LibMath::Vector2& LibMath::Vector2::operator-(Vector2 other)
-//{
-//	Vector2 res(m_x - other.m_x, m_y - other.m_y);
-//	return res;
-//}
-//
-//LibMath::Vector2& LibMath::Vector2::operator*(float val)
-//{
-//	Vector2 res(m_x * val, m_y * val);
-//	return res;
-//}
-//
-//LibMath::Vector2& LibMath::Vector2::operator/(float val)
-//{
-//	Vector2 res(m_x / val, m_y / val);
-//	return res;
-//}
+LibMath::Vector2& LibMath::Vector2::operator+(Vector2 other)
+{
+	m_x += other.m_x;
+	m_y += other.m_y;
+
+	return *this;
+}
+
+LibMath::Vector2& LibMath::Vector2::operator-(Vector2 other)
+{
+	m_x -= other.m_x;
+	m_y -= other.m_y;
+
+	return *this;
+}
+
+LibMath::Vector2& LibMath::Vector2::operator*(float val)
+{
+	m_x *= val;
+	m_y *= val;
+
+	return *this;
+}
+
+LibMath::Vector2& LibMath::Vector2::operator/(float val)
+{
+	m_x /= val;
+	m_y /= val;
+
+	return *this;
+}
 
 LibMath::Vector2& LibMath::Vector2::operator+=(Vector2 const other)
 {

@@ -1,10 +1,10 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include "Geometry.h"
+#include "LibMath/Geometry.h"
 
 LibMath::Point2D::Point2D() :
-	m_x(0), 
+	m_x(0),
 	m_y(0)
 {}
 
@@ -74,21 +74,21 @@ float LibMath::Line2D::slopeIntercept() const
 }
 
 LibMath::Rectangle::Rectangle() : 
-	m_corner(Point2D{}),
+	m_center(Point2D{}),
 	m_width(0.f),
 	m_height(0.f), 
 	m_rotation(0.f) 
 {}
 
 LibMath::Rectangle::Rectangle(Point2D corner, float width, float height) : 
-	m_corner(corner), 
+	m_center(corner), 
 	m_width(width), 
 	m_height(height), 
 	m_rotation(0.f) 
 {}
 
 LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, float rotation) :
-	m_corner(corner), 
+	m_center(corner), 
 	m_width(width), 
 	m_height(height), 
 	m_rotation(rotation)
@@ -102,6 +102,56 @@ float LibMath::Rectangle::extentX() const
 float LibMath::Rectangle::extentY() const
 {
 	return m_height;
+}
+
+float LibMath::Rectangle::getRotation() const
+{
+	return m_rotation;
+}
+
+float LibMath::Rectangle::getWidth() const
+{
+	return m_width;
+}
+
+float LibMath::Rectangle::getHeight() const
+{
+	return m_height;
+}
+
+LibMath::Point2D LibMath::Rectangle::getCenter() const
+{
+	return m_center;
+}
+
+void LibMath::Rectangle::getCorners(Point2D corners[4])
+{
+	if (m_rotation == 0)
+	{
+		corners[0] = Point2D(m_center.getX(), m_center.getY()),
+		corners[1] = Point2D(m_center.getX() + m_width, m_center.getY()) ,
+		corners[3] = Point2D(m_center.getX() + m_width, m_center.getY() - m_height),
+		corners[4] = Point2D(m_center.getX(), m_center.getY() - m_height);
+	}
+
+	Point2D center = { m_center.getX(), m_center.getY() };
+
+	float half_width = m_width / 2.0f;
+	float half_height = m_height / 2.0f;
+
+	float rad = m_rotation * 180 / 3.14159265358f;
+	float cosRot = cosf(rad);
+	float sinRot = sinf(rad);
+
+	Point2D offsets[4] = { {-half_width, -half_height}, {half_width, -half_height},
+						  {half_width, half_height}, {-half_width, half_height} };
+
+	for (int i = 0; i < 4; i++)
+	{
+		float x = offsets[i].getX() * cosRot - offsets[i].getY() * sinRot;
+		float y = offsets[i].getX() * sinRot + offsets[i].getY() * cosRot;
+		corners[i] = Point2D(center.getX() + x, center.getY() + y);
+	}
 }
 
 
