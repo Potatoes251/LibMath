@@ -1,9 +1,11 @@
+#include <LibMath/Vector/Vector2.h>
 #include <LibMath/Vector/Vector3.h>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/projection.hpp>
@@ -450,6 +452,296 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 
 		CHECK_THROWS(vector[-1]);
 		CHECK_THROWS(vector[3]);
+#endif // DEBUG
+	}
+}
+
+
+
+#define CHECK_VECTOR2(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y));
+
+TEST_CASE("Vector2", "[.all][vector][Vector2]")
+{
+	SECTION("Instantiation")
+	{
+		// destructor
+		{
+			[[maybe_unused]] LibMath::Vector2 temp;
+		}
+
+		// default constructor
+		LibMath::Vector2 empty;
+		glm::vec2 emptyGlm{};
+		CHECK_VECTOR2(empty, emptyGlm);
+
+		// basic constructor
+		LibMath::Vector2 oneParam{ 2.5f };
+		glm::vec2 oneParamGlm{ 2.5f };
+		CHECK_VECTOR2(oneParam, oneParamGlm);
+
+		LibMath::Vector2 allParam{ 2.5f, .5f};
+		glm::vec2 allParamGlm{ 2.5f, .5f};
+		CHECK_VECTOR2(allParam, allParamGlm);
+
+		// copy constructor
+		LibMath::Vector2 copy{ allParam };
+		glm::vec2 copyGlm{ allParamGlm };
+		CHECK_VECTOR2(copy, copyGlm);
+
+		// assignment operator
+		empty = allParam;
+		emptyGlm = allParamGlm;
+		CHECK_VECTOR2(empty, emptyGlm);
+
+		// OpenGL compatibility
+		CHECK(sizeof LibMath::Vector2 == sizeof glm::vec2);
+		CHECK(memcmp(&allParam, &allParamGlm, sizeof allParam) == 0);
+	}
+
+	SECTION("Accessor")
+	{
+		float const x = 2.5f;
+		float const y = .5f;
+		LibMath::Vector2 vector{ x, y };
+
+		{
+			LibMath::Vector2 const& vectorConst = vector;
+			CHECK(vectorConst[0] == x);
+			CHECK(vectorConst[1] == y);
+		}
+
+		{
+			vector[0] += 1.f;
+			vector[1] += 1.f;
+			CHECK(vector[0] == x + 1.f);
+			CHECK(vector[1] == y + 1.f);
+		}
+	}
+
+	SECTION("Comparator")
+	{
+		// compare with self
+		LibMath::Vector2 self{ 2.5f, .5f };
+		CHECK(self == self);
+		CHECK_FALSE(self != self);
+
+		// compare with same
+		CHECK(LibMath::Vector2{ 2.5f, .5f } == LibMath::Vector2{ 2.5f, .5f });
+		CHECK_FALSE(LibMath::Vector2{ 2.5f, .5f } != LibMath::Vector2{ 2.5f, .5f });
+
+		// trying to find copy/paste mistake
+		LibMath::Vector2 twos{ 2.f, 2.f };
+		CHECK_FALSE(LibMath::Vector2{ .5f, 2.f } == twos);
+		CHECK_FALSE(LibMath::Vector2{ 2.f, .5f } == twos);
+		CHECK(LibMath::Vector2{ .5f, 2.f } != twos);
+		CHECK(LibMath::Vector2{ 2.f, .5f } != twos);
+		CHECK_FALSE(twos == LibMath::Vector2{ .5f, 2.f });
+		CHECK_FALSE(twos == LibMath::Vector2{ 2.f, .5f });
+		CHECK(twos != LibMath::Vector2{ .5f, 2.f });
+		CHECK(twos != LibMath::Vector2{ 2.f, .5f });
+
+		// testing comparaision fonctionnality
+		LibMath::Vector2 small{ 2.5f, .5f };
+		LibMath::Vector2 big{ 3.75f, 3.f };
+
+		CHECK(big.isLongerThan(small));
+		CHECK_FALSE(small.isLongerThan(big));
+
+		CHECK(small.isShorterThan(big));
+		CHECK_FALSE(big.isShorterThan(small));
+
+		CHECK_FALSE(big.isLongerThan(big));
+		CHECK_FALSE(big.isShorterThan(big));
+
+		CHECK_FALSE(self.isUnitVector());
+		CHECK(LibMath::Vector2{ 0.6f, 0.8f }.isUnitVector());
+	}
+
+	SECTION("Arithmetic")
+	{
+		LibMath::Vector2 const small{ 2.5f, .5f };
+		LibMath::Vector2 const big{ 3.75f, 3.f };
+
+		glm::vec2 const smallGlm{ 2.5f, .5f };
+		glm::vec2 const bigGlm{ 3.75f, 3.f };
+
+		SECTION("Addition")
+		{
+			{
+				LibMath::Vector2 sumAssignment = big;
+				sumAssignment += small;
+
+				glm::vec2 sumAssignmentGlm = bigGlm;
+				sumAssignmentGlm += smallGlm;
+
+				CHECK_VECTOR2(sumAssignment, sumAssignmentGlm);
+			}
+
+			{
+				LibMath::Vector2 sum = big + small;
+
+				glm::vec2 sumGlm = bigGlm + smallGlm;
+
+				CHECK_VECTOR2(sum, sumGlm);
+			}
+		}
+
+		SECTION("Opposite")
+		{
+			LibMath::Vector2 opposite = -LibMath::Vector2{ 3.7f, 3.f };
+
+			glm::vec2 oppositeGlm = -glm::vec2{ 3.7f, 3.f };
+
+			CHECK_VECTOR2(opposite, oppositeGlm);
+		}
+
+		SECTION("Substraction")
+		{
+			{
+				LibMath::Vector2 differenceAssignment = big;
+				differenceAssignment -= small;
+
+				glm::vec2 differenceAssignmentGlm = bigGlm;
+				differenceAssignmentGlm -= smallGlm;
+
+				CHECK_VECTOR2(differenceAssignment, differenceAssignmentGlm);
+			}
+
+			{
+				LibMath::Vector2 difference = big - small;
+
+				glm::vec2 differenceGlm = bigGlm - smallGlm;
+
+				CHECK_VECTOR2(difference, differenceGlm);
+			}
+		}
+
+		SECTION("Multiplication")
+		{
+			{
+				LibMath::Vector2 productAssignment = big;
+				productAssignment *= 3.0f;
+
+				glm::vec2 productAssignmentGlm = bigGlm;
+				productAssignmentGlm *= 3.0f;
+
+				CHECK_VECTOR2(productAssignment, productAssignmentGlm);
+			}
+
+			{
+				LibMath::Vector2 product = big * 3.0f;
+
+				glm::vec2 productGlm = bigGlm * 3.0f;
+
+				CHECK_VECTOR2(product, productGlm);
+			}
+		}
+
+		SECTION("Division")
+		{
+			{
+				LibMath::Vector2 quotientAssignment = big;
+				quotientAssignment /= 3.0f;
+
+				glm::vec2 quotientAssignmentGlm = bigGlm;
+				quotientAssignmentGlm /= 3.0f;
+
+				CHECK_VECTOR2(quotientAssignment, quotientAssignmentGlm);
+			}
+
+			{
+				LibMath::Vector2 quotient = big / 3.0f;
+
+				glm::vec2 quotientGlm = bigGlm / 3.0f;
+
+				CHECK_VECTOR2(quotient, quotientGlm);
+			}
+		}
+	}
+
+	SECTION("Functionality")
+	{
+		LibMath::Vector2 const base{ 2.5f, .5f };
+		LibMath::Vector2 const other{ 3.75f, 3.f };
+
+		glm::vec2 const baseGlm{ 2.5f, .5f };
+		glm::vec2 const otherGlm{ 3.75f, 3.f };
+
+		SECTION("Angle")
+		{
+			LibMath::Radian angle = base.angleBetween(other);
+
+			float angleGlm = glm::angle(glm::normalize(baseGlm), glm::normalize(otherGlm));
+
+			CHECK(angle.radian() == Catch::Approx(angleGlm));
+		}
+
+		SECTION("Dot")
+		{
+			float dot = base.dotProduct(other);
+
+			float dotGlm = glm::dot(baseGlm, otherGlm);
+
+			CHECK(dot == dotGlm);
+		}
+
+		SECTION("Magnitude")
+		{
+			{
+				float magnitude = base.magnitude();
+
+				float magnitudeGlm = glm::length(baseGlm);
+
+				CHECK(magnitude == Catch::Approx(magnitudeGlm));
+			}
+
+			{
+				float magnitudeSquare = base.magnitudeSquared();
+
+				float magnitudeSquareGlm = glm::length2(baseGlm);
+
+				CHECK(magnitudeSquare == Catch::Approx(magnitudeSquareGlm));
+			}
+		}
+
+		SECTION("Normal")
+		{
+			LibMath::Vector2 normalize = base;
+			normalize.normalize();
+
+			glm::vec2 normalizeGlm = glm::normalize(baseGlm);
+
+			CHECK_VECTOR2(normalize, normalizeGlm);
+		}
+
+		SECTION("ProjectOnto")
+		{
+			LibMath::Vector2 project = base;
+			project.projectOnto(other);
+
+			glm::vec2 projectGlm = glm::proj(baseGlm, otherGlm);
+
+			CHECK_VECTOR2(project, projectGlm);
+		}
+
+		SECTION("ReflectOnto")
+		{
+			LibMath::Vector2 reflect = base;
+			reflect.reflectOnto(other);
+
+			glm::vec2 reflectGlm = glm::reflect(baseGlm, glm::normalize(otherGlm));
+
+			CHECK_VECTOR2(reflect, reflectGlm);
+		}
+	}
+
+	SECTION("Debug")
+	{
+#if (defined _DEBUG) || (! defined NDEBUG)
+		LibMath::Vector2 vector{ 2.5f, .5f };
+
+		CHECK_THROWS(vector[-1]);
+		CHECK_THROWS(vector[2]);
 #endif // DEBUG
 	}
 }

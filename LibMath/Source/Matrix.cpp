@@ -42,17 +42,18 @@ float* LibMath::Matrix2x2::operator[](int index)
 	return m_values[index];
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator+(Matrix2x2 const other)
+LibMath::Matrix2x2 LibMath::Matrix2x2::operator+(Matrix2x2 const other) const
 {
-	m_values[0][0] += other.m_values[0][0];
-	m_values[0][1] += other.m_values[0][1];
-	m_values[1][0] += other.m_values[1][0];
-	m_values[1][1] += other.m_values[1][1];
+	Matrix2x2 sum;
+	sum[0][0] = m_values[0][0] + other.m_values[0][0];
+	sum[0][1] = m_values[0][1] + other.m_values[0][1];
+	sum[1][0] = m_values[1][0] + other.m_values[1][0];
+	sum[1][1] = m_values[1][1] + other.m_values[1][1];
 
-	return *this;
+	return sum;
 }
 
-LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float const val)
+LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float const val) const
 {
 	return Matrix2x2 (
 		m_values[0][0] * val,
@@ -62,7 +63,7 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float const val)
 
 }
 
-LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 const v)
+LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 const v) const
 {
 	float x = v[0] * m_values[0][0] + v[1] * m_values[0][1];
 	float y = v[0] * m_values[1][0] + v[1] * m_values[1][1];
@@ -70,16 +71,17 @@ LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 const v)
 	return product;
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator*(Matrix2x2 const other)
+LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(Matrix2x2 const other) const
 {
+	Matrix2x2 product;
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 2;j++)
 		{
-			m_values[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
+			product[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
 		}
 	}
-	return *this;
+	return product;
 }
 
 void LibMath::Matrix2x2::transpose()
@@ -234,17 +236,18 @@ float* LibMath::Matrix3x3::operator[](int index)
 	return m_values[index];
 }
 
-LibMath::Matrix3x3& LibMath::Matrix3x3::operator+(Matrix3x3 const other)
+LibMath::Matrix3x3 LibMath::Matrix3x3::operator+(Matrix3x3 const other) const
 {
+	Matrix3x3 sum;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3;j++)
 		{
-			m_values[i][j] += other.m_values[i][j];
+			sum[i][j] += other.m_values[i][j];
 		}
 	}
 
-	return *this;
+	return sum;
 }
 
 LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val)
@@ -260,24 +263,17 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val)
 	return res;
 }
 
-LibMath::Vector2 LibMath::Matrix3x3::operator*(Vector2 const v)
+LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 {
-	float x = v[0] * m_values[0][0] + v[1] * m_values[0][1];
-	float y = v[0] * m_values[1][0] + v[1] * m_values[1][1];
-	Vector2 product(x, y);
-	return product;
-}
-
-LibMath::Matrix3x3& LibMath::Matrix3x3::operator*(Matrix3x3 const other)
-{
+	Matrix3x3 product;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3;j++)
 		{
-			m_values[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
+			product[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
 		}
 	}
-	return *this;
+	return product;
 }
 
 LibMath::Matrix3x3& LibMath::Matrix3x3::identity()

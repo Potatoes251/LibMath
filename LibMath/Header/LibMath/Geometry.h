@@ -4,20 +4,18 @@
 
 namespace LibMath
 {
-	//2D classes
-
 	class Point2D
 	{
 	public:
 
-		Point2D();
-		Point2D(float, float);
+		Point2D();										// default constructor
+		Point2D(float, float);							// parametrized constructor
 
-		float			getX() const;
-		float			getY() const;
+		float			getX() const;					// getter for x value
+		float			getY() const;					// getter for y value
 
-		float			distance(Point2D) const;
-		float			distanceSquare(Point2D) const;
+		float			distance(Point2D) const;		// return the distance between 2 point
+		float			distanceSquare(Point2D) const;	// return the square of the distance between 2 point
 
 	private:
 		float m_x;
@@ -29,16 +27,16 @@ namespace LibMath
 	{
 	public:
 
-		Line2D();
-		Line2D(Point2D, Point2D);
+		Line2D();									// default constructor
+		Line2D(Point2D, Point2D);					// parametrized constructor
 
-		Point2D			getStart() const;
-		Point2D			getEnd() const;
+		Point2D			getStart() const;			// return the start point
+		Point2D			getEnd() const;				// return the end point
 
-		float			length() const;
-		float			lengthSquare() const;
-		float			slope() const;
-		float			slopeIntercept() const;
+		float			length() const;				// return the length of the line
+		float			lengthSquare() const;		// return the square of the length of the line
+		float			slope() const;				// return the slope of the line
+		float			slopeIntercept() const;		// return the slope intercept of the line
 
 
 	private:
@@ -51,18 +49,18 @@ namespace LibMath
 	{
 	public:
 
-		Rectangle();
-		Rectangle(Point2D, float, float);		// ctor without rotation
-		Rectangle(Point2D, float, float, float);// ctor with rotation
+		Rectangle();									// default constructor
+		Rectangle(Point2D, float, float);				// parameterized construtor without rotation
+		Rectangle(Point2D, float, float, float);		// parameterized construtor with rotation
 
-		float			extentX() const;
-		float			extentY() const;
-		float			getRotation() const;
-		float			getWidth() const;
-		float			getHeight() const;
-		Point2D			getCenter() const;
+		float			extentX() const;				// return the 
+		float			extentY() const;				// return the 
+		float			getRotation() const;			// return the rotation
+		float			getWidth() const;				// getter for the width
+		float			getHeight() const;				// getter for the height
+		Point2D			getCenter() const;				// return the center
 
-		void			getCorners(Point2D corners[4]);
+		void			getCorners(Point2D corners[4]);	// return the 4 corners
 
 	private:
 		Point2D	m_center;
@@ -76,12 +74,12 @@ namespace LibMath
 	{
 	public:
 
-		Circle();
-		Circle(Point2D, float);
-		Circle(Circle const&);
+		Circle();								// default constructor
+		Circle(Point2D, float);					// parametrized constructor
+		Circle(Circle const&);					// copy constructor
 
-		float			getRadius() const;
-		Point2D			getCenter() const;
+		float			getRadius() const;		// getter for the radius
+		Point2D			getCenter() const;		// getter for the center
 
 	private:
 		Point2D m_center;
