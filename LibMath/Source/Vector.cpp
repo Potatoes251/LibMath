@@ -9,6 +9,8 @@ LibMath::Vector2::Vector2(float x, float y) : m_x(x), m_y(y) {}
 
 LibMath::Vector2::Vector2(Vector2 const& other) : m_x(other.m_x), m_y(other.m_y) {}
 
+LibMath::Vector2::Vector2(Vector2 const&& other) : m_x(other.m_x), m_y(other.m_y) {}
+
 float& LibMath::Vector2::operator[](int index)
 {
 	if (index == 0)

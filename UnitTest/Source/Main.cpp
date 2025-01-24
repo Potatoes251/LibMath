@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
 	//arguments.push_back("[all],");
 	//arguments.push_back("[angle],");
 	//arguments.push_back("[vector],");
+	//arguments.push_back("[geometry],");
 
 
 	/************************************\
@@ -100,7 +101,10 @@ int main(int argc, char* argv[])
 	//arguments.push_back("Trigonometry,");
 	arguments.push_back("Vector2,");
 	//arguments.push_back("Vector3,");
-
+	arguments.push_back("Point2D,");
+	arguments.push_back("Line2D,");
+	arguments.push_back("Rectangle,");
+	arguments.push_back("Circle,");
 
 	/************************************\
 	*                                    *

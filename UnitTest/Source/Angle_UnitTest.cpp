@@ -203,8 +203,8 @@ TEST_CASE("Degree", "[.all][angle]")
 
 TEST_CASE("Radian", "[.all][angle]")
 {
-	const/*expr*/ float halfRadianCircle = glm::pi<float>();
-	const/*expr*/ float radianCircle = glm::two_pi<float>();
+	constexpr float halfRadianCircle = glm::pi<float>();
+	constexpr float radianCircle = glm::two_pi<float>();
 
 	SECTION("Instantiation")
 	{

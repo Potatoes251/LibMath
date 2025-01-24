@@ -13,6 +13,33 @@ LibMath::Point2D::Point2D(float x, float y) :
 	m_y(y)
 {}
 
+LibMath::Point2D::Point2D(Point2D const& other) :
+	m_x(other.m_x),
+	m_y(other.m_y)
+{}
+
+LibMath::Point2D::Point2D(Point2D const&& other) :
+	m_x(other.m_x),
+	m_y(other.m_y)
+{
+}
+
+LibMath::Point2D& LibMath::Point2D::operator=(Point2D const& other)
+{
+	m_x = other.m_x;
+	m_y = other.m_y;
+
+	return *this;
+}
+
+LibMath::Point2D& LibMath::Point2D::operator=(Point2D const&& other) noexcept
+{
+	m_x = other.m_x;
+	m_y = other.m_y;
+
+	return *this;
+}
+
 float LibMath::Point2D::getX() const
 {
 	return m_x;
@@ -96,12 +123,12 @@ LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, float r
 
 float LibMath::Rectangle::extentX() const
 {
-	return m_width;
+	return m_width / 2.0f;
 }
 
 float LibMath::Rectangle::extentY() const
 {
-	return m_height;
+	return m_height / 2.0f;
 }
 
 float LibMath::Rectangle::getRotation() const
@@ -130,8 +157,8 @@ void LibMath::Rectangle::getCorners(Point2D corners[4])
 	{
 		corners[0] = Point2D(m_center.getX(), m_center.getY()),
 		corners[1] = Point2D(m_center.getX() + m_width, m_center.getY()) ,
-		corners[3] = Point2D(m_center.getX() + m_width, m_center.getY() - m_height),
-		corners[4] = Point2D(m_center.getX(), m_center.getY() - m_height);
+		corners[2] = Point2D(m_center.getX() + m_width, m_center.getY() - m_height),
+		corners[3] = Point2D(m_center.getX(), m_center.getY() - m_height);
 	}
 
 	Point2D center = { m_center.getX(), m_center.getY() };
