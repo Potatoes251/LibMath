@@ -277,7 +277,7 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator+(Matrix3x3 const other) const
 	{
 		for (int j = 0; j < 3;j++)
 		{
-			sum[i][j] += other.m_values[i][j];
+			sum[i][j] = m_values[i][j] + other.m_values[i][j];
 		}
 	}
 
@@ -304,7 +304,9 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 	{
 		for (int j = 0; j < 3;j++)
 		{
-			product[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
+			product[i][j] = m_values[i][0] * other.m_values[0][j] + 
+							m_values[i][1] * other.m_values[1][j] + 
+							m_values[i][2] * other.m_values[2][j];
 		}
 	}
 	return product;
@@ -316,7 +318,7 @@ bool LibMath::Matrix3x3::operator==(Matrix3x3 const other) const
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			if (m_values[i][j] != other.m_values[i][j])
+			if (std::fabs(m_values[i][j] - other.m_values[i][j]) >= g_epsilon)
 			{
 				return false;
 			}
