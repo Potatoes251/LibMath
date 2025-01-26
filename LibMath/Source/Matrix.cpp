@@ -173,30 +173,22 @@ LibMath::Matrix2x2& LibMath::Matrix2x2::createScale(Vector2 v)
 	return *this;
 }
 
-LibMath::Matrix2x2 LibMath::Matrix2x2::createRotation(Point2D point, Radian angle)
+LibMath::Matrix2x2 LibMath::Matrix2x2::createRotation(Radian angle)
 {
-	Matrix2x2 toOrigin;
-	toOrigin[0][2] = -point.getX();
-	toOrigin[1][2] = -point.getY();
-
 	Matrix2x2 rotation;
-	float cosTheta = cos(angle);
-	float sinTheta = sin(angle);
-	rotation[0][0] = cosTheta;
-	rotation[0][1] = -sinTheta;
-	rotation[1][0] = sinTheta;
-	rotation[1][1] = cosTheta;
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+	rotation[0][0] = cosAngle;
+	rotation[0][1] = -sinAngle;
+	rotation[1][0] = sinAngle;
+	rotation[1][1] = cosAngle;
 
-	Matrix2x2 toPivot;
-	toPivot[0][2] = point.getX();
-	toPivot[1][2] = point.getY();
-
-	return toPivot * rotation * toOrigin;
+	return rotation;
 }
 
 LibMath::Matrix2x2 LibMath::Matrix2x2::createTransform(Radian angle, Vector2 scale)
 {
-	Matrix2x2 rotation = createRotation(Point2D(0, 0), angle);
+	Matrix2x2 rotation = createRotation(angle);
 
 	Matrix2x2 scaler;
 	scaler.createScale(scale);
@@ -350,6 +342,7 @@ LibMath::Matrix3x3& LibMath::Matrix3x3::createScale(Vector2 v)
 {
 	m_values[0][0] = v[0];
 	m_values[1][1] = v[1];
+	m_values[2][2] = 1;
 
 	return *this;
 }
@@ -367,22 +360,25 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createTranslation(Vector2 v)
 LibMath::Matrix3x3 LibMath::Matrix3x3::createRotation(Point2D point, Radian angle)
 {
 	Matrix3x3 toOrigin;
+	toOrigin.identity();
 	toOrigin[0][2] = -point.getX();
 	toOrigin[1][2] = -point.getY();
 
 	Matrix3x3 rotation;
-	float cosTheta = cos(angle);
-	float sinTheta = sin(angle);
-	rotation[0][0] = cosTheta;
-	rotation[0][1] = -sinTheta;
-	rotation[1][0] = sinTheta;
-	rotation[1][1] = cosTheta;
+	rotation.identity();
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+	rotation[0][0] = cosAngle;
+	rotation[0][1] = -sinAngle;
+	rotation[1][0] = sinAngle;
+	rotation[1][1] = cosAngle;
 
 	Matrix3x3 toPivot;
+	toPivot.identity();
 	toPivot[0][2] = point.getX();
 	toPivot[1][2] = point.getY();
 
-	return toPivot * rotation * toOrigin;
+	return toOrigin * rotation * toPivot;
 }
 
 LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translate, Radian angle, Vector2 scale)

@@ -34,7 +34,7 @@ namespace LibMath
 		Matrix2x2&		identity();									// create an identity matrix
 
 		Matrix2x2&				createScale(Vector2);				// return a scaling matrix
-		static Matrix2x2		createRotation(Point2D, Radian);	// return a rotation matrix
+		static Matrix2x2		createRotation(Radian);				// return a rotation matrix
 		static Matrix2x2		createTransform(Radian, Vector2);	// return a transformation matrix
 
 	private:
