@@ -147,6 +147,11 @@ void LibMath::Matrix2x2::inverse()
 {
 	float det = determinant();
 
+	if (det == 0)
+	{
+		return;
+	}
+
 	adjugate();
 
 	m_values[0][0] /= det;

@@ -128,6 +128,82 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 			CHECK(transformMatrix == expectedMatrix);
 		}
 	}
+
+	SECTION("Functionality")
+	{
+		{// transpose
+			LibMath::Matrix2x2 matrix(
+				2, 8,
+				0, 6);
+			matrix.transpose();
+			LibMath::Matrix2x2 transposedMatrix(
+				2, 0,
+				8, 6);
+
+			CHECK(transposedMatrix == matrix);
+		}
+
+		{// determinant
+			LibMath::Matrix2x2 matrix(
+				1, 9,
+				6, 9);
+			float determinant = matrix.determinant();
+
+			CHECK(determinant == -45.f);
+		}
+
+		{// minor
+			LibMath::Matrix2x2 matrix(
+				1, 1,
+				0, 9);
+			matrix.minors();
+
+			LibMath::Matrix2x2 minorMatrix(
+				9, 0,
+				1, 1);
+
+			CHECK(minorMatrix == matrix);
+		}
+
+		{// cofactor
+			LibMath::Matrix2x2 matrix(
+				2, 0,
+				1, 3);
+			matrix.cofactors();
+
+			LibMath::Matrix2x2 cofactorMatrix(
+				3, -1,
+				0, 2);
+
+			CHECK(cofactorMatrix == matrix);
+		}
+
+		{// adjugate
+			LibMath::Matrix2x2 matrix(
+				0, 7,
+				0, 6);
+			matrix.adjugate();
+
+			LibMath::Matrix2x2 adjugateMatrix(
+				6, -7,
+				0, 0);
+
+			CHECK(adjugateMatrix == matrix);
+		}
+
+		{// inverse
+			LibMath::Matrix2x2 matrix(
+				1, 9,
+				5, 4);
+			matrix.inverse();
+
+			LibMath::Matrix2x2 inverseMatrix(
+				-4.0f / 41.0f, 9.0f / 41.0f,
+				5.0f / 41.0f, -1.0f / 41.0f);
+
+			CHECK(inverseMatrix == matrix);
+		}
+	}
 }
 
 TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
