@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "LibMath/Geometry.h"
+#include "LibMath/Trigonometry.h"
 
 LibMath::Point2D::Point2D() :
 	m_x(0),
@@ -18,11 +19,10 @@ LibMath::Point2D::Point2D(Point2D const& other) :
 	m_y(other.m_y)
 {}
 
-LibMath::Point2D::Point2D(Point2D const&& other) :
+LibMath::Point2D::Point2D(Point2D const&& other) noexcept :
 	m_x(other.m_x),
 	m_y(other.m_y)
-{
-}
+{}
 
 LibMath::Point2D& LibMath::Point2D::operator=(Point2D const& other)
 {
@@ -114,7 +114,7 @@ LibMath::Rectangle::Rectangle(Point2D corner, float width, float height) :
 	m_rotation(0.f) 
 {}
 
-LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, float rotation) :
+LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, Radian rotation) :
 	m_center(corner), 
 	m_width(width), 
 	m_height(height), 
@@ -131,7 +131,7 @@ float LibMath::Rectangle::extentY() const
 	return m_height / 2.0f;
 }
 
-float LibMath::Rectangle::getRotation() const
+LibMath::Radian LibMath::Rectangle::getRotation() const
 {
 	return m_rotation;
 }
@@ -153,7 +153,7 @@ LibMath::Point2D LibMath::Rectangle::getCenter() const
 
 void LibMath::Rectangle::getCorners(Point2D corners[4])
 {
-	if (m_rotation == 0)
+	if (m_rotation.raw() == 0)
 	{
 		corners[0] = Point2D(m_center.getX(), m_center.getY()),
 		corners[1] = Point2D(m_center.getX() + m_width, m_center.getY()) ,
@@ -166,9 +166,8 @@ void LibMath::Rectangle::getCorners(Point2D corners[4])
 	float half_width = m_width / 2.0f;
 	float half_height = m_height / 2.0f;
 
-	float rad = m_rotation * 180 / 3.14159265358f;
-	float cosRot = cosf(rad);
-	float sinRot = sinf(rad);
+	float cosRot = cos(m_rotation);
+	float sinRot = sin(m_rotation);
 
 	Point2D offsets[4] = { {-half_width, -half_height}, {half_width, -half_height},
 						  {half_width, half_height}, {-half_width, half_height} };

@@ -101,6 +101,8 @@ int main(int argc, char* argv[])
 	//arguments.push_back("Trigonometry,");
 	arguments.push_back("Vector2,");
 	//arguments.push_back("Vector3,");
+	arguments.push_back("Matrix2,");
+	arguments.push_back("Matrix3,");
 	arguments.push_back("Point2D,");
 	arguments.push_back("Line2D,");
 	arguments.push_back("Rectangle,");

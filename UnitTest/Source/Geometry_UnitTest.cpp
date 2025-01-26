@@ -93,6 +93,54 @@ TEST_CASE("Line2D", "[.all][geometry][line2d]")
 
 		CHECK(line.slope() == Catch::Approx(4.0f / 3.0f));
 		CHECK(line.slopeIntercept() == Catch::Approx(0.0f));
+
+
+		// TEST POINT-LINE COLLISIONS
+
+		LibMath::Point2D startLine(0.f, 0.f);
+		LibMath::Point2D endLine(4.f, 4.f);
+		LibMath::Line2D line1(startLine, endLine);
+
+		LibMath::Point2D pointOnLine(2.f, 2.f);  // on the line
+		CHECK(colisionPointLine(pointOnLine, line1));
+
+		// test start and end point of the line
+		CHECK(colisionPointLine(startLine, line1));
+		CHECK(colisionPointLine(endLine, line1));
+
+		LibMath::Point2D pointOffLine(3.f, 2.f);  // not on the line
+		CHECK_FALSE(colisionPointLine(pointOffLine, line1));
+
+		// TEST LINE-LINE COLLISIONS
+
+		LibMath::Point2D startLine2(2.f, 0.f);
+		LibMath::Point2D endLine2(2.f, 4.f);
+		LibMath::Line2D line2(startLine2, endLine2);
+
+		CHECK(colisionTwoLine(line1, line2));	// collision
+
+		// test when only intercept on an endpoint
+		LibMath::Point2D startLine3(0.f, 0.f);
+		LibMath::Point2D endLine3(2.f, 4.f);
+		LibMath::Line2D line3(startLine3, endLine3);
+
+		CHECK(colisionTwoLine(line1, line3));	// collision
+
+		// parallel lines
+		LibMath::Point2D startLine4(0.f, 1.f);
+		LibMath::Point2D endLine4(4.f, 5.f); 
+		LibMath::Line2D line4(startLine4, endLine4);
+
+		CHECK_FALSE(colisionTwoLine(line1, line4));  // No collision
+
+		CHECK(colisionTwoLine(line1, line1));	// identical => collision
+
+		// check for colinear line not overlapping
+		LibMath::Point2D startLine6(-1.f, -1.f);
+		LibMath::Point2D endLine6(-4.f, -4.f);
+		LibMath::Line2D line6(startLine6, endLine6);
+
+		CHECK_FALSE(colisionTwoLine(line1, line6));	// No collision
 	}
 }
 
@@ -109,7 +157,7 @@ TEST_CASE("Rectangle", "[.all][geometry][rectangle]")
 		LibMath::Rectangle rectangleDefault;
 		CHECK(rectangleDefault.getWidth() == 0.f);
 		CHECK(rectangleDefault.getHeight() == 0.f);
-		CHECK(rectangleDefault.getRotation() == 0.f);
+		CHECK(rectangleDefault.getRotation().raw() == 0.f);
 		CHECK(rectangleDefault.getCenter().getX() == 0.f);
 		CHECK(rectangleDefault.getCenter().getY() == 0.f);
 
@@ -121,16 +169,16 @@ TEST_CASE("Rectangle", "[.all][geometry][rectangle]")
 		LibMath::Rectangle rectangle(center, width, height);
 		CHECK(rectangle.getWidth() == 4.0f);
 		CHECK(rectangle.getHeight() == 5.0f);
-		CHECK(rectangle.getRotation() == 0.f);
+		CHECK(rectangle.getRotation().raw() == 0.f);
 		CHECK(rectangle.getCenter().getX() == 2.0f);
 		CHECK(rectangle.getCenter().getY() == 3.0f);
 
 		// Parameterized constructor with rotation
-		float rotation = 45.0f;
+		LibMath::Radian rotation(1.2f);
 		LibMath::Rectangle rotatedRectangle(center, width, height, rotation);
 		CHECK(rotatedRectangle.getWidth() == 4.0f);
 		CHECK(rotatedRectangle.getHeight() == 5.0f);
-		CHECK(rotatedRectangle.getRotation() == 45.0f);
+		CHECK(rotatedRectangle.getRotation().raw() == 1.2f);
 		CHECK(rotatedRectangle.getCenter().getX() == 2.0f);
 		CHECK(rotatedRectangle.getCenter().getY() == 3.0f);
 	}
@@ -158,6 +206,115 @@ TEST_CASE("Rectangle", "[.all][geometry][rectangle]")
 
 		CHECK(corners[3].getX() == -1.0f); // Left, top corner
 		CHECK(corners[3].getY() == 2.0f);
+
+		// TEST RECTANGLE-RECTANGLE COLLSION 
+
+		// AABB
+
+		LibMath::Point2D center1(0.f, 0.f);        
+		float width1 = 4.f;
+		float height1 = 6.f;
+		LibMath::Rectangle rect(center1, width1, height1);
+
+		// twice the same
+		CHECK(colisionTwoRectangle(rect, rect));
+
+		LibMath::Point2D center2(42.f, 314.f);       
+		float width2 = 4.f;
+		float height2 = 6.f;
+		LibMath::Rectangle rect2(center2, width2, height2);
+
+		CHECK_FALSE(colisionTwoRectangle(rect, rect2));
+
+		// share a side
+		LibMath::Point2D center3(0.f, 6.f);
+		float width3 = 4.f;
+		float height3 = 6.f;
+		LibMath::Rectangle rect3(center3, width3, height3);
+
+		CHECK(colisionTwoRectangle(rect, rect3));
+		
+		// share a corner
+		LibMath::Point2D center4(4.f, 6.f);
+		float width4 = 4.f;
+		float height4 = 6.f;
+		LibMath::Rectangle rect4(center4, width4, height4);
+
+		CHECK(colisionTwoRectangle(rect, rect4));
+
+		//one inside another
+		LibMath::Point2D center5(0.f, 0.f);
+		float width5 = 2.f;
+		float height5 = 3.f;
+		LibMath::Rectangle rect5(center5, width5, height5);
+
+		CHECK(colisionTwoRectangle(rect, rect5));
+
+		// OBB
+
+		LibMath::Point2D center6(0.f, 0.f);
+		float width6 = 4.f;
+		float height6 = 4.f;
+		LibMath::Radian rotation(1.2f);
+		LibMath::Rectangle rect6(center6, width6, height6, rotation);
+
+		CHECK(colisionTwoRectangle(rect6, rect6));
+
+		LibMath::Point2D center7(3.f, 0.f);
+		float width7 = 4.f;
+		float height7 = 4.f;
+		LibMath::Rectangle rect7(center7, width7, height7, -rotation);
+
+		CHECK(colisionTwoRectangle(rect6, rect7));
+
+		LibMath::Point2D center8(3.f, 14.f);
+		float width8 = 5.f;
+		float height8 = 1.f;
+		LibMath::Rectangle rect8(center8, width8, height8, rotation);
+
+		CHECK_FALSE(colisionTwoRectangle(rect6, rect8));
+
+
+		// TEST LINE-RECTANGLE COLLSION 
+
+
+		// go through the rectangle
+		LibMath::Line2D line(LibMath::Point2D(-3.f, -3.f), LibMath::Point2D(3.f, 3.f));
+
+		CHECK(colisionLineRectangle(line, rect));
+
+
+		// touches the side of the rectangle
+		LibMath::Line2D line2(LibMath::Point2D(-3.f, 0.f), LibMath::Point2D(3.f, 0.f));
+
+		CHECK(colisionLineRectangle(line2, rect));
+
+
+		// dont touches the rectangle
+		LibMath::Line2D line3(LibMath::Point2D(3.f, 14.f), LibMath::Point2D(42.f, 42.f));
+
+		CHECK_FALSE(colisionLineRectangle(line3, rect));
+
+
+		// TEST POINT-RECTANGLE COLLSION 
+
+
+		// point inside
+		LibMath::Point2D point(0.f, 0.f);
+
+		CHECK(colisionPointRectangle(point, rect));
+
+
+		// point on the edge
+		LibMath::Point2D point2(2.f, 3.f);
+
+		CHECK(colisionPointRectangle(point2, rect));
+
+
+		// point outside
+		LibMath::Point2D point3(42.f, 314.f);
+
+		CHECK_FALSE(colisionPointRectangle(point3, rect));
 	}
 }
 
@@ -187,13 +344,88 @@ TEST_CASE("Circle", "[.all][geometry][circle]")
 
 	SECTION("Functionality")
 	{
-		// Functionality test: check radius and center position
-		LibMath::Point2D center(1.0f, 1.0f);
-		float radius = 10.0f;
+		// TEST POINT-CIRCLE COLLSION
+		LibMath::Point2D center(0.f, 0.f);
+		float radius = 5.f;
+
 		LibMath::Circle circle(center, radius);
 
-		CHECK(circle.getRadius() == 10.0f);
-		CHECK(circle.getCenter().getX() == 1.0f);
-		CHECK(circle.getCenter().getY() == 1.0f);
+		// Point inside the circle
+		LibMath::Point2D point1(3.f, 3.f);
+		CHECK(colisionPointCircle(point1, circle));
+
+		// Point on the edge of the circle
+		LibMath::Point2D point2(5.f, 0.f);
+		CHECK(colisionPointCircle(point2, circle));
+
+		// Point outside the circle
+		LibMath::Point2D point3(31.f, 41.f);
+		CHECK_FALSE(colisionPointCircle(point3, circle));
+
+		// TEST CIRCLE-CIRCLE COLLSION
+
+		// inside the other circle
+		LibMath::Point2D center2(1.f, 1.f);
+		float radius2 = 3.f;
+		LibMath::Circle circle2(center2, radius2);
+
+		CHECK(colisionTwoCircle(circle, circle2));
+
+		// touches the other circle
+		LibMath::Point2D center3(0.f, 7.f);
+		float radius3 = 3.f;
+		LibMath::Circle circle3(center3, radius3);
+		CHECK(colisionTwoCircle(circle, circle3));
+
+
+		// touches the other circle on the edges
+		LibMath::Point2D center4(0.f, 8.f);
+		float radius4 = 3.f;
+		LibMath::Circle circle4(center4, radius4);
+		CHECK(colisionTwoCircle(circle, circle4));
+
+		// no collision
+		LibMath::Point2D center5(42.f, 42.f);
+		float radius5 = 1.f;
+		LibMath::Circle circle5(center5, radius5);
+		CHECK_FALSE(colisionTwoCircle(circle, circle5));
+
+		// TEST LINE-CIRCLE COLLSION
+
+		// line go through the circle
+		LibMath::Point2D start1(-7.f, -1.f);
+		LibMath::Point2D end1(8.f, 1.f);
+		LibMath::Line2D line1(start1, end1);
+		CHECK(colisionLineCircle(line1, circle));
+
+		// line inside the circle
+		LibMath::Point2D start2(-1.f, -1.f);
+		LibMath::Point2D end2(3.f, 2.f);
+		LibMath::Line2D line2(start2, end2);
+		CHECK(colisionLineCircle(line2, circle));
+
+		// line start inside the circle and end outside
+		LibMath::Point2D start3(-1.f, -1.f);
+		LibMath::Point2D end3(8.f, 2.f);
+		LibMath::Line2D line3(start3, end3);
+		CHECK(colisionLineCircle(line3, circle));
+
+		// line start on the edge of the circle and go outside
+		LibMath::Point2D start4(5.f, 0.f);
+		LibMath::Point2D end4(8.f, 412.f);
+		LibMath::Line2D line4(start4, end4);
+		CHECK(colisionLineCircle(line4, circle));
+
+		// line out of the circle => no collision
+		LibMath::Point2D start5(50.f, 0.f);
+		LibMath::Point2D end5(8.f, 412.f);
+		LibMath::Line2D line5(start5, end5);
+		CHECK_FALSE(colisionLineCircle(line5, circle));
+
+		// line touches the circle on one point
+		LibMath::Point2D start6(5.f, -12.f);
+		LibMath::Point2D end6(5.f, 12.f);
+		LibMath::Line2D line6(start6, end6);
+		CHECK(colisionLineCircle(line6, circle));
 	}
 }

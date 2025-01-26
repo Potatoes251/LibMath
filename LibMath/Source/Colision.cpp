@@ -10,7 +10,7 @@ bool LibMath::colisionPointLine(Point2D point, Line2D line)
 	float d1 = point.distance(line.getStart());
 	float d2 = point.distance(line.getEnd());
 
-	return (d1 + d2) - lineLength <= g_epsilon;
+	return std::fabs((d1 + d2) - lineLength) <= g_epsilon;
 }
 
 bool LibMath::colisionTwoLine(Line2D line1, Line2D line2)
@@ -24,6 +24,12 @@ bool LibMath::colisionTwoLine(Line2D line1, Line2D line2)
 	float y3 = line2.getStart().getY();
 	float x4 = line2.getEnd().getX();
 	float y4 = line2.getEnd().getY();
+
+	// check if lines are identical
+	if ((x1 == x3 && y1 == y3 && x2 == x4 && y2 == y4) || (x1 == x4 && y1 == y4 && x2 == x3 && y2 == y3))
+	{
+		return true;
+	}
 
 	float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
 
@@ -59,6 +65,15 @@ bool LibMath::colisionLineCircle(Line2D line, Circle circle)
 	float y2 = line.getEnd().getY();
 
 	float dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / lineLength;
+	
+	if (dot < 0)
+	{
+		dot = 0;
+	}
+	else if (dot > 1)
+	{
+		dot = 1;
+	}
 
 	Point2D closest(x1 + (dot * (x2 - x1)), y1 + (dot * (y2 - y1)));
 
@@ -87,8 +102,8 @@ void LibMath::getNormals(Vector2 axes[8], Point2D corners1[4], Point2D corners2[
 
 	for (int i = 0; i < 4; i++)
 	{
-		float x = corners2[(i + 1) % 4].getX() - corners1[i].getX();
-		float y = corners2[(i + 1) % 4].getY() - corners1[i].getY();
+		float x = corners2[(i + 1) % 4].getX() - corners2[i].getX();
+		float y = corners2[(i + 1) % 4].getY() - corners2[i].getY();
 
 		Vector2 axis(-y, x);
 		axis.normalize();
@@ -124,12 +139,12 @@ void LibMath::getMinMax(float& min, float& max, Point2D corners[4], Vector2 axis
 bool LibMath::colisionTwoRectangle(Rectangle rec1, Rectangle rec2)
 {
 	// AABB
-	if (rec1.getRotation() == 0 && rec2.getRotation() == 0)
+	if (rec1.getRotation().raw() == 0 && rec2.getRotation().raw() == 0)
 	{
-		if (rec1.getCenter().getX() > rec2.getCenter().getX() + rec2.getWidth() / 2 ||
-			rec1.getCenter().getY() > rec2.getCenter().getY() + rec2.getHeight() / 2 ||
-			rec2.getCenter().getX() > rec1.getCenter().getX() + rec1.getWidth() / 2 ||
-			rec2.getCenter().getY() > rec1.getCenter().getY() + rec1.getHeight() / 2)
+		if (rec1.getCenter().getX() - rec1.extentX() > rec2.getCenter().getX() + rec2.extentX() ||
+			rec1.getCenter().getY() - rec1.extentY() > rec2.getCenter().getY() + rec2.extentY() ||
+			rec2.getCenter().getX() - rec2.extentX() > rec1.getCenter().getX() + rec1.extentX() ||
+			rec2.getCenter().getY() - rec2.extentY() > rec1.getCenter().getY() + rec1.extentY())
 		{
 			return false;
 		}
@@ -167,7 +182,7 @@ bool LibMath::colisionTwoRectangle(Rectangle rec1, Rectangle rec2)
 			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 bool LibMath::colisionPointRectangle(Point2D point, Rectangle rect)

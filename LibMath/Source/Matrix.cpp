@@ -84,6 +84,21 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(Matrix2x2 const other) const
 	return product;
 }
 
+bool LibMath::Matrix2x2::operator==(Matrix2x2 const other) const
+{
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2;j++)
+		{
+			if (m_values[i][j] != other.m_values[i][j])
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 void LibMath::Matrix2x2::transpose()
 {
 	float temp = m_values[0][1];
@@ -219,6 +234,25 @@ LibMath::Matrix3x3::Matrix3x3(float val)
 	}
 }
 
+LibMath::Matrix3x3::Matrix3x3(
+	float val1, float val2, float val3,
+	float val4, float val5, float val6,
+	float val7, float val8, float val9)
+{
+	m_values[0][0] = val1;
+	m_values[0][1] = val2;
+	m_values[0][2] = val3;
+
+	m_values[1][0] = val4;
+	m_values[1][1] = val5;
+	m_values[1][2] = val6;
+
+	m_values[2][0] = val7;
+	m_values[2][1] = val8;
+	m_values[2][2] = val9;
+}
+
+
 LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3 const other)
 {
 	for (int i = 0; i < 3; i++)
@@ -274,6 +308,21 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 		}
 	}
 	return product;
+}
+
+bool LibMath::Matrix3x3::operator==(Matrix3x3 const other) const
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (m_values[i][j] != other.m_values[i][j])
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 LibMath::Matrix3x3& LibMath::Matrix3x3::identity()

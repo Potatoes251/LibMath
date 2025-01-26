@@ -460,7 +460,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 
 #define CHECK_VECTOR2(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y));
 
-TEST_CASE("Vector2", "[.all][vector][Vector2]")
+TEST_CASE("Vector2", "[.all][vector][vector2]")
 {
 	SECTION("Instantiation")
 	{

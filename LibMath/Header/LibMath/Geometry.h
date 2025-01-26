@@ -11,7 +11,7 @@ namespace LibMath
 		Point2D();										// default constructor
 		Point2D(float, float);							// parametrized constructor
 		Point2D(Point2D const&);						// copy constructor
-		Point2D(Point2D const&&);						// move constructor
+		Point2D(Point2D const&&) noexcept;				// move constructor
 
 		Point2D& operator=(Point2D const&);				// copy asignement
 		Point2D& operator=(Point2D const&&) noexcept;	// move asignement
@@ -56,11 +56,11 @@ namespace LibMath
 
 		Rectangle();									// default constructor
 		Rectangle(Point2D, float, float);				// parameterized construtor without rotation
-		Rectangle(Point2D, float, float, float);		// parameterized construtor with rotation
+		Rectangle(Point2D, float, float, Radian);		// parameterized construtor with rotation
 
 		float			extentX() const;				// return the half-width
 		float			extentY() const;				// return the half-height
-		float			getRotation() const;			// return the rotation
+		Radian			getRotation() const;			// return the rotation
 		float			getWidth() const;				// getter for the width
 		float			getHeight() const;				// getter for the height
 		Point2D			getCenter() const;				// return the center
@@ -71,7 +71,7 @@ namespace LibMath
 		Point2D	m_center;
 		float m_width;
 		float m_height;
-		float m_rotation;
+		Radian m_rotation;
 	};
 
 

@@ -22,6 +22,8 @@ namespace LibMath
 		Vector2			operator*(Vector2 const) const;
 		Matrix2x2		operator*(Matrix2x2 const) const;
 
+		bool			operator==(Matrix2x2 const) const;
+
 		void			transpose();				// transpose the matrix
 		float			determinant();				// return the determinant of the matrix
 		void			minors();					// change the matrix into a minor matrix
@@ -37,34 +39,6 @@ namespace LibMath
 
 	private:
 		float m_values[2][2];
-	};
-
-
-	class Matrix3x3
-	{
-	public:
-		Matrix3x3();														// default constructor
-		Matrix3x3(float);													// construct a matrix with diagonal
-
-		Matrix3x3&		operator=(Matrix3x3 const);							// copy asignement
-
-		float*			operator[](int);
-
-		Matrix3x3		operator+(Matrix3x3 const) const;
-		Matrix3x3		operator*(float const);
-		//Vector2			operator*(Vector2 const);
-		Matrix3x3		operator*(Matrix3x3 const) const;
-
-		Matrix3x3&		identity();											// create an identity matrix
-
-		Matrix3x3&		createScale(Vector2);								// return a scaling matrix
-
-		static Matrix3x3		createTranslation(Vector2);					// return a translation matrix
-		static Matrix3x3		createRotation(Point2D, Radian);			// return a rotation matrix
-		static Matrix3x3		createTransform(Vector2, Radian, Vector2);	// return a transformation matrix
-
-	private:
-		float m_values[3][3];
 	};
 }
 
