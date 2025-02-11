@@ -1,6 +1,7 @@
 #include "LibMath/Matrix.h"
 #include "LibMath/Trigonometry.h"
 
+
 LibMath::Matrix2x2::Matrix2x2()
 {
 	m_values[0][0] = 0;
@@ -324,6 +325,103 @@ bool LibMath::Matrix3x3::operator==(Matrix3x3 const other) const
 	return true;
 }
 
+LibMath::Matrix2x2 LibMath::Matrix3x3::getMinor(int row, int column)
+{
+	Matrix2x2 minor;
+	int n = 0;
+	int m = 0;
+	for (int i = 0; i < 3; ++i)
+	{
+		if (i == row) continue;
+
+		for (int j = 0; j < 3; ++j)
+		{
+			if (j == column) continue;
+
+			minor[m][n] = m_values[i][j];
+			++n;
+		}
+		++m;
+	}
+	return minor;
+}
+
+void LibMath::Matrix3x3::transpose()
+{
+	float temp;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (i != j)
+			{
+				temp = m_values[i][j];
+				m_values[i][j] = m_values[j][i];
+				m_values[j][i] = temp;
+			}
+		}
+	}
+}
+
+float LibMath::Matrix3x3::determinant()
+{
+	return m_values[0][0] * (getMinor(0, 0).determinant())
+		- m_values[0][1] * (getMinor(0, 1).determinant())
+		+ m_values[0][2] * (getMinor(0, 2).determinant());
+}
+
+void LibMath::Matrix3x3::minors()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			m_values[i][j] = getMinor(i, j).determinant();
+		}
+	}
+}
+
+void LibMath::Matrix3x3::cofactors()
+{
+	minors();
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if ((i + j) % 2 == 1)
+			{
+				m_values[i][j] *= -1;
+			}
+		}
+	}
+}
+
+void LibMath::Matrix3x3::adjugate()
+{
+	cofactors();
+	transpose();
+}
+
+void LibMath::Matrix3x3::inverse()
+{
+	float det = determinant();
+
+	if (det == 0.0f)  // Prevent division by zero
+	{
+		throw std::runtime_error("Matrix is singular and cannot be inverted.");
+	}
+
+	adjugate();
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			m_values[i][j] /= det;
+		}
+	}
+}
+
 LibMath::Matrix3x3& LibMath::Matrix3x3::identity()
 {
 	for (int i = 0; i < 3; i++)
@@ -396,4 +494,52 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translate, Radian
 	scaler.createScale(scale);
 
 	return translation * rotation * scaler;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationX(Radian angle)
+{
+	Matrix3x3 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[1][1] = cosAngle;
+	rotation[1][2] = -sinAngle;
+	rotation[2][1] = sinAngle;
+	rotation[2][2] = cosAngle;
+
+	return rotation;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationY(Radian angle)
+{
+	Matrix3x3 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[0][0] = cosAngle;
+	rotation[2][0] = -sinAngle;
+	rotation[0][2] = sinAngle;
+	rotation[2][2] = cosAngle;
+
+	return rotation;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationZ(Radian angle)
+{
+	Matrix3x3 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[0][0] = cosAngle;
+	rotation[0][1] = -sinAngle;
+	rotation[1][0] = sinAngle;
+	rotation[1][1] = cosAngle;
+
+	return rotation;
 }

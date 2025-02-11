@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 	arguments.push_back("Radian,");
 	//arguments.push_back("Trigonometry,");
 	arguments.push_back("Vector2,");
-	//arguments.push_back("Vector3,");
+	arguments.push_back("Vector3,");
 	arguments.push_back("Matrix2,");
 	arguments.push_back("Matrix3,");
 	arguments.push_back("Point2D,");
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 	arguments.push_back("-c Constant");
 	//arguments.push_back("-c Conversion");
 	arguments.push_back("-c Debug");
-	arguments.push_back("-c Extra");
+	//arguments.push_back("-c Extra");
 	arguments.push_back("-c Functionality");
 	arguments.push_back("-c Instantiation");
 	arguments.push_back("-c Transformation");

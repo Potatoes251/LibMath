@@ -425,7 +425,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 		{
 			std::stringstream buffer;
 			buffer << input;
-			CHECK(buffer.str() == "{2.5,-0.5,2}");
+			CHECK(buffer.str() == "{2.500000,-0.500000,2.000000}");
 
 			buffer << " extra";
 
@@ -439,9 +439,9 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 		}
 
 		{
-			CHECK(input.string() == "{2.5,-0.5,2}");
+			CHECK(input.string() == "{2.500000,-0.500000,2.000000}");
 
-			CHECK(input.stringLong() == "Vector3{ x:2.5, y:-0.5, z:2 }");
+			CHECK(input.stringLong() == "Vector3{ x:2.500000, y:-0.500000, z:2.000000 }");
 		}
 	}
 
