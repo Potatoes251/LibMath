@@ -543,3 +543,73 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationZ(Radian angle)
 
 	return rotation;
 }
+
+
+LibMath::Matrix4::Matrix4()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			m_values[i][j] = 0;
+		}
+	}
+}
+
+LibMath::Matrix4::Matrix4(float val)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (i == j)
+			{
+				m_values[i][j] = val;
+			}
+			else
+			{
+				m_values[i][j] = 0;
+			}
+		}
+	}
+}
+
+LibMath::Matrix4::Matrix4(float val1, float val2, float val3, float val4,
+						float val5, float val6, float val7, float val8,
+						float val9, float val10, float val11, float val12,
+						float val13, float val14, float val15, float val16)
+{
+	m_values[0][0] = val1;  
+	m_values[0][1] = val2;  
+	m_values[0][2] = val3;  
+	m_values[0][3] = val4;
+	m_values[1][0] = val5;  
+	m_values[1][1] = val6;  
+	m_values[1][2] = val7;  
+	m_values[1][3] = val8;
+	m_values[2][0] = val9;  
+	m_values[2][1] = val10; 
+	m_values[2][2] = val11; 
+	m_values[2][3] = val12;
+	m_values[3][0] = val13; 
+	m_values[3][1] = val14; 
+	m_values[3][2] = val15; 
+	m_values[3][3] = val16;
+}
+
+LibMath::Matrix4& LibMath::Matrix4::operator=(Matrix4 const other)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			m_values[i][j] = other.m_values[i][j];
+		}
+	}
+	return *this;
+}
+
+float* LibMath::Matrix4::operator[](int index)
+{
+	return m_values[index];
+}
