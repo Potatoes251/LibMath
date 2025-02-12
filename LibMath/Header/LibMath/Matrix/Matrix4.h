@@ -13,9 +13,28 @@ namespace LibMath
 			float, float, float, float,
 			float, float, float, float);
 
-		Matrix4& operator=(Matrix4 const);								// copy asignement
+		Matrix4&		operator=(Matrix4 const);						// copy asignement
 
-		float* operator[](int);
+		float*			operator[](int);
+
+		Matrix4			operator+(Matrix4 const) const;
+		Matrix4			operator*(float const) const;
+		Matrix4			operator*(Matrix4 const) const;
+
+		bool			operator==(Matrix4 const) const;
+
+		Matrix3x3		getMinor(int, int);			// get the 3X3 minor matrix by excluding the given row and column
+
+		void			transpose();				// transpose the matrix
+		float			determinant();				// return the determinant of the matrix
+		void			minors();					// change the matrix into a minor matrix
+		void			cofactors();				// change the matrix into a cofactor matrix
+		void			adjugate();					// change the matrix into the adjugate matrix
+		void			inverse();					// inverse the matrix
+
+		Matrix4&		identity();										// create an identity matrix
+
+		Matrix4&		createScale(Vector3);							// return a scaling matrix
 
 	private:
 		float m_values[4][4];

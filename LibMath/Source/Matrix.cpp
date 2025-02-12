@@ -282,7 +282,7 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator+(Matrix3x3 const other) const
 	return sum;
 }
 
-LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val)
+LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val) const
 {
 	Matrix3x3 res{};
 	for (int i = 0; i < 3; i++)
@@ -612,4 +612,190 @@ LibMath::Matrix4& LibMath::Matrix4::operator=(Matrix4 const other)
 float* LibMath::Matrix4::operator[](int index)
 {
 	return m_values[index];
+}
+
+LibMath::Matrix4 LibMath::Matrix4::operator+(Matrix4 const other) const
+{
+	Matrix4 sum;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			sum[i][j] = m_values[i][j] + other.m_values[i][j];
+		}
+	}
+
+	return sum;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::operator*(float const val) const
+{
+	Matrix4 product;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			product[i][j] = m_values[i][j] * val;
+		}
+	}
+
+	return product;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::operator*(Matrix4 const other) const
+{
+	Matrix4 product;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			product[i][j] = m_values[i][0] * other.m_values[0][j] +
+							m_values[i][1] * other.m_values[1][j] +
+							m_values[i][2] * other.m_values[2][j] +
+							m_values[i][3] * other.m_values[3][j];
+		}
+	}
+	return product;
+}
+
+bool LibMath::Matrix4::operator==(Matrix4 const other) const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			if (std::fabs(m_values[i][j] - other.m_values[i][j]) >= g_epsilon)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+LibMath::Matrix3x3 LibMath::Matrix4::getMinor(int row, int column)
+{
+	Matrix3x3 minor;
+	int n = 0;
+	int m = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		if (i == row) continue;
+
+		for (int j = 0; j < 4; ++j)
+		{
+			if (j == column) continue;
+
+			minor[m][n] = m_values[i][j];
+			++n;
+		}
+		++m;
+	}
+	return minor;
+}
+
+void LibMath::Matrix4::transpose()
+{
+	float temp;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (i != j)
+			{
+				temp = m_values[i][j];
+				m_values[i][j] = m_values[j][i];
+				m_values[j][i] = temp;
+			}
+		}
+	}
+}
+
+float LibMath::Matrix4::determinant()
+{
+	return m_values[0][0] * (getMinor(0, 0).determinant())
+		- m_values[0][1] * (getMinor(0, 1).determinant())
+		+ m_values[0][2] * (getMinor(0, 2).determinant())
+		- m_values[0][3] * (getMinor(0, 3).determinant());
+}
+
+void LibMath::Matrix4::minors()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			m_values[i][j] = getMinor(i, j).determinant();
+		}
+	}
+}
+
+void LibMath::Matrix4::cofactors()
+{
+	minors();
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if ((i + j) % 2 == 1)
+			{
+				m_values[i][j] *= -1;
+			}
+		}
+	}
+}
+
+void LibMath::Matrix4::adjugate()
+{
+	cofactors();
+	transpose();
+}
+
+void LibMath::Matrix4::inverse()
+{
+	float det = determinant();
+
+	if (det == 0.0f)  // Prevent division by zero
+	{
+		throw std::runtime_error("Matrix is singular and cannot be inverted.");
+	}
+
+	adjugate();
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			m_values[i][j] /= det;
+		}
+	}
+}
+
+LibMath::Matrix4& LibMath::Matrix4::identity()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (i == j)
+			{
+				m_values[i][j] = 1;
+			}
+			else
+			{
+				m_values[i][j] = 0;
+			}
+		}
+	}
+	return *this;
+}
+
+LibMath::Matrix4& LibMath::Matrix4::createScale(Vector3 v)
+{
+	m_values[0][0] = v[0];
+	m_values[1][1] = v[1];
+	m_values[2][2] = v[2];
+	m_values[3][3] = 1;
+
+	return *this;
 }
