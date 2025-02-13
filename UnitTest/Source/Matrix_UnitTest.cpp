@@ -334,6 +334,48 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			CHECK(scale == expectedMatrix);
 		}
 
+		{// rotationX
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationX(angle);
+
+			LibMath::Matrix3x3 expected(
+				1, 0, 0,
+				0, 0, -1,
+				0, 1, 0
+			);
+
+			CHECK(rotation == expected);
+		}
+
+		{// rotationY
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationY(angle);
+
+			LibMath::Matrix3x3 expected(
+				0, 0, 1,
+				0, 1, 0,
+				-1, 0, 0
+			);
+
+			CHECK(rotation == expected);
+		}
+
+		{// rotationZ
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationZ(angle);
+
+			LibMath::Matrix3x3 expected(
+				0, -1, 0,
+				1, 0, 0,
+				0, 0, 1
+			);
+
+			CHECK(rotation == expected);
+		}
+
 		{// transform
 			LibMath::Vector2 translation(3.14f, 3.14f);
 			LibMath::Radian angle(g_Pi / 4);
