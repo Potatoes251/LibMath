@@ -1,5 +1,4 @@
-#include <LibMath/Matrix/Matrix2.h>
-#include <LibMath/Matrix/Matrix3.h>
+#include <LibMath/Matrix.h>
 #include <LibMath/Trigonometry.h>
 
 #include <catch2/catch_test_macros.hpp>
@@ -494,6 +493,94 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 				-20.f / 214.f, -64.f / 214.f, 35.f / 214.f);
 
 			CHECK(inverseMatrix == matrix);
+		}
+	}
+}
+
+TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
+{
+	SECTION("Instantiation")
+	{
+		{
+			[[maybe_unused]] LibMath::Matrix4 temp;
+		}
+
+		LibMath::Matrix4 empty;
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				CHECK(empty[i][j] == 0);
+			}
+		}
+
+		LibMath::Matrix4 diagonal(5);
+		LibMath::Matrix4 components(
+			5, 0, 0, 0,
+			0, 5, 0, 0,
+			0, 0, 5, 0,
+			0, 0, 0, 5);
+
+		CHECK(diagonal == components);
+
+		LibMath::Matrix4 copy = components;
+
+		CHECK(copy == components);
+
+		LibMath::Matrix4 identity;
+		identity.identity();
+		LibMath::Matrix4 diagonals(1);
+
+		CHECK(identity == diagonals);
+	}
+
+	SECTION("Arithmetic")
+	{
+		LibMath::Matrix4 matrix1(
+			3, 1, 4, 1, 
+			5, 9, 2, 6, 
+			5, 3, 5, 8,
+			9, 7, 9, 3);
+
+		LibMath::Matrix4 matrix2(
+			2, 7, 1, 8,
+			2, 8, 1, 8,
+			2, 8, 4, 5,
+			9, 0, 4, 5);
+
+
+		{// sum
+			LibMath::Matrix4 sum = matrix1 + matrix2;
+			LibMath::Matrix4 expectedSum(
+				5, 8, 5, 9,
+				7, 17, 3, 14,
+				7, 11, 9, 13,
+				18, 7, 13, 8);
+
+			CHECK(sum == expectedSum);
+		}
+
+		{// matrix product
+			LibMath::Matrix4 product = matrix1 * matrix2;
+			LibMath::Matrix4 expectedProduct(
+				25, 61, 24, 57,
+				86, 123, 46,152,
+				98, 99, 60, 129,
+				77, 191, 64, 188);
+
+			CHECK(product == expectedProduct);
+		}
+
+		{// matrix float product
+			LibMath::Matrix4 floatProduct = matrix1 * 2;
+			LibMath::Matrix4 expectedFloatProduct(
+				6, 2, 8, 2,
+				10, 18, 4, 12,
+				10, 6, 10, 16,
+				18, 14, 18, 6);
+
+			CHECK(floatProduct == expectedFloatProduct);
 		}
 	}
 }
