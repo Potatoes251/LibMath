@@ -32,9 +32,17 @@ namespace LibMath
 		void			adjugate();					// change the matrix into the adjugate matrix
 		void			inverse();					// inverse the matrix
 
-		Matrix4&		identity();										// create an identity matrix
+		Matrix4&		identity();												// create an identity matrix
 
-		Matrix4&		createScale(Vector3);							// return a scaling matrix
+		Matrix4&		createScale(Vector3);									// return a scaling matrix
+
+		static Matrix4		createTranslation(Vector3);							// return a translation matrix
+		static Matrix4		createRotation(Vector3, Radian);					// return a rotation matrix
+		static Matrix4		createTransform(Vector3, Vector3, Radian, Vector3);	// return a transformation matrix
+
+		static Matrix4		createRotationX(Radian);
+		static Matrix4		createRotationY(Radian);
+		static Matrix4		createRotationZ(Radian);
 
 	private:
 		float m_values[4][4];

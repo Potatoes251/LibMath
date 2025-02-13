@@ -484,16 +484,24 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotation(Point2D point, Radian angl
 	return toOrigin * rotation * toPivot;
 }
 
-LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translate, Radian angle, Vector2 scale)
+LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translation, Radian rotation, Vector2 scale) 
 {
-	Matrix3x3 translation = createTranslation(translate);
+	Matrix3x3 transformMatrix;
 
-	Matrix3x3 rotation = createRotation(Point2D(0, 0), angle);
+	transformMatrix.identity();
 
-	Matrix3x3 scaler;
-	scaler.createScale(scale);
+	float cosTheta = cos(rotation);
+	float sinTheta = sin(rotation);
 
-	return translation * rotation * scaler;
+	transformMatrix[0][0] = cosTheta * scale[0];
+	transformMatrix[0][1] = -sinTheta * scale[1];
+	transformMatrix[0][2] = translation[0];
+
+	transformMatrix[1][0] = sinTheta * scale[0];
+	transformMatrix[1][1] = cosTheta * scale[1];
+	transformMatrix[1][2] = translation[1];
+
+	return transformMatrix;
 }
 
 LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationX(Radian angle)
@@ -798,4 +806,95 @@ LibMath::Matrix4& LibMath::Matrix4::createScale(Vector3 v)
 	m_values[3][3] = 1;
 
 	return *this;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createTranslation(Vector3 vec)
+{
+	Matrix4 TransMatrix{};
+	TransMatrix.identity();
+	TransMatrix[0][3] = vec[0];
+	TransMatrix[1][3] = vec[1];
+	TransMatrix[2][3] = vec[2];
+
+	return TransMatrix;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createRotation(Vector3 axis, Radian angle)
+{
+	axis.normalize();
+
+	float cosTheta = cos(angle);
+	float sinTheta = sin(angle);
+	float k = 1.0f - cosTheta;
+
+	float x = axis.m_x;
+	float y = axis.m_y;
+	float z = axis.m_z;
+
+	return Matrix4(
+		cosTheta + x * x * k, x * y * k - z * sinTheta, x * z * k + y * sinTheta, 0.0f,
+		y * x * k + z * sinTheta, cosTheta + y * y * k, y * z * k - x * sinTheta, 0.0f,
+		z * x * k - y * sinTheta, z * y * k + x * sinTheta, cosTheta + z * z * k, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createTransform(Vector3 position, Vector3 axis, Radian angle, Vector3 scale)
+{
+	Matrix4 rotationMatrix = createRotation(axis, angle);
+
+	return Matrix4(
+		scale[0] * rotationMatrix[0][0], scale[0] * rotationMatrix[0][1], scale[0] * rotationMatrix[0][2], position[0],
+		scale[1] * rotationMatrix[1][0], scale[1] * rotationMatrix[1][1], scale[1] * rotationMatrix[1][2], position[1],
+		scale[2] * rotationMatrix[2][0], scale[2] * rotationMatrix[2][1], scale[2] * rotationMatrix[2][2], position[2],
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createRotationX(Radian angle)
+{
+	Matrix4 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[1][1] = cosAngle;
+	rotation[1][2] = -sinAngle;
+	rotation[2][1] = sinAngle;
+	rotation[2][2] = cosAngle;
+
+	return rotation;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createRotationY(Radian angle)
+{
+	Matrix4 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[0][0] = cosAngle;
+	rotation[2][0] = -sinAngle;
+	rotation[0][2] = sinAngle;
+	rotation[2][2] = cosAngle;
+
+	return rotation;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::createRotationZ(Radian angle)
+{
+	Matrix4 rotation;
+	rotation.identity();
+
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+
+	rotation[0][0] = cosAngle;
+	rotation[0][1] = -sinAngle;
+	rotation[1][0] = sinAngle;
+	rotation[1][1] = cosAngle;
+
+	return rotation;
 }
