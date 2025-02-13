@@ -323,7 +323,7 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 scale;
 			scale.createScale(scaleVec);
 
-			// Expected rotation matrix for 90 degrees
+			// Expected scale matrix
 			LibMath::Matrix3x3 expectedMatrix(
 				4, 0, 0,
 				0, 2, 0,
@@ -581,6 +581,116 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 				18, 14, 18, 6);
 
 			CHECK(floatProduct == expectedFloatProduct);
+		}
+	}
+
+	SECTION("Transformation")
+	{
+		{// translation
+			LibMath::Vector3 translationVec(4, 2, 3);
+			LibMath::Matrix4 translationMatrix = LibMath::Matrix4::createTranslation(translationVec);
+
+			// Expected translation matrix
+			LibMath::Matrix4 expectedMatrix(
+				1, 0, 0, 4,
+				0, 1, 0, 2,
+				0, 0, 1, 3,
+				0, 0, 0, 1);
+
+			CHECK(translationMatrix == expectedMatrix);
+		}
+
+		{// scale
+
+			LibMath::Vector3 scaleVec(4, 2, 3);
+			LibMath::Matrix4 scale;
+			scale.createScale(scaleVec);
+
+			// Expected scale matrix
+			LibMath::Matrix4 expectedMatrix(
+				4, 0, 0, 0,
+				0, 2, 0, 0,
+				0, 0, 3, 0,
+				0, 0, 0, 1);
+
+			CHECK(scale == expectedMatrix);
+		}
+
+		{// rotation
+
+			LibMath::Vector3 axis(0, 0, 1);
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotation(axis, angle);
+
+			LibMath::Matrix4 expected(
+				0, -1, 0, 0,
+				1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1
+			);
+
+			CHECK(rotation == expected);
+		}
+
+		{// rotationX
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationX(angle);
+
+			LibMath::Matrix4 expected(
+				1, 0, 0, 0,
+				0, 0, -1, 0,
+				0, 1, 0, 0,
+				0, 0, 0, 1);
+
+			CHECK(rotation == expected);
+		}
+
+		{// rotationY
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationY(angle);
+
+			LibMath::Matrix4 expected(
+				0, 0, 1, 0,
+				0, 1, 0, 0,
+				-1, 0, 0, 0,
+				0, 0, 0, 1);
+
+			CHECK(rotation == expected);
+		}
+
+		{// rotationZ
+
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationZ(angle);
+
+			LibMath::Matrix4 expected(
+				0, -1, 0, 0,
+				1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1);
+
+			CHECK(rotation == expected);
+		}
+
+		{// transform (translation, rotation, scale)
+
+			LibMath::Vector3 position(1, 2, 3);
+			LibMath::Vector3 axis(0, 0, 1);
+			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Vector3 scale(2, 2, 2);
+
+			LibMath::Matrix4 transform = LibMath::Matrix4::createTransform(position, axis, angle, scale);
+
+			LibMath::Matrix4 expected(
+				0, -2, 0, 1,
+				2, 0, 0, 2,
+				0, 0, 2, 3,
+				0, 0, 0, 1
+			);
+
+			CHECK(transform == expected);
 		}
 	}
 }
