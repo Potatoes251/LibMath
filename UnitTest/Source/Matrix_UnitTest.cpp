@@ -286,7 +286,7 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 		}
 	}
 
-
+		
 	SECTION("Transformation")
 	{
 
@@ -353,6 +353,105 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			expectedMatrix[2][2] = 1;
 
 			CHECK(transformMatrix == expectedMatrix);
+		}
+	}
+
+	SECTION("Functionality")
+	{
+		{// getMinor
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			LibMath::Matrix2x2 minor(
+				0, -1,
+				4, 6);
+
+			CHECK(minor == matrix.getMinor(0,1));
+		}
+
+		{// transpose
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			matrix.transpose();
+			LibMath::Matrix3x3 transposedMatrix(
+				7, 0, 4,
+				-2, 5, 8,
+				3, -1, 6);
+
+			CHECK(transposedMatrix == matrix);
+		}
+
+		{// determinant
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			float determinant = matrix.determinant();
+
+			CHECK(determinant == 214.f);
+		}
+
+		{// minor
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			matrix.minors();
+
+			LibMath::Matrix3x3 minorMatrix(
+				38, 4, -20,
+				-36, 30, 64,
+				-13, -7, 35);
+			
+			CHECK(minorMatrix == matrix);
+		}
+
+		{// cofactor
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			matrix.cofactors();
+
+			LibMath::Matrix3x3 cofactorMatrix(
+				38, -4, -20,
+				36, 30, -64,
+				-13, 7, 35);
+
+			CHECK(cofactorMatrix == matrix);
+		}
+
+		{// adjugate
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			matrix.adjugate();
+
+			LibMath::Matrix3x3 adjugateMatrix(
+				38, 36, -13,
+				-4, 30, 7,
+				-20, -64, 35);
+
+			CHECK(adjugateMatrix == matrix);
+		}
+
+		{// inverse
+			LibMath::Matrix3x3 matrix(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+			matrix.inverse();
+
+			LibMath::Matrix3x3 inverseMatrix(
+				38.f / 214.f, 36.f / 214.f, -13.f / 214.f,
+				-4.f / 214.f, 30.f / 214.f, 7.f / 214.f,
+				-20.f / 214.f, -64.f / 214.f, 35.f / 214.f);
+
+			CHECK(inverseMatrix == matrix);
 		}
 	}
 }

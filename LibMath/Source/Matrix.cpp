@@ -341,6 +341,7 @@ LibMath::Matrix2x2 LibMath::Matrix3x3::getMinor(int row, int column)
 			minor[m][n] = m_values[i][j];
 			++n;
 		}
+		n = 0;
 		++m;
 	}
 	return minor;
@@ -351,32 +352,31 @@ void LibMath::Matrix3x3::transpose()
 	float temp;
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = i + 1; j < 3; j++)
 		{
-			if (i != j)
-			{
-				temp = m_values[i][j];
-				m_values[i][j] = m_values[j][i];
-				m_values[j][i] = temp;
-			}
+			temp = m_values[i][j];
+			m_values[i][j] = m_values[j][i];
+			m_values[j][i] = temp;
 		}
 	}
 }
 
 float LibMath::Matrix3x3::determinant()
 {
-	return m_values[0][0] * (getMinor(0, 0).determinant())
+	return (m_values[0][0] * (getMinor(0, 0).determinant())
 		- m_values[0][1] * (getMinor(0, 1).determinant())
-		+ m_values[0][2] * (getMinor(0, 2).determinant());
+		+ m_values[0][2] * (getMinor(0, 2).determinant()));
 }
 
 void LibMath::Matrix3x3::minors()
 {
+	Matrix3x3 copy = *this;
+
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			m_values[i][j] = getMinor(i, j).determinant();
+			m_values[i][j] = copy.getMinor(i, j).determinant();
 		}
 	}
 }
