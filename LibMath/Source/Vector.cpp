@@ -446,6 +446,34 @@ LibMath::Vector3 LibMath::operator-(Vector3 vec)
 	return Vector3(-vec.m_x, -vec.m_y, -vec.m_z);
 }
 
+LibMath::Vector3 LibMath::operator*(Vector3 const& v, float val)
+{
+	return Vector3(v.m_x * val, v.m_y * val, v.m_z * val);
+}
+
+LibMath::Vector3 LibMath::operator/(Vector3 const& v, float val)
+{
+	return Vector3(v.m_x / val, v.m_y / val, v.m_z / val);
+}
+
+LibMath::Vector3& LibMath::operator*=(Vector3& v, float val)
+{
+	v.m_x *= val;
+	v.m_y *= val;
+	v.m_z *= val;
+
+	return v;
+}
+
+LibMath::Vector3& LibMath::operator/=(Vector3& v, float val)
+{
+	v.m_x /= val;
+	v.m_y /= val;
+	v.m_z /= val;
+
+	return v;
+}
+
 LibMath::Vector3 LibMath::operator+(Vector3 v1, Vector3 const& v2)
 {
 	return Vector3(v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z);
@@ -524,6 +552,48 @@ LibMath::Vector4& LibMath::Vector4::operator=(Vector4 const& other)
 	return *this;
 }
 
+LibMath::Vector4 LibMath::Vector4::operator+(Vector4 const& other) const
+{
+	return Vector4(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z, m_w + other.m_w);
+}
+
+LibMath::Vector4 LibMath::Vector4::operator*(float val) const
+{
+	return Vector4(m_x * val, m_y * val, m_z * val, m_w * val);
+}
+
+LibMath::Vector4 LibMath::Vector4::operator/(float val) const
+{
+	return Vector4(m_x / val, m_y / val, m_z / val, m_w / val);
+}
+
+LibMath::Vector4& LibMath::Vector4::operator+=(Vector4 const& other)
+{
+	m_x *= other.m_x;
+	m_y *= other.m_y;
+	m_z *= other.m_z;
+
+	return *this;
+}
+
+LibMath::Vector4& LibMath::Vector4::operator*=(float val)
+{
+	m_x *= val;
+	m_y *= val;
+	m_z *= val;
+
+	return *this;
+}
+
+LibMath::Vector4& LibMath::Vector4::operator/=(float val)
+{
+	m_x /= val;
+	m_y /= val;
+	m_z /= val;
+
+	return *this;
+}
+
 float& LibMath::Vector4::operator[](int index)
 {
 	if (index == 0)
@@ -585,6 +655,14 @@ float LibMath::Vector4::magnitude() const
 float LibMath::Vector4::magnitudeSquared() const
 {
 	return (m_x * m_x) + (m_y * m_y) + (m_z * m_z) + (m_w * m_w);
+}
+
+void LibMath::Vector4::homogenize()
+{
+	m_x /= m_w;
+	m_y /= m_w;
+	m_z /= m_w;
+	m_w = 1;
 }
 
 bool LibMath::Vector4::operator==(Vector4 const& other)

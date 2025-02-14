@@ -15,6 +15,14 @@ namespace LibMath
 
 		Vector4&		operator=(Vector4 const&);
 
+		Vector4			operator+(Vector4 const&) const;
+		Vector4			operator*(float) const;
+		Vector4			operator/(float) const;
+
+		Vector4&		operator+=(Vector4 const&);
+		Vector4&		operator*=(float);
+		Vector4&		operator/=(float);
+
 		float&			operator[](int);								// return this vector component value
 		float			operator[](int) const;							// return this vector component value
 
@@ -22,6 +30,8 @@ namespace LibMath
 
 		float			magnitude() const;								// return vector magnitude
 		float			magnitudeSquared() const;						// return square value of the vector magnitude
+
+		void			homogenize();
 
 		bool			operator==(Vector4 const&);
 		bool			operator!=(Vector4 const&);

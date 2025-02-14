@@ -78,6 +78,11 @@ namespace LibMath
 
 	Vector3			operator-(Vector3);									// - Vector3{ .5, 1.5, -2.5 }					// { -.5, -1.5, 2.5 }	// return a copy of a vector with all its component inverted
 
+	Vector3			operator*(Vector3 const&, float);
+	Vector3			operator/(Vector3 const&, float);
+	Vector3&		operator*=(Vector3&, float);
+	Vector3&		operator/=(Vector3&, float);
+
 	Vector3			operator+(Vector3, Vector3 const&);					// Vector3{ .5, 1.5, -2.5 } + Vector3::one()	// { 1.5, 2.5, -1.5 }	// add 2 vectors component wise
 	Vector3			operator-(Vector3, Vector3 const&);					// Vector3{ .5, 1.5, -2.5 } - Vector3{ 1 }		// { -.5, .5, -3.5 }	// subtract 2 vectors component wise
 	Vector3			operator*(Vector3, Vector3 const&);					// Vector3{ .5, 1.5, -2.5 } * Vector3::zero()	// { 0, 0, 0 }			// multiply 2 vectors component wise
