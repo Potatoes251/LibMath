@@ -1,5 +1,4 @@
-#include <LibMath/Vector/Vector2.h>
-#include <LibMath/Vector/Vector3.h>
+#include <LibMath/Vector.h>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
@@ -743,5 +742,105 @@ TEST_CASE("Vector2", "[.all][vector][vector2]")
 		CHECK_THROWS(vector[-1]);
 		CHECK_THROWS(vector[2]);
 #endif // DEBUG
+	}
+}
+
+#define CHECK_VECTOR4(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y)); CHECK(vector.m_z == Catch::Approx(vectorGlm.z)); CHECK(vector.m_w == Catch::Approx(vectorGlm.w));
+
+TEST_CASE("Vector4", "[.all][vector][Vector4]")
+{
+	SECTION("Instantiation")
+	{
+		// destructor
+		{
+			[[maybe_unused]] LibMath::Vector4 temp;
+		}
+
+		// default constructor
+		LibMath::Vector4 empty;
+		glm::vec4 emptyGlm{};
+		CHECK_VECTOR4(empty, emptyGlm);
+
+		// basic constructor
+		LibMath::Vector4 oneParam{ 2.5f };
+		glm::vec4 oneParamGlm{ 2.5f };
+		CHECK_VECTOR4(oneParam, oneParamGlm);
+
+		LibMath::Vector4 allParam{ 2.5f, .5f, 2.f, 1.f };
+		glm::vec4 allParamGlm{ 2.5f, .5f, 2.f, 1.f };
+		CHECK_VECTOR4(allParam, allParamGlm);
+
+		// copy constructor
+		LibMath::Vector4 copy{ allParam };
+		glm::vec4 copyGlm{ allParamGlm };
+		CHECK_VECTOR4(copy, copyGlm);
+
+		// assignment operator
+		empty = allParam;
+		emptyGlm = allParamGlm;
+		CHECK_VECTOR4(empty, emptyGlm);
+
+		// OpenGL compatibility
+		CHECK(sizeof LibMath::Vector4 == sizeof glm::vec4);
+		CHECK(memcmp(&allParam, &allParamGlm, sizeof allParam) == 0);
+	}
+
+	SECTION("Accessor")
+	{
+		float const x = 2.5f;
+		float const y = .5f;
+		float const z = 2.f;
+		float const w = 1.f;
+		LibMath::Vector4 vector{ x, y, z, w };
+
+		{
+			LibMath::Vector4 const& vectorConst = vector;
+			CHECK(vectorConst[0] == x);
+			CHECK(vectorConst[1] == y);
+			CHECK(vectorConst[2] == z);
+			CHECK(vectorConst[3] == w);
+		}
+
+		{
+			vector[0] += 1.f;
+			vector[1] += 1.f;
+			vector[2] += 1.f;
+			vector[3] += 1.f;
+			CHECK(vector[0] == x + 1.f);
+			CHECK(vector[1] == y + 1.f);
+			CHECK(vector[2] == z + 1.f);
+			CHECK(vector[3] == w + 1.f);
+		}
+	}
+
+	SECTION("Comparator")
+	{
+		// compare with self
+		LibMath::Vector4 self{ 2.5f, .5f, 2.f, 1.f };
+		CHECK(self == self);
+		CHECK_FALSE(self != self);
+
+		// compare with same
+		CHECK(LibMath::Vector4{ 2.5f, .5f, 2.f, 1.f } == LibMath::Vector4{ 2.5f, .5f, 2.f, 1.f });
+		CHECK_FALSE(LibMath::Vector4{ 2.5f, .5f, 2.f, 1.f } != LibMath::Vector4{ 2.5f, .5f, 2.f, 1.f });
+
+		// trying to find copy/paste mistake
+		LibMath::Vector4 twos{ 2.f, 2.f, 2.f, 2.f };
+		CHECK_FALSE(LibMath::Vector4{ .5f, 2.f, 2.f, 2.f } == twos);
+		CHECK_FALSE(LibMath::Vector4{ 2.f, .5f, 2.f, 2.f } == twos);
+		CHECK_FALSE(LibMath::Vector4{ 2.f, 2.f, .5f, 2.f } == twos);
+		CHECK_FALSE(LibMath::Vector4{ 2.f, 2.f, 2.f, .5f } == twos);
+		CHECK(LibMath::Vector4{ .5f, 2.f, 2.f, 2.f } != twos);
+		CHECK(LibMath::Vector4{ 2.f, .5f, 2.f, 2.f } != twos);
+		CHECK(LibMath::Vector4{ 2.f, 2.f, .5f, 2.f } != twos);
+		CHECK(LibMath::Vector4{ 2.f, 2.f, 2.f, .5f } != twos);
+		CHECK_FALSE(twos == LibMath::Vector4{ .5f, 2.f, 2.f, 2.f });
+		CHECK_FALSE(twos == LibMath::Vector4{ 2.f, .5f, 2.f, 2.f });
+		CHECK_FALSE(twos == LibMath::Vector4{ 2.f, 2.f, .5f, 2.f });
+		CHECK_FALSE(twos == LibMath::Vector4{ 2.f, 2.f, 2.f, .5f });
+		CHECK(twos != LibMath::Vector4{ .5f, 2.f, 2.f, 2.f });
+		CHECK(twos != LibMath::Vector4{ 2.f, .5f, 2.f, 2.f });
+		CHECK(twos != LibMath::Vector4{ 2.f, 2.f, .5f, 2.f });
+		CHECK(twos != LibMath::Vector4{ 2.f, 2.f, 2.f, .5f });
 	}
 }

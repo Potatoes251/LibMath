@@ -33,8 +33,8 @@ namespace LibMath
 
 		void			homogenize();
 
-		bool			operator==(Vector4 const&);
-		bool			operator!=(Vector4 const&);
+		bool			operator==(Vector4 const&) const;
+		bool			operator!=(Vector4 const&) const;
 
 		float m_x;
 		float m_y;

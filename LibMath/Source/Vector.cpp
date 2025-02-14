@@ -274,7 +274,7 @@ float& LibMath::Vector3::operator[](int index)
 	}
 	else
 	{
-		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+		throw std::out_of_range("Invalid index: Vector2 only supports indices 0, 1 and 2.");
 	}
 }
 
@@ -294,7 +294,7 @@ float LibMath::Vector3::operator[](int index) const
 	}
 	else
 	{
-		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+		throw std::out_of_range("Invalid index: Vector2 only supports indices 0, 1 and 2.");
 	}
 }
 
@@ -614,7 +614,7 @@ float& LibMath::Vector4::operator[](int index)
 	}
 	else
 	{
-		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+		throw std::out_of_range("Invalid index: Vector2 only supports indices 0, 1, 2 and 3.");
 	}
 }
 
@@ -638,7 +638,7 @@ float LibMath::Vector4::operator[](int index) const
 	}
 	else
 	{
-		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+		throw std::out_of_range("Invalid index: Vector4 only supports indices 0, 1, 2 and 3.");
 	}
 }
 
@@ -665,7 +665,7 @@ void LibMath::Vector4::homogenize()
 	m_w = 1;
 }
 
-bool LibMath::Vector4::operator==(Vector4 const& other)
+bool LibMath::Vector4::operator==(Vector4 const& other) const
 {
 	return m_x == other.m_x &&
 		m_y == other.m_y &&
@@ -673,7 +673,7 @@ bool LibMath::Vector4::operator==(Vector4 const& other)
 		m_w == other.m_w;
 }
 
-bool LibMath::Vector4::operator!=(Vector4 const& other)
+bool LibMath::Vector4::operator!=(Vector4 const& other) const
 {
 	return m_x != other.m_x ||
 		m_y != other.m_y ||
