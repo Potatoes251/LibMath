@@ -697,6 +697,7 @@ LibMath::Matrix3x3 LibMath::Matrix4::getMinor(int row, int column)
 			minor[m][n] = m_values[i][j];
 			++n;
 		}
+		n = 0;
 		++m;
 	}
 	return minor;
@@ -707,7 +708,7 @@ void LibMath::Matrix4::transpose()
 	float temp;
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int j = i + 1; j < 4; j++)
 		{
 			if (i != j)
 			{
@@ -729,11 +730,12 @@ float LibMath::Matrix4::determinant()
 
 void LibMath::Matrix4::minors()
 {
+	Matrix4 copy = *this;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			m_values[i][j] = getMinor(i, j).determinant();
+			m_values[i][j] = copy.getMinor(i, j).determinant();
 		}
 	}
 }

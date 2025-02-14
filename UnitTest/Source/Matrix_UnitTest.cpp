@@ -85,6 +85,7 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 			CHECK(floatProduct == expectedFloatProduct);
 		}
 	}
+
 	SECTION("Transformation")
 	{
 		{// Rotation
@@ -285,7 +286,6 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 		}
 	}
 
-		
 	SECTION("Transformation")
 	{
 
@@ -691,6 +691,118 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			);
 
 			CHECK(transform == expected);
+		}
+	}
+
+	SECTION("Functionality")
+	{
+		{// getMinor
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			LibMath::Matrix3x3 minor(
+				7, -2, 3,
+				0, 5, -1,
+				4, 8, 6);
+
+			CHECK(minor == matrix.getMinor(3, 3));
+		}
+
+		{// transpose
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			matrix.transpose();
+			LibMath::Matrix4 transposedMatrix(
+				7, 0, 4, 5,
+				-2, 5, 8, 7,
+				3, -1, 6, 8,
+				5, 6, 7, 3);
+
+			CHECK(transposedMatrix == matrix);
+		}
+
+		{// determinant
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			float determinant = matrix.determinant();
+
+			CHECK(determinant == -484.f);
+		}
+		
+		{// minor
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			matrix.minors();
+
+			LibMath::Matrix4 minorMatrix(
+				-83, -11, 43, 2,
+				261, -187, -281, 122,
+				418, -242, -374, 264,
+				315, -209, -239, 214);
+
+			CHECK(minorMatrix == matrix);
+		}
+
+		{// cofactor
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			matrix.cofactors();
+
+			LibMath::Matrix4 cofactorMatrix(
+				-83, 11, 43, -2,
+				-261, -187, 281, 122,
+				418, 242, -374, -264,
+				-315, -209, 239, 214);
+
+			CHECK(cofactorMatrix == matrix);
+		}
+
+		{// adjugate
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			matrix.adjugate();
+
+			LibMath::Matrix4 adjugateMatrix(
+				-83, -261, 418, -315,
+				11, -187, 242, -209,
+				43, 281, -374, 239,
+				-2, 122, -264, 214);
+
+			CHECK(adjugateMatrix == matrix);
+		}
+
+		{// inverse
+			LibMath::Matrix4 matrix(
+				7, -2, 3, 5,
+				0, 5, -1, 6,
+				4, 8, 6, 7,
+				5, 7, 8, 3);
+			matrix.inverse();
+
+			LibMath::Matrix4 inverseMatrix(
+				-83.f / -484.f, -261.f / -484.f, 418.f / -484.f, -315.f / -484.f,
+				11.f / -484.f, -187.f / -484.f, 242.f / -484.f, -209.f / -484.f,
+				43.f / -484.f, 281.f / -484.f, -374.f / -484.f, 239.f / -484.f,
+				-2.f / -484.f, 122.f / -484.f, -264.f / -484.f, 214.f / -484.f);
+
+			CHECK(inverseMatrix == matrix);
 		}
 	}
 }
