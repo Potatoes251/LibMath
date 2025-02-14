@@ -843,4 +843,39 @@ TEST_CASE("Vector4", "[.all][vector][Vector4]")
 		CHECK(twos != LibMath::Vector4{ 2.f, 2.f, .5f, 2.f });
 		CHECK(twos != LibMath::Vector4{ 2.f, 2.f, 2.f, .5f });
 	}
+
+	SECTION("Functionality")
+	{
+		LibMath::Vector4 const base{ 2.5f, .5f, 2.f, 1.f };
+		LibMath::Vector4 const other{ 3.75f, 3.f, .75f, 1.f };
+
+		glm::vec4 const baseGlm{ 2.5f, .5f, 2.f, 1.f };
+		glm::vec4 const otherGlm{ 3.75f, 3.f, .75f, 1.f };
+
+		{// dot
+			float dot = base.dot(other);
+
+			float dotGlm = glm::dot(baseGlm, otherGlm);
+
+			CHECK(dot == dotGlm);
+		}
+
+		{// magnitude
+			{
+				float magnitude = base.magnitude();
+
+				float magnitudeGlm = glm::length(baseGlm);
+
+				CHECK(magnitude == Catch::Approx(magnitudeGlm));
+			}
+
+			{
+				float magnitudeSquare = base.magnitudeSquared();
+
+				float magnitudeSquareGlm = glm::length2(baseGlm);
+
+				CHECK(magnitudeSquare == Catch::Approx(magnitudeSquareGlm));
+			}
+		}
+	}
 }
