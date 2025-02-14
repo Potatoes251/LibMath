@@ -14,6 +14,7 @@ namespace LibMath
 						Vector3();										// set all component to 0
 		explicit		Vector3(float);									// set all component to the same value
 						Vector3(float, float, float);					// set all component individually
+						Vector3(Vector2 const&, float);
 						Vector3(Vector3 const&);						// copy all component
 						~Vector3() = default;
 

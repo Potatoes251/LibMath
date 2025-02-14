@@ -205,6 +205,8 @@ LibMath::Vector3::Vector3(float val) : m_x(val), m_y(val), m_z(val) {}
 
 LibMath::Vector3::Vector3(float x, float y, float z) : m_x(x), m_y(y), m_z(z) {}
 
+LibMath::Vector3::Vector3(Vector2 const& other, float z) : m_x(other.m_x), m_y(other.m_y), m_z(z) {}
+
 LibMath::Vector3::Vector3(Vector3 const& other) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z) {}
 
 LibMath::Vector3 LibMath::Vector3::zero()
@@ -502,3 +504,101 @@ std::ostream& LibMath::operator<<(std::ostream& os, Vector3 const& vec)
 	return os;
 }
 
+LibMath::Vector4::Vector4() : m_x(0), m_y(0), m_z(0), m_w(0) {}
+
+LibMath::Vector4::Vector4(float val) : m_x(val), m_y(val), m_z(val), m_w(val) {}
+
+LibMath::Vector4::Vector4(float x, float y, float z, float w) : m_x(x), m_y(y), m_z(z), m_w(w) {}
+
+LibMath::Vector4::Vector4(Vector3 const& other, float w) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z), m_w(w) {}
+
+LibMath::Vector4::Vector4(Vector4 const& other) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z), m_w(other.m_w) {}
+
+LibMath::Vector4& LibMath::Vector4::operator=(Vector4 const& other)
+{
+	m_x = other.m_x;
+	m_y = other.m_y;
+	m_z = other.m_z;
+	m_w = other.m_w;
+
+	return *this;
+}
+
+float& LibMath::Vector4::operator[](int index)
+{
+	if (index == 0)
+	{
+		return m_x;
+	}
+	else if (index == 1)
+	{
+		return m_y;
+	}
+	else if (index == 2)
+	{
+		return m_z;
+	}
+	else if (index == 3)
+	{
+		return m_w;
+	}
+	else
+	{
+		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+	}
+}
+
+float LibMath::Vector4::operator[](int index) const
+{
+	if (index == 0)
+	{
+		return m_x;
+	}
+	else if (index == 1)
+	{
+		return m_y;
+	}
+	else if (index == 2)
+	{
+		return m_z;
+	}
+	else if (index == 3)
+	{
+		return m_w;
+	}
+	else
+	{
+		throw std::out_of_range("Invalid index: Vector2 only supports indices 0 and 1.");
+	}
+}
+
+float LibMath::Vector4::dot(Vector4 const& other) const
+{
+	return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z) + (m_w * other.m_w);
+}
+
+float LibMath::Vector4::magnitude() const
+{
+	return std::sqrt((m_x * m_x) + (m_y * m_y) + (m_z * m_z) + (m_w * m_w));
+}
+
+float LibMath::Vector4::magnitudeSquared() const
+{
+	return (m_x * m_x) + (m_y * m_y) + (m_z * m_z) + (m_w * m_w);
+}
+
+bool LibMath::Vector4::operator==(Vector4 const& other)
+{
+	return m_x == other.m_x &&
+		m_y == other.m_y &&
+		m_z == other.m_z &&
+		m_w == other.m_w;
+}
+
+bool LibMath::Vector4::operator!=(Vector4 const& other)
+{
+	return m_x != other.m_x ||
+		m_y != other.m_y ||
+		m_z != other.m_z ||
+		m_w != other.m_w;
+}
