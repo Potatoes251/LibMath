@@ -1,6 +1,10 @@
 #ifndef LIBMATH_MATRIX_MATRIX3_H_
 #define LIBMATH_MATRIX_MATRIX3_H_
 
+#include "Matrix2.h"
+#include "../Vector/Vector2.h"
+#include "../Angle/Radian.h"
+
 namespace LibMath
 {
 	class Matrix3x3

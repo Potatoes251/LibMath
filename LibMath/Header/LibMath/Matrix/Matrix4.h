@@ -1,6 +1,10 @@
 #ifndef LIBMATH_MATRIX_MATRIX4_H_
 #define LIBMATH_MATRIX_MATRIX4_H_
 
+#include "Matrix3.h"
+#include "../Vector/Vector3.h"
+#include "../Angle/Radian.h"
+
 namespace LibMath
 {
 	class Matrix4
@@ -43,6 +47,8 @@ namespace LibMath
 		static Matrix4		createRotationX(Radian);
 		static Matrix4		createRotationY(Radian);
 		static Matrix4		createRotationZ(Radian);
+
+		static Matrix4		perspective(float, float, float, float);
 
 	private:
 		float m_values[4][4];

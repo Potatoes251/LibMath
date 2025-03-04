@@ -1,6 +1,9 @@
 #ifndef LIBMATH_VECTOR_VECTOR4_H_
 #define LIBMATH_VECTOR_VECTOR4_H_
 
+#include "Vector2.h"
+#include "Vector3.h"
+
 namespace LibMath
 {
 	class Vector4

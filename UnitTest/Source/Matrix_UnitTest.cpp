@@ -4,6 +4,20 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/Matrix.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+
+#define CHECK_MATRIX2(libMathMat, glmMat) \
+    for (int col = 0; col < 2; col++) { \
+        for (int row = 0; row < 2; row++) { \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+        } \
+    }
+
 TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 {
 	SECTION("Instantiation")
@@ -13,76 +27,76 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 		}
 
 		LibMath::Matrix2x2 empty;
-
-		for (int i = 0; i < 2; i++)
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				CHECK(empty[i][j] == 0);
-			}
-		}
+		glm::mat2 emptyGlm(0);
+		CHECK_MATRIX2(empty, emptyGlm);
 
 		LibMath::Matrix2x2 diagonal(5);
+		glm::mat2 diagonalGlm(5);
+		CHECK_MATRIX2(diagonal, diagonalGlm);
+
 		LibMath::Matrix2x2 components(
 			5, 0,
 			0, 5);
+		glm::mat2 componentsGlm(
+			5, 0,
+			0, 5);
 
-		CHECK(diagonal == components);
+		CHECK_MATRIX2(components, componentsGlm);
 
 		LibMath::Matrix2x2 copy = components;
+		glm::mat2 copyGlm = componentsGlm;
 
-		CHECK(copy == components);
+		CHECK_MATRIX2(copy, copyGlm);
 
 		LibMath::Matrix2x2 identity;
 		identity.identity();
-		LibMath::Matrix2x2 diagonals(1);
+		glm::mat2 identityGlm = glm::mat2(1.0f);
 
-		CHECK(identity == diagonals);
+		CHECK_MATRIX2(identity, identityGlm);
 	}
 
 	SECTION("Arithmetic")
 	{
-		LibMath::Matrix2x2 matrix1(
-			3, 1,
-			1, 5);
+		LibMath::Matrix2x2 matA{
+				1.0f, 2.0f, 
+				3.0f, 4.0f
+		};
 
-		LibMath::Matrix2x2 matrix2(
-			3, 5,
-			9, 7);
+		glm::mat2 matAGlm{
+			{1.0f, 2.0f},
+			{3.0f, 4.0f}
+ 		};
+
+		LibMath::Matrix2x2 matB{
+			4.0f, 3.0f, 
+			2.0f, 1.0f
+		};
+
+		glm::mat2 matBGlm{
+			{4.0f, 3.0f},
+			{2.0f, 1.0f}
+		};
 
 		{// sum
-			LibMath::Matrix2x2 sum = matrix1 + matrix2;
-			LibMath::Matrix2x2 expectedSum(
-				6, 6,
-				10, 12);
+			LibMath::Matrix2x2 sum = matA + matB;
+			glm::mat2 resultGlm = matAGlm + matBGlm;
 
-			CHECK(sum == expectedSum);
+			CHECK_MATRIX2(sum, resultGlm);
 		}
-		
+
 		{// matrix product
-			LibMath::Matrix2x2 product = matrix1 * matrix2;
-			LibMath::Matrix2x2 expectedProduct(
-				18, 22,
-				48, 40);
 
-			CHECK(product == expectedProduct);
+			LibMath::Matrix2x2 result = matA * matB;
+			glm::mat2 resultGlm = matAGlm * matBGlm;
+
+			CHECK_MATRIX2(result, resultGlm);
 		}
 
-		{// matrix vector product
-			LibMath::Vector2 vector(2, 1);
-			LibMath::Vector2 product = matrix1 * vector;
-			LibMath::Vector2 expectedProduct(7, 7);
-
-			CHECK(product == expectedProduct);
-		}
-		
 		{// matrix float product
-			LibMath::Matrix2x2 floatProduct = matrix1 * 2;
-			LibMath::Matrix2x2 expectedFloatProduct(
-				6, 2,
-				2, 10);
+			LibMath::Matrix2x2 floatProduct = matA * 2.f;
+			glm::mat2 resultGlm = matAGlm * 2.f;
 
-			CHECK(floatProduct == expectedFloatProduct);
+			CHECK_MATRIX2(floatProduct, resultGlm);
 		}
 	}
 
@@ -94,8 +108,8 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 			LibMath::Matrix2x2 rotation = LibMath::Matrix2x2::createRotation(angle);
 
 			LibMath::Matrix2x2 expected(
-				cos(angle), -sin(angle),
-				sin(angle), cos(angle));
+				cos(angle), sin(angle),
+				-sin(angle), cos(angle));
 
 			CHECK(rotation == expected);
 		}
@@ -121,8 +135,8 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 
 			LibMath::Matrix2x2 expectedMatrix;
 			expectedMatrix[0][0] = scale[0] * cos(angle);
-			expectedMatrix[0][1] = scale[1] * -sin(angle);
-			expectedMatrix[1][0] = scale[0] * sin(angle);
+			expectedMatrix[0][1] = scale[1] * sin(angle);
+			expectedMatrix[1][0] = scale[0] * -sin(angle);
 			expectedMatrix[1][1] = scale[1] * cos(angle);
 
 			CHECK(transformMatrix == expectedMatrix);
@@ -206,6 +220,15 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 	}
 }
 
+
+
+#define CHECK_MATRIX3(libMathMat, glmMat) \
+    for (int col = 0; col < 3; col++) { \
+        for (int row = 0; row < 3; row++) { \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+        } \
+    }
+
 TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 {
 	SECTION("Instantiation")
@@ -215,74 +238,82 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 		}
 
 		LibMath::Matrix3x3 empty;
-
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				CHECK(empty[i][j] == 0);
-			}
-		}
+		glm::mat3 emptyGlm(0);
+		CHECK_MATRIX3(empty, emptyGlm);
 
 		LibMath::Matrix3x3 diagonal(5);
+		glm::mat3 diagonalGlm(5);
+		CHECK_MATRIX3(diagonal, diagonalGlm);
+
 		LibMath::Matrix3x3 components(
 			5, 0, 0,
 			0, 5, 0,
 			0, 0, 5);
+		glm::mat3 componentsGlm(
+			5, 0, 0,
+			0, 5, 0,
+			0, 0, 5);
 
-		CHECK(diagonal == components);
+		CHECK_MATRIX3(components, componentsGlm);
 
 		LibMath::Matrix3x3 copy = components;
+		glm::mat3 copyGlm = componentsGlm;
 
-		CHECK(copy == components);
+		CHECK_MATRIX3(copy, copyGlm);
 
 		LibMath::Matrix3x3 identity;
 		identity.identity();
-		LibMath::Matrix3x3 diagonals(1);
+		glm::mat3 identityGlm = glm::mat3(1.0f);
 
-		CHECK(identity == diagonals);
+		CHECK_MATRIX3(identity, identityGlm);
 	}
 
 	SECTION("Arithmetic")
 	{
-		LibMath::Matrix3x3 matrix1(
-			3, 1, 4,
-			1, 5, 9,
-			2, 6, 5);
+		LibMath::Matrix3x3 matA{
+				1.0f, 2.0f, 3.0f, 
+				4.0f, 5.0f, 6.0f, 
+				7.0f, 8.0f, 9.0f
+		};
 
-		LibMath::Matrix3x3 matrix2(
-			3, 5, 8,
-			9, 7, 9,
-			3, 2, 3);
+		glm::mat3 matAGlm{
+			{1.0f, 2.0f, 3.0f},
+			{4.0f, 5.0f, 6.0f},
+			{7.0f, 8.0f, 9.0f},
+		};
+
+		LibMath::Matrix3x3 matB{
+			9.0f, 8.0f, 7.0f, 
+			6.0f, 5.0f, 4.0f, 
+			3.0f, 2.0f, 1.0f
+		};
+
+		glm::mat3 matBGlm{
+			{9.0f, 8.0f, 7.0f},
+			{6.0f, 5.0f,4.0f},
+			{3.0f, 2.0f, 1.0f}
+		};
 
 		{// sum
-			LibMath::Matrix3x3 sum = matrix1 + matrix2;
-			LibMath::Matrix3x3 expectedSum(
-				6, 6, 12,
-				10, 12, 18,
-				5, 8, 8);
+			LibMath::Matrix3x3 sum = matA + matB;
+			glm::mat3 resultGlm = matAGlm + matBGlm;
 
-			CHECK(sum == expectedSum);
+			CHECK_MATRIX3(sum, resultGlm);
 		}
-		
+
 		{// matrix product
-			LibMath::Matrix3x3 product = matrix1 * matrix2;
-			LibMath::Matrix3x3 expectedProduct(
-				30, 30, 45,
-				75, 58, 80,
-				75, 62, 85);
 
-			CHECK(product == expectedProduct);
+			LibMath::Matrix3x3 result = matA * matB;
+			glm::mat3 resultGlm = matAGlm * matBGlm;
+
+			CHECK_MATRIX3(result, resultGlm);
 		}
-		
-		{// matrix float product
-			LibMath::Matrix3x3 floatProduct = matrix1 * 2;
-			LibMath::Matrix3x3 expectedFloatProduct(
-				6, 2, 8,
-				2, 10, 18,
-				4, 12, 10);
 
-			CHECK(floatProduct == expectedFloatProduct);
+		{// matrix float product
+			LibMath::Matrix3x3 floatProduct = matA * 2.f;
+			glm::mat3 resultGlm = matAGlm * 2.f;
+
+			CHECK_MATRIX3(floatProduct, resultGlm);
 		}
 	}
 
@@ -295,9 +326,9 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 
 			// Expected translation matrix
 			LibMath::Matrix3x3 expectedMatrix(
-				1, 0, 4,
-				0, 1, 2,
-				0, 0, 1);
+				1, 0, 0,
+				0, 1, 0,
+				4, 2, 1);
 
 			CHECK(translationMatrix == expectedMatrix);
 		}
@@ -309,8 +340,8 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotation(rotationPoint, angle);
 
 			LibMath::Matrix3x3 expected(
-				0, -1, 0,
-				1, 0, 0,
+				0, 1, 0,
+				-1, 0, 0,
 				0, 0, 1
 			);
 
@@ -353,9 +384,9 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationY(angle);
 
 			LibMath::Matrix3x3 expected(
-				0, 0, 1,
+				0, 0, -1,
 				0, 1, 0,
-				-1, 0, 0
+				1, 0, 0
 			);
 
 			CHECK(rotation == expected);
@@ -367,8 +398,8 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationZ(angle);
 
 			LibMath::Matrix3x3 expected(
-				0, -1, 0,
-				1, 0, 0,
+				0, 1, 0,
+				-1, 0, 0,
 				0, 0, 1
 			);
 
@@ -384,9 +415,9 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 
 			LibMath::Matrix3x3 expectedMatrix;
 			expectedMatrix[0][0] = scale[0] * cos(angle);
-			expectedMatrix[0][1] = scale[1] * -sin(angle);
+			expectedMatrix[0][1] = scale[1] * sin(angle);
 			expectedMatrix[0][2] = translation[0];
-			expectedMatrix[1][0] = scale[0] * sin(angle);
+			expectedMatrix[1][0] = scale[0] * -sin(angle);
 			expectedMatrix[1][1] = scale[1] * cos(angle);
 			expectedMatrix[1][2] = translation[1];
 			expectedMatrix[2][0] = 0;
@@ -399,6 +430,18 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 
 	SECTION("Functionality")
 	{
+		LibMath::Matrix3x3 mat{
+				1.0f, 2.0f, 3.0f,
+				4.0f, 5.0f, 6.0f,
+				7.0f, 8.0f, 90.0f
+		};
+
+		glm::mat3 matGlm{
+			{1.0f, 2.0f, 3.0f},
+			{4.0f, 5.0f, 6.0f},
+			{7.0f, 8.0f, 90.0f},
+		};
+
 		{// getMinor
 			LibMath::Matrix3x3 matrix(
 				7, -2, 3,
@@ -412,90 +455,39 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 		}
 
 		{// transpose
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			matrix.transpose();
-			LibMath::Matrix3x3 transposedMatrix(
-				7, 0, 4,
-				-2, 5, 8,
-				3, -1, 6);
+			LibMath::Matrix3x3 transposeMatrix = mat;
+			mat.transpose();
 
-			CHECK(transposedMatrix == matrix);
+			glm::mat3 transposeglm = glm::transpose(matGlm);
+			CHECK_MATRIX3(mat, transposeglm);
 		}
 
 		{// determinant
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			float determinant = matrix.determinant();
+			float determinant = mat.determinant();
+			float determinantGlm = glm::determinant(matGlm);
 
-			CHECK(determinant == 214.f);
-		}
-
-		{// minor
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			matrix.minors();
-
-			LibMath::Matrix3x3 minorMatrix(
-				38, 4, -20,
-				-36, 30, 64,
-				-13, -7, 35);
-			
-			CHECK(minorMatrix == matrix);
-		}
-
-		{// cofactor
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			matrix.cofactors();
-
-			LibMath::Matrix3x3 cofactorMatrix(
-				38, -4, -20,
-				36, 30, -64,
-				-13, 7, 35);
-
-			CHECK(cofactorMatrix == matrix);
-		}
-
-		{// adjugate
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			matrix.adjugate();
-
-			LibMath::Matrix3x3 adjugateMatrix(
-				38, 36, -13,
-				-4, 30, 7,
-				-20, -64, 35);
-
-			CHECK(adjugateMatrix == matrix);
+			CHECK(determinant == determinantGlm);
 		}
 
 		{// inverse
-			LibMath::Matrix3x3 matrix(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
-			matrix.inverse();
+			LibMath::Matrix3x3 inverseMatrix = mat;
+			inverseMatrix.inverse();
 
-			LibMath::Matrix3x3 inverseMatrix(
-				38.f / 214.f, 36.f / 214.f, -13.f / 214.f,
-				-4.f / 214.f, 30.f / 214.f, 7.f / 214.f,
-				-20.f / 214.f, -64.f / 214.f, 35.f / 214.f);
+			glm::mat3 inverseglm = glm::inverse(matGlm);
 
-			CHECK(inverseMatrix == matrix);
+			CHECK_MATRIX3(inverseMatrix, inverseglm);
 		}
 	}
 }
+
+
+
+#define CHECK_MATRIX4(libMathMat, glmMat) \
+    for (int col = 0; col < 4; col++) { \
+        for (int row = 0; row < 4; row++) { \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+        } \
+    }
 
 TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 {
@@ -506,303 +498,240 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 		}
 
 		LibMath::Matrix4 empty;
-
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				CHECK(empty[i][j] == 0);
-			}
-		}
+		glm::mat4 emptyGlm(0);
+		CHECK_MATRIX4(empty, emptyGlm);
 
 		LibMath::Matrix4 diagonal(5);
+		glm::mat4 diagonalGlm(5);
+		CHECK_MATRIX4(diagonal, diagonalGlm);
+
 		LibMath::Matrix4 components(
 			5, 0, 0, 0,
 			0, 5, 0, 0,
 			0, 0, 5, 0,
 			0, 0, 0, 5);
+		glm::mat4 componentsGlm(
+			5, 0, 0, 0,
+			0, 5, 0, 0,
+			0, 0, 5, 0,
+			0, 0, 0, 5);
 
-		CHECK(diagonal == components);
+		CHECK_MATRIX4(components, componentsGlm);
 
 		LibMath::Matrix4 copy = components;
+		glm::mat4 copyGlm = componentsGlm;
 
-		CHECK(copy == components);
+		CHECK_MATRIX4(copy, copyGlm);
 
 		LibMath::Matrix4 identity;
 		identity.identity();
-		LibMath::Matrix4 diagonals(1);
+		glm::mat4 identityGlm = glm::mat4(1.0f);
 
-		CHECK(identity == diagonals);
+		CHECK_MATRIX4(identity, identityGlm);
 	}
 
 	SECTION("Arithmetic")
 	{
-		LibMath::Matrix4 matrix1(
-			3, 1, 4, 1, 
-			5, 9, 2, 6, 
-			5, 3, 5, 8,
-			9, 7, 9, 3);
+		LibMath::Matrix4 matA{
+				1.0f, 2.0f, 3.0f, 4.0f,
+				5.0f, 6.0f, 7.0f, 8.0f,
+				9.0f, 10.0f, 11.0f, 12.0f,
+				13.0f, 14.0f, 15.0f, 16.0f
+		};
 
-		LibMath::Matrix4 matrix2(
-			2, 7, 1, 8,
-			2, 8, 1, 8,
-			2, 8, 4, 5,
-			9, 0, 4, 5);
+		glm::mat4 matAGlm{
+			{1.0f, 2.0f, 3.0f, 4.0f},
+			{5.0f, 6.0f, 7.0f, 8.0f},
+			{9.0f, 10.0f, 11.0f, 12.0f},
+			{13.0f, 14.0f, 15.0f, 16.0f}
+		};
+
+		LibMath::Matrix4 matB{
+			16.0f, 15.0f, 14.0f, 13.0f,
+			12.0f, 11.0f, 10.0f, 9.0f,
+			8.0f, 7.0f, 6.0f, 5.0f,
+			4.0f, 3.0f, 2.0f, 1.0f
+		};
+
+		glm::mat4 matBGlm{
+			{16.0f, 15.0f, 14.0f, 13.0f},
+			{12.0f, 11.0f, 10.0f, 9.0f},
+			{8.0f, 7.0f, 6.0f, 5.0f},
+			{4.0f, 3.0f, 2.0f, 1.0f}
+		};
 
 
 		{// sum
-			LibMath::Matrix4 sum = matrix1 + matrix2;
-			LibMath::Matrix4 expectedSum(
-				5, 8, 5, 9,
-				7, 17, 3, 14,
-				7, 11, 9, 13,
-				18, 7, 13, 8);
+			LibMath::Matrix4 sum = matA + matB;
+			glm::mat4 resultGlm = matAGlm + matBGlm;
 
-			CHECK(sum == expectedSum);
+			CHECK_MATRIX4(sum, resultGlm);
 		}
 
 		{// matrix product
-			LibMath::Matrix4 product = matrix1 * matrix2;
-			LibMath::Matrix4 expectedProduct(
-				25, 61, 24, 57,
-				86, 123, 46,152,
-				98, 99, 60, 129,
-				77, 191, 64, 188);
 
-			CHECK(product == expectedProduct);
+			LibMath::Matrix4 result = matA * matB;
+			glm::mat4 resultGlm = matAGlm * matBGlm;
+
+			CHECK_MATRIX4(result, resultGlm);
 		}
 
 		{// matrix float product
-			LibMath::Matrix4 floatProduct = matrix1 * 2;
-			LibMath::Matrix4 expectedFloatProduct(
-				6, 2, 8, 2,
-				10, 18, 4, 12,
-				10, 6, 10, 16,
-				18, 14, 18, 6);
+			LibMath::Matrix4 floatProduct = matA * 2.f;
+			glm::mat4 resultGlm = matAGlm * 2.f;
 
-			CHECK(floatProduct == expectedFloatProduct);
+			CHECK_MATRIX4(floatProduct, resultGlm);
 		}
 	}
 
 	SECTION("Transformation")
 	{
 		{// translation
-			LibMath::Vector3 translationVec(4, 2, 3);
+			LibMath::Vector3 translationVec(4.0f, 2.0f, 3.0f);
 			LibMath::Matrix4 translationMatrix = LibMath::Matrix4::createTranslation(translationVec);
 
-			// Expected translation matrix
-			LibMath::Matrix4 expectedMatrix(
-				1, 0, 0, 4,
-				0, 1, 0, 2,
-				0, 0, 1, 3,
-				0, 0, 0, 1);
+			glm::vec3 translationVecGlm(4.0f, 2.0f, 3.0f);
+			glm::mat4 translationMatrixGlm = glm::translate(glm::mat4(1.0f), translationVecGlm);
 
-			CHECK(translationMatrix == expectedMatrix);
+			CHECK_MATRIX4(translationMatrix, translationMatrixGlm);
 		}
 
 		{// scale
 
-			LibMath::Vector3 scaleVec(4, 2, 3);
-			LibMath::Matrix4 scale;
-			scale.createScale(scaleVec);
+			LibMath::Vector3 scaleVec(4.0f, 2.0f, 3.0f);
+			LibMath::Matrix4 scaleMatrix;
+			scaleMatrix = scaleMatrix.createScale(scaleVec);
 
-			// Expected scale matrix
-			LibMath::Matrix4 expectedMatrix(
-				4, 0, 0, 0,
-				0, 2, 0, 0,
-				0, 0, 3, 0,
-				0, 0, 0, 1);
+			glm::vec3 scaleVecGlm(4.0f, 2.0f, 3.0f);
+			glm::mat4 scaleMatrixGlm = glm::scale(glm::mat4(1.0f), scaleVecGlm);
 
-			CHECK(scale == expectedMatrix);
+			CHECK_MATRIX4(scaleMatrix, scaleMatrixGlm);
 		}
 
 		{// rotation
 
-			LibMath::Vector3 axis(0, 0, 1);
-			LibMath::Radian angle(g_Pi / 2);
+			LibMath::Vector3 axis(1.0f, 0.0f, 0.0f);
+			LibMath::Radian angle(90.0f);
+
 			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotation(axis, angle);
 
-			LibMath::Matrix4 expected(
-				0, -1, 0, 0,
-				1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1
-			);
+			glm::vec3 axisGlm(1.0f, 0.0f, 0.0f);
+			constexpr float angleGlm = 90.f;
 
-			CHECK(rotation == expected);
+			glm::mat4 rotationGlm = glm::rotate(glm::mat4(1.0f), angleGlm, axisGlm);
+
+			CHECK_MATRIX4(rotation, rotationGlm);
 		}
 
 		{// rotationX
 
 			LibMath::Radian angle(g_Pi / 2);
+
 			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationX(angle);
 
-			LibMath::Matrix4 expected(
-				1, 0, 0, 0,
-				0, 0, -1, 0,
-				0, 1, 0, 0,
-				0, 0, 0, 1);
+			glm::mat4 rotationGlm = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			CHECK(rotation == expected);
+			CHECK_MATRIX4(rotation, rotationGlm);
 		}
 
 		{// rotationY
 
 			LibMath::Radian angle(g_Pi / 2);
+
 			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationY(angle);
 
-			LibMath::Matrix4 expected(
-				0, 0, 1, 0,
-				0, 1, 0, 0,
-				-1, 0, 0, 0,
-				0, 0, 0, 1);
+			glm::mat4 rotationGlm = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(.0f, 1.0f, .0f));
 
-			CHECK(rotation == expected);
+			CHECK_MATRIX4(rotation, rotationGlm);
 		}
 
 		{// rotationZ
 
 			LibMath::Radian angle(g_Pi / 2);
+
 			LibMath::Matrix4 rotation = LibMath::Matrix4::createRotationZ(angle);
 
-			LibMath::Matrix4 expected(
-				0, -1, 0, 0,
-				1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1);
+			glm::mat4 rotationGlm = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(.0f, .0f, 1.0f));
 
-			CHECK(rotation == expected);
+			CHECK_MATRIX4(rotation, rotationGlm);
 		}
 
 		{// transform (translation, rotation, scale)
 
-			LibMath::Vector3 position(1, 2, 3);
-			LibMath::Vector3 axis(0, 0, 1);
+			LibMath::Vector3 position(2.0f, 3.0f, 4.0f);
+
+			LibMath::Vector3 axis(0.0f, 1.0f, 0.0f);
 			LibMath::Radian angle(g_Pi / 2);
-			LibMath::Vector3 scale(2, 2, 2);
+
+			LibMath::Vector3 scale(2.0f, 2.0f, 2.0f);
 
 			LibMath::Matrix4 transform = LibMath::Matrix4::createTransform(position, axis, angle, scale);
 
-			LibMath::Matrix4 expected(
-				0, -2, 0, 1,
-				2, 0, 0, 2,
-				0, 0, 2, 3,
-				0, 0, 0, 1
-			);
+			glm::mat4 glmTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 3.0f, 4.0f));
+			glm::mat4 glmRotate = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 glmScale = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f));
 
-			CHECK(transform == expected);
+			glm::mat4 glmTransform = glmTranslate * glmRotate * glmScale;
+
+			CHECK_MATRIX4(transform, glmTransform);
 		}
 	}
 
 	SECTION("Functionality")
 	{
-		{// getMinor
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			LibMath::Matrix3x3 minor(
-				7, -2, 3,
-				0, 5, -1,
-				4, 8, 6);
+		LibMath::Matrix4 mat{
+				10.0f, 2.0f, 3.0f, 4.0f,
+				5.0f, 6.0f, 7.0f, 8.0f,
+				9.0f, 10.0f, 11.0f, 12.0f,
+				13.0f, 14.0f, 15.0f, 17.0f
+		};
 
-			CHECK(minor == matrix.getMinor(3, 3));
-		}
+		glm::mat4 matGlm{
+			{10.0f, 2.0f, 3.0f, 4.0f},
+			{5.0f, 6.0f, 7.0f, 8.0f},
+			{9.0f, 10.0f, 11.0f, 12.0f},
+			{13.0f, 14.0f, 15.0f, 17.0f}
+		};
 
 		{// transpose
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			matrix.transpose();
-			LibMath::Matrix4 transposedMatrix(
-				7, 0, 4, 5,
-				-2, 5, 8, 7,
-				3, -1, 6, 8,
-				5, 6, 7, 3);
+			LibMath::Matrix4 transposeMatrix = mat;
+			mat.transpose();
 
-			CHECK(transposedMatrix == matrix);
+			glm::mat4 transposeglm = glm::transpose(matGlm);
+			CHECK_MATRIX4(mat, transposeglm);
 		}
 
 		{// determinant
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			float determinant = matrix.determinant();
-
-			CHECK(determinant == -484.f);
-		}
-		
-		{// minor
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			matrix.minors();
-
-			LibMath::Matrix4 minorMatrix(
-				-83, -11, 43, 2,
-				261, -187, -281, 122,
-				418, -242, -374, 264,
-				315, -209, -239, 214);
-
-			CHECK(minorMatrix == matrix);
-		}
-
-		{// cofactor
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			matrix.cofactors();
-
-			LibMath::Matrix4 cofactorMatrix(
-				-83, 11, 43, -2,
-				-261, -187, 281, 122,
-				418, 242, -374, -264,
-				-315, -209, 239, 214);
-
-			CHECK(cofactorMatrix == matrix);
-		}
-
-		{// adjugate
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			matrix.adjugate();
-
-			LibMath::Matrix4 adjugateMatrix(
-				-83, -261, 418, -315,
-				11, -187, 242, -209,
-				43, 281, -374, 239,
-				-2, 122, -264, 214);
-
-			CHECK(adjugateMatrix == matrix);
+			float determinant = mat.determinant();
+			float determinantGlm = glm::determinant(matGlm);
+			
+			CHECK(determinant == determinantGlm);
 		}
 
 		{// inverse
-			LibMath::Matrix4 matrix(
-				7, -2, 3, 5,
-				0, 5, -1, 6,
-				4, 8, 6, 7,
-				5, 7, 8, 3);
-			matrix.inverse();
+			LibMath::Matrix4 inverseMatrix = mat;
+			inverseMatrix.inverse();
+			
+			glm::mat4 inverseglm = glm::inverse(matGlm);
+			
+			CHECK_MATRIX4(inverseMatrix, inverseglm);
+		}
 
-			LibMath::Matrix4 inverseMatrix(
-				-83.f / -484.f, -261.f / -484.f, 418.f / -484.f, -315.f / -484.f,
-				11.f / -484.f, -187.f / -484.f, 242.f / -484.f, -209.f / -484.f,
-				43.f / -484.f, 281.f / -484.f, -374.f / -484.f, 239.f / -484.f,
-				-2.f / -484.f, 122.f / -484.f, -264.f / -484.f, 214.f / -484.f);
+		{
 
-			CHECK(inverseMatrix == matrix);
+			float fov = 45.0f;  // Field of view in degrees
+			float aspectRatio = 16.0f / 9.0f;  // Aspect ratio
+			float near = 0.1f;  // Near plane
+			float far = 100.0f;  // Far plane
+
+			// LibMath perspective matrix
+			LibMath::Matrix4 perspective = LibMath::Matrix4::perspective(fov, aspectRatio, near, far);
+
+			// GLM perspective matrix
+			glm::mat4 perspectiveGlm = glm::perspective(glm::radians(fov), aspectRatio, near, far);
+
+			CHECK_MATRIX4(perspective, perspectiveGlm);
+					
 		}
 	}
 }

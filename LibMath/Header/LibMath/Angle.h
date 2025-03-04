@@ -6,8 +6,8 @@
 #include "Angle/Radian.h"
 #include "Angle/Degree.h"
 
-constexpr float g_Pi = static_cast<float>(M_PI);
-constexpr float g_twoPi = 2 * static_cast<float>(M_PI);
+constexpr float g_Pi = 3.141592653589723f;
+constexpr float g_twoPi = 2 * g_Pi;
 constexpr float g_epsilon = 1e-6f;
 
 float wrapWithinRange(float value, float min, float max);

@@ -77,9 +77,10 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(Matrix2x2 const other) const
 	Matrix2x2 product;
 	for (int i = 0; i < 2; i++)
 	{
-		for (int j = 0; j < 2;j++)
+		for (int j = 0; j < 2; j++)
 		{
-			product[i][j] = m_values[i][0] * other.m_values[0][j] + m_values[i][1] * other.m_values[1][j];
+			product[i][j] = m_values[0][j] * other.m_values[i][0] +
+							m_values[1][j] * other.m_values[i][1];
 		}
 	}
 	return product;
@@ -185,8 +186,8 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::createRotation(Radian angle)
 	float cosAngle = cos(angle);
 	float sinAngle = sin(angle);
 	rotation[0][0] = cosAngle;
-	rotation[0][1] = -sinAngle;
-	rotation[1][0] = sinAngle;
+	rotation[0][1] = sinAngle;
+	rotation[1][0] = -sinAngle;
 	rotation[1][1] = cosAngle;
 
 	return rotation;
@@ -199,7 +200,7 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::createTransform(Radian angle, Vector2 sca
 	Matrix2x2 scaler;
 	scaler.createScale(scale);
 
-	return rotation * scaler;
+	return scaler * rotation;
 }
 
 
@@ -302,11 +303,12 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 	{
 		for (int j = 0; j < 3;j++)
 		{
-			product[i][j] = m_values[i][0] * other.m_values[0][j] + 
-							m_values[i][1] * other.m_values[1][j] + 
-							m_values[i][2] * other.m_values[2][j];
+			product[i][j] = m_values[0][j] * other.m_values[i][0] +
+				m_values[1][j] * other.m_values[i][1] +
+				m_values[2][j] * other.m_values[i][2];
 		}
 	}
+
 	return product;
 }
 
@@ -399,7 +401,7 @@ void LibMath::Matrix3x3::cofactors()
 void LibMath::Matrix3x3::adjugate()
 {
 	cofactors();
-	transpose();
+	//transpose();
 }
 
 void LibMath::Matrix3x3::inverse()
@@ -454,8 +456,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createTranslation(Vector2 v)
 {
 	Matrix3x3 TransMatrix{};
 	TransMatrix.identity();
-	TransMatrix[0][2] = v[0];
-	TransMatrix[1][2] = v[1];
+	TransMatrix[2][0] = v[0];
+	TransMatrix[2][1] = v[1];
 
 	return TransMatrix;
 }
@@ -464,22 +466,22 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotation(Point2D point, Radian angl
 {
 	Matrix3x3 toOrigin;
 	toOrigin.identity();
-	toOrigin[0][2] = -point.getX();
-	toOrigin[1][2] = -point.getY();
+	toOrigin[2][0] = -point.getX();
+	toOrigin[2][1] = -point.getY();
 
 	Matrix3x3 rotation;
 	rotation.identity();
 	float cosAngle = cos(angle);
 	float sinAngle = sin(angle);
 	rotation[0][0] = cosAngle;
-	rotation[0][1] = -sinAngle;
-	rotation[1][0] = sinAngle;
+	rotation[0][1] = sinAngle;
+	rotation[1][0] = -sinAngle;
 	rotation[1][1] = cosAngle;
 
 	Matrix3x3 toPivot;
 	toPivot.identity();
-	toPivot[0][2] = point.getX();
-	toPivot[1][2] = point.getY();
+	toPivot[2][0] = point.getX();
+	toPivot[2][1] = point.getY();
 
 	return toOrigin * rotation * toPivot;
 }
@@ -494,10 +496,10 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translation, Radi
 	float sinTheta = sin(rotation);
 
 	transformMatrix[0][0] = cosTheta * scale[0];
-	transformMatrix[0][1] = -sinTheta * scale[1];
+	transformMatrix[0][1] = sinTheta * scale[1];
 	transformMatrix[0][2] = translation[0];
 
-	transformMatrix[1][0] = sinTheta * scale[0];
+	transformMatrix[1][0] = -sinTheta * scale[0];
 	transformMatrix[1][1] = cosTheta * scale[1];
 	transformMatrix[1][2] = translation[1];
 
@@ -529,8 +531,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationY(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[2][0] = -sinAngle;
-	rotation[0][2] = sinAngle;
+	rotation[2][0] = sinAngle;
+	rotation[0][2] = -sinAngle;
 	rotation[2][2] = cosAngle;
 
 	return rotation;
@@ -545,8 +547,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationZ(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[0][1] = -sinAngle;
-	rotation[1][0] = sinAngle;
+	rotation[0][1] = sinAngle;
+	rotation[1][0] = -sinAngle;
 	rotation[1][1] = cosAngle;
 
 	return rotation;
@@ -657,10 +659,10 @@ LibMath::Matrix4 LibMath::Matrix4::operator*(Matrix4 const other) const
 	{
 		for (int j = 0; j < 4;j++)
 		{
-			product[i][j] = m_values[i][0] * other.m_values[0][j] +
-							m_values[i][1] * other.m_values[1][j] +
-							m_values[i][2] * other.m_values[2][j] +
-							m_values[i][3] * other.m_values[3][j];
+			product[i][j] = m_values[0][j] * other.m_values[i][0] +
+							m_values[1][j] * other.m_values[i][1] +
+							m_values[2][j] * other.m_values[i][2] +
+							m_values[3][j] * other.m_values[i][3];
 		}
 	}
 	return product;
@@ -758,7 +760,6 @@ void LibMath::Matrix4::cofactors()
 void LibMath::Matrix4::adjugate()
 {
 	cofactors();
-	transpose();
 }
 
 void LibMath::Matrix4::inverse()
@@ -814,9 +815,9 @@ LibMath::Matrix4 LibMath::Matrix4::createTranslation(Vector3 vec)
 {
 	Matrix4 TransMatrix{};
 	TransMatrix.identity();
-	TransMatrix[0][3] = vec[0];
-	TransMatrix[1][3] = vec[1];
-	TransMatrix[2][3] = vec[2];
+	TransMatrix[3][0] = vec[0];
+	TransMatrix[3][1] = vec[1];
+	TransMatrix[3][2] = vec[2];
 
 	return TransMatrix;
 }
@@ -834,9 +835,9 @@ LibMath::Matrix4 LibMath::Matrix4::createRotation(Vector3 axis, Radian angle)
 	float z = axis.m_z;
 
 	return Matrix4(
-		cosTheta + x * x * k, x * y * k - z * sinTheta, x * z * k + y * sinTheta, 0.0f,
-		y * x * k + z * sinTheta, cosTheta + y * y * k, y * z * k - x * sinTheta, 0.0f,
-		z * x * k - y * sinTheta, z * y * k + x * sinTheta, cosTheta + z * z * k, 0.0f,
+		cosTheta + x * x * k,		x * y * k + z * sinTheta,	x * z * k - y * sinTheta, 0.0f,
+		y * x * k - z * sinTheta,	cosTheta + y * y * k,		y * z * k + x * sinTheta, 0.0f,
+		z * x * k + y * sinTheta,	z * y * k - x * sinTheta,	cosTheta + z * z * k, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
 	);
 }
@@ -846,10 +847,10 @@ LibMath::Matrix4 LibMath::Matrix4::createTransform(Vector3 position, Vector3 axi
 	Matrix4 rotationMatrix = createRotation(axis, angle);
 
 	return Matrix4(
-		scale[0] * rotationMatrix[0][0], scale[0] * rotationMatrix[0][1], scale[0] * rotationMatrix[0][2], position[0],
-		scale[1] * rotationMatrix[1][0], scale[1] * rotationMatrix[1][1], scale[1] * rotationMatrix[1][2], position[1],
-		scale[2] * rotationMatrix[2][0], scale[2] * rotationMatrix[2][1], scale[2] * rotationMatrix[2][2], position[2],
-		0.0f, 0.0f, 0.0f, 1.0f
+		scale[0] * rotationMatrix[0][0], scale[0] * rotationMatrix[0][1], scale[0] * rotationMatrix[0][2], 0.f,
+		scale[1] * rotationMatrix[1][0], scale[1] * rotationMatrix[1][1], scale[1] * rotationMatrix[1][2], 0.f,
+		scale[2] * rotationMatrix[2][0], scale[2] * rotationMatrix[2][1], scale[2] * rotationMatrix[2][2], 0.f,
+		position[0], position[1], position[2], 1.0f
 	);
 }
 
@@ -862,8 +863,8 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationX(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[1][1] = cosAngle;
-	rotation[1][2] = -sinAngle;
-	rotation[2][1] = sinAngle;
+	rotation[1][2] = sinAngle;
+	rotation[2][1] = -sinAngle;
 	rotation[2][2] = cosAngle;
 
 	return rotation;
@@ -878,8 +879,8 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationY(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[2][0] = -sinAngle;
-	rotation[0][2] = sinAngle;
+	rotation[2][0] = sinAngle;
+	rotation[0][2] = -sinAngle;
 	rotation[2][2] = cosAngle;
 
 	return rotation;
@@ -894,9 +895,21 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationZ(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[0][1] = -sinAngle;
-	rotation[1][0] = sinAngle;
+	rotation[0][1] = sinAngle;
+	rotation[1][0] = -sinAngle;
 	rotation[1][1] = cosAngle;
 
 	return rotation;
+}
+
+LibMath::Matrix4 LibMath::Matrix4::perspective(float fov, float aspectRatio, float near, float far)
+{
+	float tanFov = ::tan(Degree(fov / 2).radian());
+
+	return Matrix4(
+		1 / (tanFov * aspectRatio),		0.f,			0.f,								0.f,
+		0.f,							1 / tanFov,		0.f,								0.f,
+		0.f,							0.f,			(far + near) / (near - far),		-1.f,
+		0.f,							0.f,			(2 * far * near) / (near - far),	0.f
+	);
 }
