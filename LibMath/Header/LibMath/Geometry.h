@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY2D_H
+#define GEOMETRY2D_H
 
 #include "Angle.h"
 
@@ -19,8 +20,8 @@ namespace LibMath
 		float			getX() const;					// getter for x value
 		float			getY() const;					// getter for y value
 
-		float			distance(Point2D) const;		// return the distance between 2 point
-		float			distanceSquare(Point2D) const;	// return the square of the distance between 2 point
+		float			distance(Point2D const&) const;		// return the distance between 2 point
+		float			distanceSquare(Point2D const&) const;	// return the square of the distance between 2 point
 
 	private:
 		float m_x;
@@ -91,3 +92,5 @@ namespace LibMath
 		float m_radius;
 	};
 }
+
+#endif

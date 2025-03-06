@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COLISION2D_H
+#define COLISION2D_H
 
 #include "Geometry.h"
 #include "Vector/Vector2.h"
@@ -20,6 +21,6 @@ namespace LibMath
 	bool			colisionPointRectangle(Point2D, Rectangle);
 	bool			colisionLineRectangle(Line2D, Rectangle);
 	bool			colisionTwoRectangle(Rectangle, Rectangle);
-
-
 }
+
+#endif

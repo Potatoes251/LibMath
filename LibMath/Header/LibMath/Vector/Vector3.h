@@ -5,6 +5,7 @@
 #include <string>
 
 #include "LibMath/Angle/Radian.h"
+#include "Vector2.h"
 
 namespace LibMath
 {

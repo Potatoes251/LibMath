@@ -50,19 +50,19 @@ float LibMath::Point2D::getY() const
 	return m_y;
 }
 
-float LibMath::Point2D::distance(Point2D other) const
+float LibMath::Point2D::distance(Point2D const& other) const
 {
 	return sqrt((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
 }
 
-float LibMath::Point2D::distanceSquare(Point2D other) const
+float LibMath::Point2D::distanceSquare(Point2D const& other) const
 {
 	return ((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
 }
 
 LibMath::Line2D::Line2D() :
-	m_start(Point2D{}), 
-	m_end(Point2D{}) 
+	m_start(), 
+	m_end() 
 {}
 
 LibMath::Line2D::Line2D(Point2D start, Point2D end) :
@@ -101,21 +101,21 @@ float LibMath::Line2D::slopeIntercept() const
 }
 
 LibMath::Rectangle::Rectangle() : 
-	m_center(Point2D{}),
+	m_center(),
 	m_width(0.f),
 	m_height(0.f), 
 	m_rotation(0.f) 
 {}
 
-LibMath::Rectangle::Rectangle(Point2D corner, float width, float height) : 
-	m_center(corner), 
+LibMath::Rectangle::Rectangle(Point2D center, float width, float height) : 
+	m_center(center),
 	m_width(width), 
 	m_height(height), 
 	m_rotation(0.f) 
 {}
 
-LibMath::Rectangle::Rectangle(Point2D corner, float width, float height, Radian rotation) :
-	m_center(corner), 
+LibMath::Rectangle::Rectangle(Point2D center, float width, float height, Radian rotation) :
+	m_center(center),
 	m_width(width), 
 	m_height(height), 
 	m_rotation(rotation)
@@ -184,7 +184,7 @@ void LibMath::Rectangle::getCorners(Point2D corners[4])
 
 
 LibMath::Circle::Circle() : 
-	m_center(Point2D{}),
+	m_center(),
 	m_radius(0.f)
 {}
 
