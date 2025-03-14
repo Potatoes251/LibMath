@@ -1,6 +1,8 @@
 #ifndef LIBMATH_ARITHMETIC_H_
 #define LIBMATH_ARITHMETIC_H_
 
+constexpr float g_epsilon = 1e-6f;
+
 namespace LibMath
 {
 	bool almostEqual(float, float);		// Return if two floating value are similar enought to be considered equal

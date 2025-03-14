@@ -187,8 +187,8 @@ bool LibMath::colisionTwoRectangle(Rectangle rec1, Rectangle rec2)
 
 bool LibMath::colisionPointRectangle(Point2D point, Rectangle rect)
 {
-	return (point.getX() <= rect.getCenter().getX() + rect.getWidth() / 2 &&
-			point.getY() <= rect.getCenter().getY() + rect.getHeight() / 2 &&
+	return (point.getX() <= rect.getCenter().getX() + rect.extentX() &&
+			point.getY() <= rect.getCenter().getY() + rect.extentY() &&
 			point.getX() >= rect.getCenter().getX() &&
 			point.getY() >= rect.getCenter().getY());
 }

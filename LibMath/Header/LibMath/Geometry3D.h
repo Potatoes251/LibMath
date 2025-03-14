@@ -55,9 +55,12 @@ namespace LibMath
 		Plane();
 		Plane(Vector3, float);
 
+		Vector3		getNormal();			// getter for the normal
+		float		getDistance();			// getter for the distance from origin
+
 	private:
-		Vector3		m_normal;					// Plane normal (unit vector)
-		float		m_distance;               // Distance from the origin
+		Vector3		m_normal;				// Plane normal (unit vector)
+		float		m_distance;             // Distance from the origin
 	};
 
 

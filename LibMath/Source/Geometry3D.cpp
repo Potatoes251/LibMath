@@ -170,6 +170,16 @@ LibMath::Plane::Plane(Vector3 normal, float distance) :
 	m_distance(distance)
 {}
 
+LibMath::Vector3 LibMath::Plane::getNormal()
+{
+	return m_normal;
+}
+
+float LibMath::Plane::getDistance()
+{
+	return m_distance;
+}
+
 
 
 
