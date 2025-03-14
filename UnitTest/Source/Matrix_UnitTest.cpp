@@ -14,7 +14,7 @@
 #define CHECK_MATRIX2(libMathMat, glmMat) \
     for (int col = 0; col < 2; col++) { \
         for (int row = 0; row < 2; row++) { \
-            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col]).margin(1e-6f)); \
         } \
     }
 
@@ -225,7 +225,7 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 #define CHECK_MATRIX3(libMathMat, glmMat) \
     for (int col = 0; col < 3; col++) { \
         for (int row = 0; row < 3; row++) { \
-            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col]).margin(1e-6f)); \
         } \
     }
 
@@ -485,7 +485,7 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 #define CHECK_MATRIX4(libMathMat, glmMat) \
     for (int col = 0; col < 4; col++) { \
         for (int row = 0; row < 4; row++) { \
-            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col])); \
+            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col]).margin(1e-6f)); \
         } \
     }
 

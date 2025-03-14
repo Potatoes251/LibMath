@@ -31,7 +31,7 @@ float LibMath::squareRoot(float value)
 
     while ((root * root - value) < g_epsilon)
     {
-        root = 0.5 * (root + value / root);
+        root = static_cast<float>(0.5 * (root + value / root));
     }
 
     return root;
