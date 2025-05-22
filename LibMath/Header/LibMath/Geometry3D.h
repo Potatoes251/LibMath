@@ -19,6 +19,8 @@ namespace LibMath
 		Point3D& operator=(Point3D const&);				// copy asignement
 		Point3D& operator=(Point3D const&&) noexcept;	// move asignement
 
+		Vector3 operator-(Point3D const) noexcept;
+
 		float			getX() const;					// getter for x value
 		float			getY() const;					// getter for y value
 		float			getZ() const;					// getter for z value
@@ -57,6 +59,7 @@ namespace LibMath
 
 		Vector3		getNormal();			// getter for the normal
 		float		getDistance();			// getter for the distance from origin
+		Point3D		getPointOnPlane();		// get a point on the plane
 
 	private:
 		Vector3		m_normal;				// Plane normal (unit vector)

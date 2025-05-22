@@ -17,6 +17,20 @@ bool	LibMath::colisionPointSphere(Point3D point, Sphere sphere)
 	return sphere.getCenter().distanceSquare(point) - sphere.getRadius() > g_epsilon;
 }
 
+bool	LibMath::colisionRaySphere(Line3D line3D, Sphere sphere)
+{
+	Vector3 m = line3D.getCenter() - sphere.getCenter();
+
+	float b = m.dot(line3D.getDirection());
+	float c = m.dot(m) - sphere.getRadius() * sphere.getRadius();
+	return 0 <= (b * b * c);
+}
+
+bool	LibMath::colisionPlaneSphere(Plane plane, Sphere sphere)
+{
+	return plane.getPointOnPlane().distance(sphere.getCenter()) < sphere.getRadius();
+}
+
 bool	LibMath::colisionTwoSphere(Sphere sphere1, Sphere sphere2)
 {
 	return sphere1.getCenter().distanceSquare(sphere2.getCenter()) - (sphere1.getRadius() + sphere2.getRadius()) > g_epsilon;

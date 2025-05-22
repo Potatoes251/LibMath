@@ -6,10 +6,10 @@ LibMath::Degree::Degree(float val) : m_value(val) {}
 
 LibMath::Degree::Degree(Degree const& other) : m_value(other.m_value) {}
 
-//LibMath::Degree::operator Radian() const 
-//{
-//	return Radian(m_value * (3.14159265358979323f / 180.0f));
-//}
+LibMath::Degree::operator LibMath::Radian() const
+{
+	return Radian(m_value * (3.14159265358979323f / 180.0f));
+}
 
 LibMath::Degree& LibMath::Degree::operator=(Degree const& other)
 {
@@ -134,10 +134,10 @@ LibMath::Radian::Radian(float val) : m_value(val) {}
 
 LibMath::Radian::Radian(Radian const& other) : m_value(other.m_value) {}
 
-//LibMath::Radian::operator Degree() const 
-//{
-//	return Degree(m_value * 180.0f / 3.14159265358979323f);
-//}
+LibMath::Radian::operator LibMath::Degree() const
+{
+	return Degree(m_value * 180.0f / 3.14159265358979323f);
+}
 
 LibMath::Radian& LibMath::Radian::operator=(Radian other)
 {

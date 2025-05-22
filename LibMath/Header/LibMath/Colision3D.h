@@ -12,7 +12,7 @@ namespace LibMath
 	bool			colisionTwoPlane(Plane, Plane);
 
 	bool			colisionPointSphere(Point3D, Sphere);
-	bool			colisionLineSphere(Line3D, Sphere);		// todo
+	bool			colisionRaySphere(Line3D, Sphere);
 	bool			colisionPlaneSphere(Plane, Sphere);		// todo
 	bool			colisionTwoSphere(Sphere, Sphere);
 

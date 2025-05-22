@@ -506,12 +506,12 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 		CHECK_MATRIX4(diagonal, diagonalGlm);
 
 		LibMath::Matrix4 components(
-			5, 0, 0, 0,
+			5, 0, 0, 1,
 			0, 5, 0, 0,
 			0, 0, 5, 0,
 			0, 0, 0, 5);
 		glm::mat4 componentsGlm(
-			5, 0, 0, 0,
+			5, 0, 0, 1,
 			0, 5, 0, 0,
 			0, 0, 5, 0,
 			0, 0, 0, 5);

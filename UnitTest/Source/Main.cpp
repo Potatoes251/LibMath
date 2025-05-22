@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 	\************************************/
 	arguments.push_back("Degree,");
 	arguments.push_back("Radian,");
-	//arguments.push_back("Trigonometry,");
+	arguments.push_back("Trigonometry,");
 	arguments.push_back("Vector2,");
 	arguments.push_back("Vector3,");
 	arguments.push_back("Vector4,");
