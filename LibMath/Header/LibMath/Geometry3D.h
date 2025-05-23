@@ -4,6 +4,7 @@
 #include "Angle.h"
 #include "Vector/Vector3.h"	
 #include "Matrix/Matrix3.h"	
+#include "Arithmetic.h"
 
 namespace LibMath
 {
@@ -19,7 +20,12 @@ namespace LibMath
 		Point3D& operator=(Point3D const&);				// copy asignement
 		Point3D& operator=(Point3D const&&) noexcept;	// move asignement
 
+		Point3D operator-() noexcept;
+
 		Vector3 operator-(Point3D const) noexcept;
+		Vector3 operator+(Point3D const) noexcept;
+		Vector3 operator-(Vector3 const) noexcept;
+		Vector3 operator+(Vector3 const) noexcept;
 
 		float			getX() const;					// getter for x value
 		float			getY() const;					// getter for y value
@@ -58,7 +64,7 @@ namespace LibMath
 		Plane(Vector3, float);
 
 		Vector3		getNormal();			// getter for the normal
-		float		getDistance();			// getter for the distance from origin
+		float		getDistance() const;	// getter for the distance from origin
 		Point3D		getPointOnPlane();		// get a point on the plane
 
 	private:

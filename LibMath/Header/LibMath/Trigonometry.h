@@ -1,12 +1,10 @@
 #ifndef LIBMATH_TRIGONOMETRY_H_
 #define LIBMATH_TRIGONOMETRY_H_
 
-#include "Angle/Radian.h"
+#include "Angle.h"
 
 namespace LibMath
 {
-	extern float const g_pi;	 // useful constant pi -> 3.141592...
-
 	float	sin(Radian);		// float result = sin(Radian{0.5});		// 0.479426
 	float	cos(Radian);		// float result = sin(Degree{45});		// 0.707107			// this make use implicit conversion
 	float	tan(Radian);		// float result = sin(0.5_rad);			// 0.479426			// this make use user defined litteral

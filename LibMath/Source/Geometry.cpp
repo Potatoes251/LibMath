@@ -3,6 +3,7 @@
 
 #include "LibMath/Geometry.h"
 #include "LibMath/Trigonometry.h"
+#include "LibMath/arithmetic.h"
 
 LibMath::Point2D::Point2D() :
 	m_x(0),
@@ -52,7 +53,7 @@ float LibMath::Point2D::getY() const
 
 float LibMath::Point2D::distance(Point2D const& other) const
 {
-	return sqrt((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
+	return LibMath::squareRoot((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
 }
 
 float LibMath::Point2D::distanceSquare(Point2D const& other) const

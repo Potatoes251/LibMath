@@ -45,9 +45,29 @@ LibMath::Point3D&		LibMath::Point3D::operator=(Point3D const&& other) noexcept
 	return *this;
 }
 
+LibMath::Point3D LibMath::Point3D::operator-() noexcept
+{
+	return Point3D(-m_x, -m_y, -m_z);
+}
+
 LibMath::Vector3 LibMath::Point3D::operator-(Point3D const other) noexcept
 {
 	return Vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
+}
+
+LibMath::Vector3 LibMath::Point3D::operator+(Point3D const other) noexcept
+{
+	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+}
+
+LibMath::Vector3 LibMath::Point3D::operator-(Vector3 const other) noexcept
+{
+	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+}
+
+LibMath::Vector3 LibMath::Point3D::operator+(Vector3 const other) noexcept
+{
+	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
 }
 
 float		LibMath::Point3D::getX() const
@@ -67,7 +87,7 @@ float		LibMath::Point3D::getZ() const
 
 float		LibMath::Point3D::distance(Point3D const& other) const
 {
-	return sqrt((m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z));
+	return LibMath::squareRoot((m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z));
 }
 
 float		LibMath::Point3D::distanceSquare(Point3D const& other) const
@@ -180,7 +200,7 @@ LibMath::Vector3 LibMath::Plane::getNormal()
 	return m_normal;
 }
 
-float LibMath::Plane::getDistance()
+float LibMath::Plane::getDistance() const
 {
 	return m_distance;
 }

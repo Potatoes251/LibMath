@@ -65,8 +65,16 @@ LibMath::Radian LibMath::atan(float x)
 {
 	if (x > 1.f)
 	{
-		const float halfPi = g_pi / 2;
+		const float halfPi = g_Pi / 2;
 		return Radian(halfPi) - Radian(atan(1 / x));
+	}
+
+	int		tanSign = 1;	// store the sign of x
+
+	if (x < 0)
+	{
+		tanSign = -1;
+		x = -x;
 	}
 
 	float	xPower = x;			// store the consecutive power of x (x^1, x^3,...)
@@ -75,6 +83,7 @@ LibMath::Radian LibMath::atan(float x)
 	int		sign = 1;
 	int		denominator = 1;
 
+
 	for (int i = 0; i < 8; ++i)
 	{
 		xPower *= xSquare;
@@ -82,5 +91,42 @@ LibMath::Radian LibMath::atan(float x)
 		sign = -sign;
 		angle += sign * xPower / denominator;
 	}
-	return Radian(static_cast<float>(angle));
+	return Radian(tanSign * angle);
+}
+
+LibMath::Radian LibMath::atan(float y, float x)	// atan per quadrant
+{
+	if (x == 0)	// angle == 0
+	{
+		if (y > 0)
+		{
+			return Radian(g_Pi / 2);
+		}
+		else if (y < 0)
+		{
+			return Radian(-g_Pi / 2);
+		}
+		else // y == 0
+		{
+			return Radian(0);
+		}
+	}
+
+	Radian baseAngle = atan(y / x);
+
+	if (x > 0)
+	{
+		return baseAngle;  // Quadrant I or IV sign depend on Y anyway
+	}
+	else // x < 0
+	{
+		if (y >= 0)
+		{
+			return baseAngle + Radian(g_Pi); // Quadrant II
+		}
+		else
+		{
+			return baseAngle - Radian(g_Pi); // Quadrant III
+		}
+	}
 }

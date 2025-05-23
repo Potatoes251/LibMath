@@ -1,7 +1,7 @@
 #ifndef LIBMATH_ARITHMETIC_H_
 #define LIBMATH_ARITHMETIC_H_
 
-constexpr float g_epsilon = 1e-6f;
+constexpr float g_tolerance = 1e-6f;
 
 namespace LibMath
 {

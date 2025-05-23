@@ -1,5 +1,5 @@
 #include "LibMath/Vector.h"
-
+#include "LibMath/Arithmetic.h"
 
 LibMath::Vector2::Vector2() : m_x(0), m_y(0) {}
 
@@ -45,7 +45,7 @@ float LibMath::Vector2::operator[](int index) const
 
 float LibMath::Vector2::magnitude() const
 {
-	return sqrt(m_x * m_x + m_y * m_y);
+	return LibMath::squareRoot(m_x * m_x + m_y * m_y);
 }
 
 float LibMath::Vector2::magnitudeSquared() const
@@ -322,7 +322,7 @@ LibMath::Vector3 LibMath::Vector3::cross(Vector3 const& other) const
 
 float LibMath::Vector3::distanceFrom(Vector3 const& other) const
 {
-	return std::sqrt((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y) + (m_z - other.m_z) * (m_z - other.m_z));
+	return LibMath::squareRoot((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y) + (m_z - other.m_z) * (m_z - other.m_z));
 }
 
 float LibMath::Vector3::distanceSquaredFrom(Vector3 const& other) const
@@ -332,7 +332,7 @@ float LibMath::Vector3::distanceSquaredFrom(Vector3 const& other) const
 
 float LibMath::Vector3::distance2DFrom(Vector3 const& other) const
 {
-	return std::sqrt((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
+	return LibMath::squareRoot((m_x - other.m_x) * (m_x - other.m_x) + (m_y - other.m_y) * (m_y - other.m_y));
 }
 
 float LibMath::Vector3::distance2DSquaredFrom(Vector3 const& other) const
@@ -362,7 +362,7 @@ bool LibMath::Vector3::isUnitVector() const
 
 float LibMath::Vector3::magnitude() const
 {
-	return std::sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
+	return LibMath::squareRoot(m_x * m_x + m_y * m_y + m_z * m_z);
 }
 
 float LibMath::Vector3::magnitudeSquared() const
@@ -649,7 +649,7 @@ float LibMath::Vector4::dot(Vector4 const& other) const
 
 float LibMath::Vector4::magnitude() const
 {
-	return std::sqrt((m_x * m_x) + (m_y * m_y) + (m_z * m_z) + (m_w * m_w));
+	return LibMath::squareRoot((m_x * m_x) + (m_y * m_y) + (m_z * m_z) + (m_w * m_w));
 }
 
 float LibMath::Vector4::magnitudeSquared() const
