@@ -38,7 +38,7 @@ float LibMath::squareRoot(float value)
     int	maxIterations = 100;        // set a maximum to the amount of iterations possible
 
     int iterations = 0;
-    float root = value * 0.5f;
+    float root = value > 0 ? value * 0.5f : value;
 
     while (std::fabs(root * root - value) > g_tolerance &&
         iterations < maxIterations)
