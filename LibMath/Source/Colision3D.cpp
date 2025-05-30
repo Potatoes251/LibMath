@@ -76,6 +76,18 @@ bool	LibMath::collisionRayCapsule(Line3D ray, Capsule capsule)
 			collisionRaySphere(ray, Sphere(capsule.getEnd(), capsule.getRadius()));
 }
 
+bool	LibMath::collisionPlaneCapsule(Plane plane, Capsule capsule)
+{
+	Point3D planePoint = plane.getPointOnPlane();
+	Vector3 normal = plane.getNormal();
+	normal.normalize();
+
+	float da = (capsule.getStart() - planePoint).dot(plane.getNormal());
+	float db = (capsule.getEnd() - planePoint).dot(plane.getNormal());
+
+	return std::min(da, db) <= capsule.getRadius() && std::max(da, db) >= -capsule.getRadius();
+}
+
 bool	LibMath::collisionSphereCapsule(Sphere sphere, Capsule capsule)
 {
 	LibMath::Vector3 AB = capsule.getEnd() - capsule.getStart();
@@ -90,6 +102,47 @@ bool	LibMath::collisionSphereCapsule(Sphere sphere, Capsule capsule)
 
 	return distance < radiusSum * radiusSum;
 }
+
+bool	LibMath::collisionTwoCapsule(Capsule cap1, Capsule cap2)
+{
+	Vector3 u = cap1.getEnd() - cap1.getStart();
+	Vector3 v = cap2.getEnd() - cap2.getStart();
+	Vector3 w = cap2.getStart() - cap1.getStart();
+	
+	float a = u.dot(u);
+	float b = u.dot(v);
+	float c = v.dot(v);
+	float d = u.dot(w);
+	float e = v.dot(w);
+
+	float s = 0;
+	float t = 0;
+
+	float denom = (a * c - b * b);
+
+	if (denom < g_epsilon)
+	{
+		s = 0.0f;
+		t = e / c;
+		t = (t < 0.0f) ? 0.0f : (t > 1.0f ? 1.0f : t);
+	}
+	else
+	{
+		s = (b * e - c * d) / denom;
+		t = (a * e - b * d) / denom;
+
+		s = clamp(s, 0.0f, 1.0f);
+		t = clamp(t, 0.0f, 1.0f);
+	}
+
+	Vector3 C1 = cap1.getStart() + u * s;
+	Vector3 C2 = cap2.getStart() + v * t;
+
+	float radiusSquared = (cap1.getRadius() + cap2.getRadius()) * (cap1.getRadius() + cap2.getRadius());
+
+	return C1.distanceSquaredFrom(C2) < radiusSquared;
+}
+
 
 bool	LibMath::collisionPointPrism(Point3D point, Prism prism)
 {

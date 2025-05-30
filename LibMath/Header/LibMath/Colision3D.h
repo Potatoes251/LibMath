@@ -18,7 +18,7 @@ namespace LibMath
 
 	bool			collisionPointCapsule(Point3D, Capsule);
 	bool			collisionRayCapsule(Line3D, Capsule);
-	bool			collisionPlaneCapsule(Plane, Capsule);	// todo
+	bool			collisionPlaneCapsule(Plane, Capsule);
 	bool			collisionSphereCapsule(Sphere, Capsule);
 	bool			collisionTwoCapsule(Capsule, Capsule);	// todo
 
