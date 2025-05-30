@@ -225,7 +225,7 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 #define CHECK_MATRIX3(libMathMat, glmMat) \
     for (int col = 0; col < 3; col++) { \
         for (int row = 0; row < 3; row++) { \
-            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col]).margin(1e-6f)); \
+            CHECK(libMathMat[col][row] == Catch::Approx(glmMat[col][row]).margin(1e-6f)); \
         } \
     }
 
@@ -371,8 +371,8 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 
 			LibMath::Matrix3x3 expected(
 				1, 0, 0,
-				0, 0, -1,
-				0, 1, 0
+				0, 0, 1,
+				0, -1, 0
 			);
 
 			CHECK(rotation == expected);
@@ -384,9 +384,9 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationY(angle);
 
 			LibMath::Matrix3x3 expected(
-				0, 0, -1,
+				0, 0, 1,
 				0, 1, 0,
-				1, 0, 0
+				-1, 0, 0
 			);
 
 			CHECK(rotation == expected);
@@ -398,8 +398,8 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 rotation = LibMath::Matrix3x3::createRotationZ(angle);
 
 			LibMath::Matrix3x3 expected(
-				0, 1, 0,
-				-1, 0, 0,
+				0, -1, 0,
+				1, 0, 0,
 				0, 0, 1
 			);
 
@@ -414,15 +414,17 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Matrix3x3 transformMatrix = LibMath::Matrix3x3::createTransform(translation, angle, scale);
 
 			LibMath::Matrix3x3 expectedMatrix;
-			expectedMatrix[0][0] = scale[0] * cos(angle);
-			expectedMatrix[0][1] = scale[1] * sin(angle);
-			expectedMatrix[0][2] = translation[0];
-			expectedMatrix[1][0] = scale[0] * -sin(angle);
-			expectedMatrix[1][1] = scale[1] * cos(angle);
-			expectedMatrix[1][2] = translation[1];
-			expectedMatrix[2][0] = 0;
-			expectedMatrix[2][1] = 0;
-			expectedMatrix[2][2] = 1;
+			expectedMatrix[0][0] = scale[0] * cos(angle);    // col 0, row 0
+			expectedMatrix[0][1] = scale[0] * sin(angle);   // col 0, row 1
+			expectedMatrix[0][2] = 0.0f;                           // col 0, row 2
+
+			expectedMatrix[1][0] = scale[1] * -sin(angle);    // col 1, row 0
+			expectedMatrix[1][1] = scale[1] * cos(angle);    // col 1, row 1
+			expectedMatrix[1][2] = 0.0f;                           // col 1, row 2
+
+			expectedMatrix[2][0] = translation[0];                 // col 2, row 0
+			expectedMatrix[2][1] = translation[1];                 // col 2, row 1
+			expectedMatrix[2][2] = 1.0f;                           // col 2, row 2
 
 			CHECK(transformMatrix == expectedMatrix);
 		}
@@ -451,7 +453,7 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 				0, -1,
 				4, 6);
 
-			CHECK(minor == matrix.getMinor(0,1));
+			CHECK(minor == matrix.getMinor(1,0));
 		}
 
 		{// transpose
@@ -485,7 +487,7 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 #define CHECK_MATRIX4(libMathMat, glmMat) \
     for (int col = 0; col < 4; col++) { \
         for (int row = 0; row < 4; row++) { \
-            CHECK(libMathMat[row][col] == Catch::Approx(glmMat[row][col]).margin(1e-6f)); \
+            CHECK(libMathMat[col][row] == Catch::Approx(glmMat[col][row]).margin(1e-6f)); \
         } \
     }
 
@@ -680,18 +682,19 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 	SECTION("Functionality")
 	{
 		LibMath::Matrix4 mat{
-				10.0f, 2.0f, 3.0f, 4.0f,
+				10.0f, 2.0f, 3.0f, 45.0f,
 				5.0f, 6.0f, 7.0f, 8.0f,
 				9.0f, 10.0f, 11.0f, 12.0f,
 				13.0f, 14.0f, 15.0f, 17.0f
 		};
 
 		glm::mat4 matGlm{
-			{10.0f, 2.0f, 3.0f, 4.0f},
-			{5.0f, 6.0f, 7.0f, 8.0f},
-			{9.0f, 10.0f, 11.0f, 12.0f},
-			{13.0f, 14.0f, 15.0f, 17.0f}
+			10.0f, 2.0f, 3.0f, 45.0f,
+			5.0f, 6.0f, 7.0f, 8.0f,
+			9.0f, 10.0f, 11.0f, 12.0f,
+			13.0f, 14.0f, 15.0f, 17.0f
 		};
+
 
 		{// transpose
 			LibMath::Matrix4 transposeMatrix = mat;
@@ -712,9 +715,9 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			LibMath::Matrix4 inverseMatrix = mat;
 			inverseMatrix.inverse();
 			
-			glm::mat4 inverseglm = glm::inverse(matGlm);
-			
-			CHECK_MATRIX4(inverseMatrix, inverseglm);
+			glm::mat4 inverseGlm = glm::inverse(matGlm);
+
+			CHECK_MATRIX4(inverseMatrix, inverseGlm);
 		}
 
 		{

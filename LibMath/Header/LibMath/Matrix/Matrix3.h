@@ -16,9 +16,11 @@ namespace LibMath
 			float, float, float,
 			float, float, float);
 
-		Matrix3x3& operator=(Matrix3x3 const);								// copy asignement
+		float*			data();
 
-		float* operator[](int);
+		Matrix3x3&		operator=(Matrix3x3 const);							// copy asignement
+
+		float*			operator[](int);
 
 		Matrix3x3		operator+(Matrix3x3 const) const;
 		Matrix3x3		operator*(float const) const;

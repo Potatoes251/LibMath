@@ -91,7 +91,7 @@ bool	LibMath::collisionSphereCapsule(Sphere sphere, Capsule capsule)
 	return distance < radiusSum * radiusSum;
 }
 
-bool LibMath::collisionPointPrism(Point3D point, Prism prism)
+bool	LibMath::collisionPointPrism(Point3D point, Prism prism)
 {
 	return (point.getX() <= prism.getCenter().getX() + prism.extentX() &&
 			point.getY() <= prism.getCenter().getY() + prism.extentY() &&
@@ -99,4 +99,214 @@ bool LibMath::collisionPointPrism(Point3D point, Prism prism)
 			point.getX() >= prism.getCenter().getX() &&
 			point.getY() >= prism.getCenter().getY() &&
 			point.getZ() >= prism.getCenter().getZ());
+}
+
+bool	LibMath::collisionRayPrism(Line3D ray, Prism prism)
+{
+	Point3D halfSize(prism.extentX(), prism.extentY(), prism.extentZ());
+
+	LibMath::Vector3 minPoint = prism.getCenter() - halfSize;
+	LibMath::Vector3 maxPoint = prism.getCenter() + halfSize;
+
+	LibMath::Vector3 rayCenter(ray.getCenter().getX(), ray.getCenter().getY(), ray.getCenter().getZ());
+
+	float tMin = -std::numeric_limits<float>::infinity();
+	float tMax = std::numeric_limits<float>::infinity();
+
+	for (int i = 0; i < 3; ++i)
+	{
+		float origin = rayCenter[i];
+		float dir = ray.getDirection()[i];
+		float minBound = minPoint[i];
+		float maxBound = maxPoint[i];
+
+		if (std::abs(dir) < 1e-6f)
+		{
+			// Ray is parallel to slab. No hit if origin not within slab
+			if (origin < minBound || origin > maxBound)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float invD = 1.0f / dir;
+			float t1 = (minBound - origin) * invD;
+			float t2 = (maxBound - origin) * invD;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			tMin = std::max(tMin, t1);
+			tMax = std::min(tMax, t2);
+
+			if (tMin > tMax)
+			{
+				return false;
+			}
+		}
+	}
+
+	// If the intersection is behind the ray origin
+	if (tMax < 0.0f)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool	LibMath::intersectionRayPrism(Line3D ray, Prism prism, Vector3& outputPoint)
+{
+	Point3D halfSize(prism.extentX(), prism.extentY(), prism.extentZ());
+
+	LibMath::Vector3 minPoint = prism.getCenter() - halfSize;
+	LibMath::Vector3 maxPoint = prism.getCenter() + halfSize;
+
+	LibMath::Vector3 rayCenter(ray.getCenter().getX(), ray.getCenter().getY(), ray.getCenter().getZ());
+
+	float tMin = -std::numeric_limits<float>::infinity();
+	float tMax = std::numeric_limits<float>::infinity();
+
+	for (int i = 0; i < 3; ++i)
+	{
+		float origin = rayCenter[i];
+		float dir = ray.getDirection()[i];
+		float minBound = minPoint[i];
+		float maxBound = maxPoint[i];
+
+		if (std::abs(dir) < 1e-6f)
+		{
+			// Ray is parallel to slab. No hit if origin not within slab
+			if (origin < minBound || origin > maxBound)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float invD = 1.0f / dir;
+			float t1 = (minBound - origin) * invD;
+			float t2 = (maxBound - origin) * invD;
+
+			if (t1 > t2)
+			{
+				std::swap(t1, t2);
+			}
+
+			tMin = std::max(tMin, t1);
+			tMax = std::min(tMax, t2);
+
+			if (tMin > tMax)
+			{
+				return false;
+			}
+		}
+	}
+
+	// If the intersection is behind the ray origin
+	if (tMax < 0.0f)
+	{
+		return false;
+	}
+
+	float t = tMin >= 0.0f ? tMin : tMax;
+	outputPoint = ray.getCenter() + ray.getDirection() * t;
+
+	return true;
+}
+
+bool	LibMath::collisionCapsulePrism(Capsule capsule, Prism prism)	// AABB collision only
+{
+	Point3D halfSize(prism.extentX(), prism.extentY(), prism.extentZ());
+
+	LibMath::Vector3 minPoint = prism.getCenter() - halfSize;
+	LibMath::Vector3 maxPoint = prism.getCenter() + halfSize;
+
+	LibMath::Vector3 capLine = capsule.getEnd() - capsule.getStart();
+
+	// Project the box center onto the capsule segment
+	float abLengthSq = capLine.magnitudeSquared();
+	float t = 0.0f;
+
+	if (abLengthSq > 0.0f)
+	{
+		t = (prism.getCenter() - capsule.getStart()).dot(capLine) / abLengthSq;
+		t = clamp(t, 0.0f, 1.0f);
+	}
+
+	Vector3 closestPointOnSegment = capsule.getStart() + capLine * t;
+
+	// Clamp closest point to AABB
+	Vector3 clampedPoint;
+	clampedPoint.m_x = clamp(closestPointOnSegment.m_x, minPoint.m_x, maxPoint.m_x);
+	clampedPoint.m_y = clamp(closestPointOnSegment.m_y, minPoint.m_y, maxPoint.m_y);
+	clampedPoint.m_z = clamp(closestPointOnSegment.m_z, minPoint.m_z, maxPoint.m_z);
+
+	// Compute squared distance
+	Vector3 delta = closestPointOnSegment - clampedPoint;
+	float distSq = delta.dot(delta);
+
+	return distSq <= capsule.getRadius() * capsule.getRadius();
+}
+
+bool	LibMath::intersectionCapsulePrism(Capsule capsule, Prism prism, Vector3& outCorrection)	// AABB collision only
+{
+	Point3D halfSize(prism.extentX(), prism.extentY(), prism.extentZ());
+
+	LibMath::Vector3 minPoint = prism.getCenter() - halfSize;
+	LibMath::Vector3 maxPoint = prism.getCenter() + halfSize;
+
+	LibMath::Vector3 capLine = capsule.getEnd() - capsule.getStart();
+
+	// Project the box center onto the capsule segment
+	float abLengthSq = capLine.magnitudeSquared();
+	float t = 0.0f;
+
+	if (abLengthSq > 0.0f)
+	{
+		t = (prism.getCenter() - capsule.getStart()).dot(capLine) / abLengthSq;
+		t = clamp(t, 0.0f, 1.0f);
+	}
+
+	Vector3 closestPointOnSegment = capsule.getStart() + capLine * t;
+
+	// Clamp closest point to AABB
+	Vector3 clampedPoint;
+	clampedPoint.m_x = clamp(closestPointOnSegment.m_x, minPoint.m_x, maxPoint.m_x);
+	clampedPoint.m_y = clamp(closestPointOnSegment.m_y, minPoint.m_y, maxPoint.m_y);
+	clampedPoint.m_z = clamp(closestPointOnSegment.m_z, minPoint.m_z, maxPoint.m_z);
+
+	// Compute squared distance
+	Vector3 delta = closestPointOnSegment - clampedPoint;
+	float distSq = delta.dot(delta);
+
+	// Check collision
+	if (distSq <= capsule.getRadius() * capsule.getRadius())
+	{
+		float dist = std::sqrt(distSq);
+
+		if (dist > 1e-6f)
+		{
+			// Penetration depth
+			float penetrationDepth = capsule.getRadius() - dist;
+
+			// Normalize delta and multiply by penetration depth for correction
+			LibMath::Vector3 correction = delta * (penetrationDepth / dist);
+			outCorrection = correction;
+		}
+		else
+		{
+			// If distance is zero (exact overlap), push up arbitrarily (e.g. up)
+			outCorrection = LibMath::Vector3(0, capsule.getRadius(), 0);
+		}
+
+		return true;
+	}
+
+	// No collision
+	outCorrection = LibMath::Vector3(0, 0, 0);
+	return false;
 }

@@ -17,6 +17,8 @@ namespace LibMath
 			float, float, float, float,
 			float, float, float, float);
 
+		float*			data();
+
 		Matrix4&		operator=(Matrix4 const);						// copy asignement
 
 		float*			operator[](int);
@@ -49,6 +51,7 @@ namespace LibMath
 		static Matrix4		createRotationZ(Radian);
 
 		static Matrix4		perspective(float, float, float, float);
+		static Matrix4		lookAt(Vector3, Vector3, Vector3);
 
 	private:
 		float m_values[4][4];

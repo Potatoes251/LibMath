@@ -66,21 +66,22 @@ LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(float const val) const
 
 LibMath::Vector2 LibMath::Matrix2x2::operator*(Vector2 const v) const
 {
-	float x = v[0] * m_values[0][0] + v[1] * m_values[0][1];
-	float y = v[0] * m_values[1][0] + v[1] * m_values[1][1];
-	Vector2 product(x, y);
-	return product;
+	float x = m_values[0][0] * v[0] + m_values[1][0] * v[1];
+	float y = m_values[0][1] * v[0] + m_values[1][1] * v[1];
+
+	return Vector2(x, y);
 }
 
 LibMath::Matrix2x2 LibMath::Matrix2x2::operator*(Matrix2x2 const other) const
 {
 	Matrix2x2 product;
-	for (int i = 0; i < 2; i++)
+	for (int col = 0; col < 2; col++)
 	{
-		for (int j = 0; j < 2; j++)
+		for (int row = 0; row < 2; row++)
 		{
-			product[i][j] = m_values[0][j] * other.m_values[i][0] +
-							m_values[1][j] * other.m_values[i][1];
+			product[col][row] =
+				m_values[0][row] * other.m_values[col][0] +
+				m_values[1][row] * other.m_values[col][1];
 		}
 	}
 	return product;
@@ -110,7 +111,7 @@ void LibMath::Matrix2x2::transpose()
 
 float LibMath::Matrix2x2::determinant()
 {
-	return m_values[0][0] * m_values[1][1] - m_values[0][1] * m_values[1][0];
+	return m_values[0][0] * m_values[1][1] - m_values[1][0] * m_values[0][1];
 }
 
 void LibMath::Matrix2x2::minors()
@@ -238,17 +239,22 @@ LibMath::Matrix3x3::Matrix3x3(
 	float val4, float val5, float val6,
 	float val7, float val8, float val9)
 {
-	m_values[0][0] = val1;
-	m_values[0][1] = val2;
-	m_values[0][2] = val3;
+	m_values[0][0] = val1;  // col 0, row 0
+	m_values[0][1] = val2;  // col 0, row 1
+	m_values[0][2] = val3;  // col 0, row 2
 
-	m_values[1][0] = val4;
-	m_values[1][1] = val5;
-	m_values[1][2] = val6;
+	m_values[1][0] = val4;  // col 1, row 0
+	m_values[1][1] = val5;  // col 1, row 1
+	m_values[1][2] = val6;  // col 1, row 2
 
-	m_values[2][0] = val7;
-	m_values[2][1] = val8;
-	m_values[2][2] = val9;
+	m_values[2][0] = val7;  // col 2, row 0
+	m_values[2][1] = val8;  // col 2, row 1
+	m_values[2][2] = val9;  // col 2, row 2
+}
+
+float* LibMath::Matrix3x3::data()
+{
+	return &m_values[0][0];
 }
 
 
@@ -299,13 +305,14 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val) const
 LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 {
 	Matrix3x3 product;
-	for (int i = 0; i < 3; i++)
+	for (int col = 0; col < 3; ++col)       // loop over result columns
 	{
-		for (int j = 0; j < 3;j++)
+		for (int row = 0; row < 3; ++row)   // loop over result rows
 		{
-			product[i][j] = m_values[0][j] * other.m_values[i][0] +
-				m_values[1][j] * other.m_values[i][1] +
-				m_values[2][j] * other.m_values[i][2];
+			product.m_values[col][row] =
+				m_values[0][row] * other.m_values[col][0] +
+				m_values[1][row] * other.m_values[col][1] +
+				m_values[2][row] * other.m_values[col][2];
 		}
 	}
 
@@ -327,24 +334,25 @@ bool LibMath::Matrix3x3::operator==(Matrix3x3 const other) const
 	return true;
 }
 
-LibMath::Matrix2x2 LibMath::Matrix3x3::getMinor(int row, int column)
+LibMath::Matrix2x2 LibMath::Matrix3x3::getMinor(int rowToExclude, int colToExclude)
 {
 	Matrix2x2 minor;
-	int n = 0;
-	int m = 0;
-	for (int i = 0; i < 3; ++i)
+	int minorCol = 0;
+	for (int col = 0; col < 3; ++col)
 	{
-		if (i == row) continue;
+		if (col == colToExclude)
+			continue;
 
-		for (int j = 0; j < 3; ++j)
+		int minorRow = 0;
+		for (int row = 0; row < 3; ++row)
 		{
-			if (j == column) continue;
+			if (row == rowToExclude)
+				continue;
 
-			minor[m][n] = m_values[i][j];
-			++n;
+			minor[minorCol][minorRow] = m_values[col][row];
+			++minorRow;
 		}
-		n = 0;
-		++m;
+		++minorCol;
 	}
 	return minor;
 }
@@ -352,22 +360,22 @@ LibMath::Matrix2x2 LibMath::Matrix3x3::getMinor(int row, int column)
 void LibMath::Matrix3x3::transpose()
 {
 	float temp;
-	for (int i = 0; i < 3; i++)
+	for (int col = 0; col < 3; ++col)
 	{
-		for (int j = i + 1; j < 3; j++)
+		for (int row = col + 1; row < 3; ++row)
 		{
-			temp = m_values[i][j];
-			m_values[i][j] = m_values[j][i];
-			m_values[j][i] = temp;
+			temp = m_values[col][row];
+			m_values[col][row] = m_values[row][col];
+			m_values[row][col] = temp;
 		}
 	}
 }
 
 float LibMath::Matrix3x3::determinant()
 {
-	return (m_values[0][0] * (getMinor(0, 0).determinant())
-		- m_values[0][1] * (getMinor(0, 1).determinant())
-		+ m_values[0][2] * (getMinor(0, 2).determinant()));
+	return (m_values[0][0] * getMinor(0, 0).determinant()
+		- m_values[1][0] * getMinor(0, 1).determinant()
+		+ m_values[2][0] * getMinor(0, 2).determinant());
 }
 
 void LibMath::Matrix3x3::minors()
@@ -401,7 +409,7 @@ void LibMath::Matrix3x3::cofactors()
 void LibMath::Matrix3x3::adjugate()
 {
 	cofactors();
-	//transpose();
+	transpose();
 }
 
 void LibMath::Matrix3x3::inverse()
@@ -445,9 +453,10 @@ LibMath::Matrix3x3& LibMath::Matrix3x3::identity()
 
 LibMath::Matrix3x3& LibMath::Matrix3x3::createScale(Vector2 v)
 {
+	identity();
 	m_values[0][0] = v[0];
 	m_values[1][1] = v[1];
-	m_values[2][2] = 1;
+	m_values[2][2] = 1.f;
 
 	return *this;
 }
@@ -483,25 +492,27 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotation(Point2D point, Radian angl
 	toPivot[2][0] = point.getX();
 	toPivot[2][1] = point.getY();
 
-	return toOrigin * rotation * toPivot;
+	return toPivot * rotation * toOrigin;
 }
 
 LibMath::Matrix3x3 LibMath::Matrix3x3::createTransform(Vector2 translation, Radian rotation, Vector2 scale) 
 {
 	Matrix3x3 transformMatrix;
-
 	transformMatrix.identity();
 
 	float cosTheta = cos(rotation);
 	float sinTheta = sin(rotation);
 
-	transformMatrix[0][0] = cosTheta * scale[0];
-	transformMatrix[0][1] = sinTheta * scale[1];
-	transformMatrix[0][2] = translation[0];
+	transformMatrix.m_values[0][0] = cosTheta * scale[0];   // col 0, row 0
+	transformMatrix.m_values[0][1] = sinTheta * scale[0];   // col 0, row 1
 
-	transformMatrix[1][0] = -sinTheta * scale[0];
-	transformMatrix[1][1] = cosTheta * scale[1];
-	transformMatrix[1][2] = translation[1];
+	transformMatrix.m_values[1][0] = -sinTheta * scale[1];  // col 1, row 0
+	transformMatrix.m_values[1][1] = cosTheta * scale[1];   // col 1, row 1
+
+	transformMatrix.m_values[2][0] = translation[0];        // col 2, row 0
+	transformMatrix.m_values[2][1] = translation[1];        // col 2, row 1
+
+	transformMatrix.m_values[2][2] = 1.0f;
 
 	return transformMatrix;
 }
@@ -515,8 +526,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationX(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[1][1] = cosAngle;
-	rotation[1][2] = -sinAngle;
-	rotation[2][1] = sinAngle;
+	rotation[1][2] = sinAngle;
+	rotation[2][1] = -sinAngle;
 	rotation[2][2] = cosAngle;
 
 	return rotation;
@@ -531,8 +542,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationY(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[2][0] = sinAngle;
-	rotation[0][2] = -sinAngle;
+	rotation[2][0] = -sinAngle;
+	rotation[0][2] = sinAngle;
 	rotation[2][2] = cosAngle;
 
 	return rotation;
@@ -547,8 +558,8 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::createRotationZ(Radian angle)
 	float sinAngle = sin(angle);
 
 	rotation[0][0] = cosAngle;
-	rotation[0][1] = sinAngle;
-	rotation[1][0] = -sinAngle;
+	rotation[0][1] = -sinAngle;
+	rotation[1][0] = sinAngle;
 	rotation[1][1] = cosAngle;
 
 	return rotation;
@@ -589,22 +600,30 @@ LibMath::Matrix4::Matrix4(float val1, float val2, float val3, float val4,
 						float val9, float val10, float val11, float val12,
 						float val13, float val14, float val15, float val16)
 {
-	m_values[0][0] = val1;  
-	m_values[0][1] = val2;  
-	m_values[0][2] = val3;  
-	m_values[0][3] = val4;
-	m_values[1][0] = val5;  
-	m_values[1][1] = val6;  
-	m_values[1][2] = val7;  
-	m_values[1][3] = val8;
-	m_values[2][0] = val9;  
-	m_values[2][1] = val10; 
-	m_values[2][2] = val11; 
-	m_values[2][3] = val12;
-	m_values[3][0] = val13; 
-	m_values[3][1] = val14; 
-	m_values[3][2] = val15; 
-	m_values[3][3] = val16;
+	m_values[0][0] = val1;   // col 0, row 0
+	m_values[0][1] = val2;   // col 0, row 1
+	m_values[0][2] = val3;   // col 0, row 2
+	m_values[0][3] = val4;   // col 0, row 3
+
+	m_values[1][0] = val5;   // col 1, row 0
+	m_values[1][1] = val6;   // col 1, row 1
+	m_values[1][2] = val7;   // col 1, row 2
+	m_values[1][3] = val8;   // col 1, row 3
+
+	m_values[2][0] = val9;   // col 2, row 0
+	m_values[2][1] = val10;  // col 2, row 1
+	m_values[2][2] = val11;  // col 2, row 2
+	m_values[2][3] = val12;  // col 2, row 3
+								
+	m_values[3][0] = val13;  // col 3, row 0
+	m_values[3][1] = val14;  // col 3, row 1
+	m_values[3][2] = val15;  // col 3, row 2
+	m_values[3][3] = val16;  // col 3, row 3
+}
+
+float* LibMath::Matrix4::data()
+{
+	return &m_values[0][0];
 }
 
 LibMath::Matrix4& LibMath::Matrix4::operator=(Matrix4 const other)
@@ -659,10 +678,12 @@ LibMath::Matrix4 LibMath::Matrix4::operator*(Matrix4 const other) const
 	{
 		for (int j = 0; j < 4;j++)
 		{
-			product[i][j] = m_values[0][j] * other.m_values[i][0] +
-							m_values[1][j] * other.m_values[i][1] +
-							m_values[2][j] * other.m_values[i][2] +
-							m_values[3][j] * other.m_values[i][3];
+			float sum = 0.0f;
+			for (int k = 0; k < 4; ++k)
+			{
+				sum += m_values[k][j] * other.m_values[i][k];
+			}
+			product[i][j] = sum;
 		}
 	}
 	return product;
@@ -696,11 +717,11 @@ LibMath::Matrix3x3 LibMath::Matrix4::getMinor(int row, int column)
 		{
 			if (j == column) continue;
 
-			minor[m][n] = m_values[i][j];
-			++n;
+			minor[m][n] = m_values[j][i];
+			++m;
 		}
-		n = 0;
-		++m;
+		m = 0;
+		++n;
 	}
 	return minor;
 }
@@ -724,20 +745,20 @@ void LibMath::Matrix4::transpose()
 
 float LibMath::Matrix4::determinant()
 {
-	return m_values[0][0] * (getMinor(0, 0).determinant())
-		- m_values[0][1] * (getMinor(0, 1).determinant())
-		+ m_values[0][2] * (getMinor(0, 2).determinant())
-		- m_values[0][3] * (getMinor(0, 3).determinant());
+	return m_values[0][0] * getMinor(0, 0).determinant()
+		- m_values[1][0] * getMinor(0, 1).determinant()
+		+ m_values[2][0] * getMinor(0, 2).determinant()
+		- m_values[3][0] * getMinor(0, 3).determinant();
 }
 
 void LibMath::Matrix4::minors()
 {
 	Matrix4 copy = *this;
-	for (int i = 0; i < 4; i++)
+	for (int row = 0; row < 4; row++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int col = 0; col < 4; col++)
 		{
-			m_values[i][j] = copy.getMinor(i, j).determinant();
+			m_values[row][col] = copy.getMinor(row, col).determinant();
 		}
 	}
 }
@@ -760,6 +781,7 @@ void LibMath::Matrix4::cofactors()
 void LibMath::Matrix4::adjugate()
 {
 	cofactors();
+	transpose();
 }
 
 void LibMath::Matrix4::inverse()
@@ -777,7 +799,7 @@ void LibMath::Matrix4::inverse()
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			m_values[i][j] /= det;
+			m_values[j][i] /= det;
 		}
 	}
 }
@@ -835,10 +857,10 @@ LibMath::Matrix4 LibMath::Matrix4::createRotation(Vector3 axis, Radian angle)
 	float z = axis.m_z;
 
 	return Matrix4(
-		cosTheta + x * x * k,		x * y * k + z * sinTheta,	x * z * k - y * sinTheta, 0.0f,
-		y * x * k - z * sinTheta,	cosTheta + y * y * k,		y * z * k + x * sinTheta, 0.0f,
-		z * x * k + y * sinTheta,	z * y * k - x * sinTheta,	cosTheta + z * z * k, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
+		cosTheta + x * x * k,		y * x * k + z * sinTheta,	z * x * k - y * sinTheta,	0.0f,
+		x * y * k - z * sinTheta,	cosTheta + y * y * k,		z * y * k + x * sinTheta,	0.0f,
+		x * z * k + y * sinTheta,	y * z * k - x * sinTheta,	cosTheta + z * z * k,		0.0f,
+		0.0f,						0.0f,						0.0f,						1.0f
 	);
 }
 
@@ -847,10 +869,10 @@ LibMath::Matrix4 LibMath::Matrix4::createTransform(Vector3 position, Vector3 axi
 	Matrix4 rotationMatrix = createRotation(axis, angle);
 
 	return Matrix4(
-		scale[0] * rotationMatrix[0][0], scale[0] * rotationMatrix[0][1], scale[0] * rotationMatrix[0][2], 0.f,
-		scale[1] * rotationMatrix[1][0], scale[1] * rotationMatrix[1][1], scale[1] * rotationMatrix[1][2], 0.f,
-		scale[2] * rotationMatrix[2][0], scale[2] * rotationMatrix[2][1], scale[2] * rotationMatrix[2][2], 0.f,
-		position[0], position[1], position[2], 1.0f
+		scale[0] * rotationMatrix[0][0],	scale[0] * rotationMatrix[0][1],	scale[0] * rotationMatrix[0][2],	0.f,
+		scale[1] * rotationMatrix[1][0],	scale[1] * rotationMatrix[1][1],	scale[1] * rotationMatrix[1][2],	0.f,
+		scale[2] * rotationMatrix[2][0],	scale[2] * rotationMatrix[2][1],	scale[2] * rotationMatrix[2][2],	0.f,
+		position[0],						position[1],						position[2],						1.f
 	);
 }
 
@@ -912,4 +934,23 @@ LibMath::Matrix4 LibMath::Matrix4::perspective(float fov, float aspectRatio, flo
 		0.f,							0.f,			(far + near) / (near - far),		-1.f,
 		0.f,							0.f,			(2 * far * near) / (near - far),	0.f
 	);
+}
+
+LibMath::Matrix4 LibMath::Matrix4::lookAt(Vector3 eye, Vector3 target, Vector3 up)
+{
+	Vector3 zAxis = (eye - target);
+	zAxis.normalize();
+
+	// Compute the right vector (x-axis)
+	Vector3 xAxis = up.cross(zAxis);
+	xAxis.normalize();
+
+	// Recompute the true up vector (y-axis)
+	Vector3 yAxis = zAxis.cross(xAxis);
+
+	return LibMath::Matrix4(
+		xAxis.m_x,				yAxis.m_x,			-zAxis.m_x, .0f,
+		xAxis.m_y,				yAxis.m_y,			-zAxis.m_y, .0f,
+		xAxis.m_z,				yAxis.m_z,			-zAxis.m_z, .0f,
+		-xAxis.dot(eye),		-yAxis.dot(eye),	-zAxis.dot(eye), 1.0f);
 }
