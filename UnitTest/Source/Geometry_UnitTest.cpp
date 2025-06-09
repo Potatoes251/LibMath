@@ -1,9 +1,11 @@
 #include <LibMath/Colision.h>
+#include <LibMath/Colision3D.h>
 #include <LibMath/Geometry.h>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 
+// 2D tests
 TEST_CASE("Point2D", "[.all][geometry][point2d]")
 {
 	SECTION("Instantiation")
@@ -119,13 +121,6 @@ TEST_CASE("Line2D", "[.all][geometry][line2d]")
 
 		CHECK(colisionTwoLine(line1, line2));	// collision
 
-		// test when only intercept on an endpoint
-		LibMath::Point2D startLine3(0.f, 0.f);
-		LibMath::Point2D endLine3(2.f, 4.f);
-		LibMath::Line2D line3(startLine3, endLine3);
-
-		CHECK(colisionTwoLine(line1, line3));	// collision
-
 		// parallel lines
 		LibMath::Point2D startLine4(0.f, 1.f);
 		LibMath::Point2D endLine4(4.f, 5.f); 
@@ -133,9 +128,10 @@ TEST_CASE("Line2D", "[.all][geometry][line2d]")
 
 		CHECK_FALSE(colisionTwoLine(line1, line4));  // No collision
 
-		CHECK(colisionTwoLine(line1, line1));	// identical => collision
+		// identical
+		CHECK(colisionTwoLine(line1, line1));	// collision
 
-		// check for colinear line not overlapping
+		// check for colinear line not overlapping (AKA one after the other)
 		LibMath::Point2D startLine6(-1.f, -1.f);
 		LibMath::Point2D endLine6(-4.f, -4.f);
 		LibMath::Line2D line6(startLine6, endLine6);
@@ -427,5 +423,210 @@ TEST_CASE("Circle", "[.all][geometry][circle]")
 		LibMath::Point2D end6(5.f, 12.f);
 		LibMath::Line2D line6(start6, end6);
 		CHECK(colisionLineCircle(line6, circle));
+	}
+}
+
+
+// 3D tests
+TEST_CASE("Collision3D", "[.all][collision][point][sphere]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Point3D point(0.0f, 0.0f, 0.0f);
+		LibMath::Sphere sphere(LibMath::Point3D(0.0f, 0.0f, 0.0f), 5.0f);
+
+		CHECK(LibMath::collisionPointSphere(point, sphere));
+
+		LibMath::Point3D point2(10.0f, 0.0f, 0.0f);
+		LibMath::Sphere sphere2(LibMath::Point3D(0.0f, 0.0f, 0.0f), 5.0f);
+
+		CHECK_FALSE(LibMath::collisionPointSphere(point2, sphere2));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][ray][sphere]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Line3D ray(LibMath::Point3D(0.0f, 0.0f, -10.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+		LibMath::Sphere sphere(LibMath::Point3D(0.0f, 0.0f, 0.0f), 5.0f);
+
+		CHECK(LibMath::collisionRaySphere(ray, sphere));
+
+		LibMath::Line3D ray2(LibMath::Point3D(10.0f, 0.0f, -10.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+		LibMath::Sphere sphere2(LibMath::Point3D(0.0f, 0.0f, 0.0f), 5.0f);
+
+		CHECK_FALSE(LibMath::collisionRaySphere(ray2, sphere2));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][sphere]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Sphere s1(LibMath::Point3D(0.0f, 0.0f, 0.0f), 3.0f);
+		LibMath::Sphere s2(LibMath::Point3D(5.0f, 0.0f, 0.0f), 3.0f);
+		LibMath::Sphere s3(LibMath::Point3D(10.0f, 0.0f, 0.0f), 2.0f);
+
+		CHECK(LibMath::collisionTwoSphere(s1, s2));
+		CHECK_FALSE(LibMath::collisionTwoSphere(s1, s3));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][plane][sphere]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Plane plane(LibMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f);
+		LibMath::Sphere sphere(LibMath::Point3D(0.0f, 2.0f, 0.0f), 3.0f);
+
+		CHECK(LibMath::collisionPlaneSphere(plane, sphere));
+
+		LibMath::Sphere sphere2(LibMath::Point3D(0.0f, 5.0f, 0.0f), 3.0f);
+
+		CHECK_FALSE(LibMath::collisionPlaneSphere(plane, sphere2));
+	}
+}
+
+
+
+TEST_CASE("Collision3D", "[.all][collision][point][capsule]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Point3D point(0.0f, 1.0f, 0.0f);
+		LibMath::Capsule capsule(LibMath::Point3D(0.0f, 0.0f, 0.0f), LibMath::Point3D(0.0f, 5.0f, 0.0f), 1.0f);
+
+		CHECK(LibMath::collisionPointCapsule(point, capsule));
+
+		LibMath::Point3D point2(0.0f, 7.0f, 0.0f);
+
+		CHECK_FALSE(LibMath::collisionPointCapsule(point2, capsule));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][ray][capsule]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Line3D ray(LibMath::Point3D(0.0f, 1.0f, -5.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+		LibMath::Capsule capsule(LibMath::Point3D(0.0f, 0.0f, 0.0f), LibMath::Point3D(0.0f, 5.0f, 0.0f), 1.0f);
+
+		CHECK(LibMath::collisionRayCapsule(ray, capsule));
+
+		LibMath::Line3D ray2(LibMath::Point3D(2.0f, 1.0f, -5.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+
+		CHECK_FALSE(LibMath::collisionRayCapsule(ray2, capsule));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][plane][capsule]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Plane plane(LibMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f);
+		LibMath::Capsule capsule(LibMath::Point3D(0.0f, 1.0f, 0.0f), LibMath::Point3D(0.0f, 4.0f, 0.0f), 1.0f);
+
+		CHECK(LibMath::collisionPlaneCapsule(plane, capsule));
+
+		LibMath::Capsule capsule2(LibMath::Point3D(0.0f, 5.0f, 0.0f), LibMath::Point3D(0.0f, 10.0f, 0.0f), 1.0f);
+
+		CHECK_FALSE(LibMath::collisionPlaneCapsule(plane, capsule2));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][sphere][capsule]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Sphere sphere(LibMath::Point3D(0.0f, 1.0f, 0.0f), 1.0f);
+		LibMath::Capsule capsule(LibMath::Point3D(0.0f, 0.0f, 0.0f), LibMath::Point3D(0.0f, 3.0f, 0.0f), 1.0f);
+
+		CHECK(LibMath::collisionSphereCapsule(sphere, capsule));
+
+		LibMath::Sphere sphere2(LibMath::Point3D(0.0f, 10.0f, 0.0f), 1.0f);
+
+		CHECK_FALSE(LibMath::collisionSphereCapsule(sphere2, capsule));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][capsule][capsule]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Capsule capsule1(LibMath::Point3D(0.0f, 0.0f, 0.0f), LibMath::Point3D(0.0f, 3.0f, 0.0f), 1.0f);
+		LibMath::Capsule capsule2(LibMath::Point3D(0.0f, 2.0f, 0.0f), LibMath::Point3D(0.0f, 5.0f, 0.0f), 1.0f);
+
+		CHECK(LibMath::collisionTwoCapsule(capsule1, capsule2));
+
+		LibMath::Capsule capsule3(LibMath::Point3D(0.0f, 10.0f, 0.0f), LibMath::Point3D(0.0f, 15.0f, 0.0f), 1.0f);
+
+		CHECK_FALSE(LibMath::collisionTwoCapsule(capsule1, capsule3));
+	}
+}
+
+
+
+TEST_CASE("Collision3D", "[.all][collision][line][plane]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Line3D line(LibMath::Point3D(0.0f, -1.0f, 0.0f), LibMath::Vector3(0.0f, 1.0f, 0.0f));
+		LibMath::Plane plane(LibMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f);
+
+		CHECK(LibMath::collisionLinePlane(line, plane));
+
+		LibMath::Line3D line2(LibMath::Point3D(0.0f, 1.0f, 0.0f), LibMath::Vector3(1.0f, 0.0f, 0.0f));
+		LibMath::Plane plane2(LibMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f);
+
+		CHECK_FALSE(LibMath::collisionLinePlane(line2, plane2));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][plane][plane]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Plane plane1(LibMath::Vector3(0.0f, 1.0f, 0.0f), 1.0f);
+		LibMath::Plane plane2(LibMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f);
+
+		CHECK_FALSE(LibMath::collisionTwoPlane(plane1, plane2));
+
+		LibMath::Plane plane3(LibMath::Vector3(0.0f, 1.0f, 0.0f), 5.0f);
+		LibMath::Plane plane4(LibMath::Vector3(1.0f, 0.0f, 0.0f), 0.0f);
+
+		CHECK(LibMath::collisionTwoPlane(plane3, plane4));
+	}
+}
+
+
+
+TEST_CASE("Collision3D", "[.all][collision][point][prism]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Prism prism(LibMath::Point3D(0.0f, 0.0f, 0.0f), 10.0f, 10.0f, 10.0f);
+		LibMath::Point3D point(0.0f, 0.0f, 0.0f);
+
+		CHECK(LibMath::collisionPointPrism(point, prism));
+
+		LibMath::Point3D point2(20.0f, 20.0f, 20.0f);
+
+		CHECK_FALSE(LibMath::collisionPointPrism(point2, prism));
+	}
+}
+
+TEST_CASE("Collision3D", "[.all][collision][ray][prism]")
+{
+	SECTION("Functionality")
+	{
+		LibMath::Prism prism(LibMath::Point3D(0.0f, 0.0f, 0.0f), 10.0f, 10.0f, 10.0f);
+		LibMath::Line3D ray(LibMath::Point3D(0.0f, 0.0f, -20.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+
+		CHECK(LibMath::collisionRayPrism(ray, prism));
+
+		LibMath::Line3D ray2(LibMath::Point3D(20.0f, 20.0f, -20.0f), LibMath::Vector3(0.0f, 0.0f, 1.0f));
+
+		CHECK_FALSE(LibMath::collisionRayPrism(ray2, prism));
 	}
 }

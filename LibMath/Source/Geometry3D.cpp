@@ -45,27 +45,27 @@ LibMath::Point3D&		LibMath::Point3D::operator=(Point3D const&& other) noexcept
 	return *this;
 }
 
-LibMath::Point3D LibMath::Point3D::operator-() noexcept
+LibMath::Point3D	LibMath::Point3D::operator-() noexcept
 {
 	return Point3D(-m_x, -m_y, -m_z);
 }
 
-LibMath::Vector3 LibMath::Point3D::operator-(Point3D const other) noexcept
+LibMath::Vector3	LibMath::Point3D::operator-(Point3D const& other) const noexcept
 {
 	return Vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
 }
 
-LibMath::Vector3 LibMath::Point3D::operator+(Point3D const other) noexcept
+LibMath::Vector3	LibMath::Point3D::operator+(Point3D const& other) const noexcept
 {
 	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
 }
 
-LibMath::Vector3 LibMath::Point3D::operator-(Vector3 const other) noexcept
+LibMath::Vector3	LibMath::Point3D::operator-(Vector3 const& other) const noexcept
 {
-	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+	return Vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
 }
 
-LibMath::Vector3 LibMath::Point3D::operator+(Vector3 const other) noexcept
+LibMath::Vector3	LibMath::Point3D::operator+(Vector3 const& other) const noexcept
 {
 	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
 }
@@ -87,12 +87,16 @@ float		LibMath::Point3D::getZ() const
 
 float		LibMath::Point3D::distance(Point3D const& other) const
 {
-	return LibMath::squareRoot((m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z));
+	return LibMath::squareRoot((m_x - other.m_x) * (m_x - other.m_x) +
+								(m_y - other.m_y) * (m_y - other.m_y) +
+								(m_z - other.m_z) * (m_z - other.m_z));
 }
 
 float		LibMath::Point3D::distanceSquare(Point3D const& other) const
 {
-	return ((m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z));
+	return ((m_x - other.m_x) * (m_x - other.m_x) + 
+			(m_y - other.m_y) * (m_y - other.m_y) + 
+			(m_z - other.m_z) * (m_z - other.m_z));
 }
 
 
@@ -106,7 +110,9 @@ LibMath::Line3D::Line3D() :
 LibMath::Line3D::Line3D(Point3D center, Vector3 direction) :
 	m_center(center),
 	m_direction(direction)
-{}
+{
+	m_direction.normalize();
+}
 
 LibMath::Point3D	LibMath::Line3D::getCenter() const
 {

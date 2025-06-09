@@ -75,10 +75,11 @@ int main(int argc, char* argv[])
 	*    test are ran                    *
 	*                                    *
 	\************************************/
-	//arguments.push_back("[all],");
+	arguments.push_back("[all],");
 	//arguments.push_back("[angle],");
 	//arguments.push_back("[vector],");
 	//arguments.push_back("[geometry],");
+	//arguments.push_back("[collision],");
 
 
 	/************************************\
@@ -96,19 +97,20 @@ int main(int argc, char* argv[])
 	*    from this section               *
 	*                                    *
 	\************************************/
-	arguments.push_back("Degree,");
-	arguments.push_back("Radian,");
-	arguments.push_back("Trigonometry,");
-	arguments.push_back("Vector2,");
-	arguments.push_back("Vector3,");
-	arguments.push_back("Vector4,");
-	arguments.push_back("Matrix2,");
-	arguments.push_back("Matrix3,");
-	arguments.push_back("Matrix4,");
-	arguments.push_back("Point2D,");
-	arguments.push_back("Line2D,");
-	arguments.push_back("Rectangle,");
-	arguments.push_back("Circle,");
+	//arguments.push_back("Degree,");
+	//arguments.push_back("Radian,");
+	//arguments.push_back("Trigonometry,");
+	//arguments.push_back("Vector2,");
+	//arguments.push_back("Vector3,");
+	//arguments.push_back("Vector4,");
+	//arguments.push_back("Matrix2,");
+	//arguments.push_back("Matrix3,");
+	//arguments.push_back("Matrix4,");
+	//arguments.push_back("Point2D,");
+	//arguments.push_back("Line2D,");
+	//arguments.push_back("Rectangle,");
+	//arguments.push_back("Circle,");
+	//arguments.push_back("Collision3D,");
 
 	/************************************\
 	*                                    *
@@ -125,7 +127,7 @@ int main(int argc, char* argv[])
 	arguments.push_back("-c Arithmetic");
 	arguments.push_back("-c Comparator");
 	arguments.push_back("-c Constant");
-	//arguments.push_back("-c Conversion");
+	arguments.push_back("-c Conversion");
 	arguments.push_back("-c Debug");
 	//arguments.push_back("-c Extra");
 	arguments.push_back("-c Functionality");

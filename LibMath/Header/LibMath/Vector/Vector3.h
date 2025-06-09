@@ -69,6 +69,8 @@ namespace LibMath
 
 		void			translate(Vector3 const&);						// offset this vector by a given distance
 
+		static Vector3		lerp(Vector3 const&, Vector3 const&, float);
+
 		float m_x;
 		float m_y;
 		float m_z;

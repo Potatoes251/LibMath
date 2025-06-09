@@ -8,13 +8,17 @@ bool	LibMath::collisionLinePlane(Line3D line, Plane plane)
 
 bool	LibMath::collisionTwoPlane(Plane plane1, Plane plane2)
 {
-	return plane1.getNormal() != plane2.getNormal();
+	if (plane1.getNormal() != plane2.getNormal() &&
+		plane1.getNormal() != -plane2.getNormal())
+		return true;
+
+	return fabs(plane1.getDistance() - plane2.getDistance()) < g_epsilon;
 }
 
 
 bool	LibMath::collisionPointSphere(Point3D point, Sphere sphere)
 {
-	return sphere.getCenter().distanceSquare(point) - sphere.getRadius() > g_epsilon;
+	return sphere.getCenter().distanceSquare(point) <= sphere.getRadius() * sphere.getRadius();
 }
 
 bool	LibMath::collisionRaySphere(Line3D line3D, Sphere sphere)
@@ -23,7 +27,20 @@ bool	LibMath::collisionRaySphere(Line3D line3D, Sphere sphere)
 
 	float b = m.dot(line3D.getDirection());
 	float c = m.dot(m) - sphere.getRadius() * sphere.getRadius();
-	return 0 <= (b * b * c);
+
+	float delta = b * b - c;
+
+	if (delta < 0.f)
+	{
+		return false;
+	}
+
+	float deltaRoot = LibMath::squareRoot(delta);
+
+	float t1 = -b - deltaRoot;
+	float t2 = -b + deltaRoot;
+
+	return 0 < t1 || 0 < t2;
 }
 
 bool	LibMath::collisionPlaneSphere(Plane plane, Sphere sphere)
@@ -33,7 +50,9 @@ bool	LibMath::collisionPlaneSphere(Plane plane, Sphere sphere)
 
 bool	LibMath::collisionTwoSphere(Sphere sphere1, Sphere sphere2)
 {
-	return sphere1.getCenter().distanceSquare(sphere2.getCenter()) - (sphere1.getRadius() + sphere2.getRadius()) > g_epsilon;
+	float radiusSquared = (sphere1.getRadius() + sphere2.getRadius()) * (sphere1.getRadius() + sphere2.getRadius());
+
+	return sphere1.getCenter().distanceSquare(sphere2.getCenter()) < radiusSquared;
 }
 
 bool	LibMath::collisionPointCapsule(Point3D point, Capsule capsule)
@@ -122,9 +141,11 @@ bool	LibMath::collisionTwoCapsule(Capsule cap1, Capsule cap2)
 
 	if (denom < g_epsilon)
 	{
-		s = 0.0f;
+		s = u.dot(w) / a;
+		s = clamp(s, 0.0f, 1.0f);
+
 		t = e / c;
-		t = (t < 0.0f) ? 0.0f : (t > 1.0f ? 1.0f : t);
+		t = clamp(t, 0.0f, 1.0f);
 	}
 	else
 	{
@@ -140,7 +161,7 @@ bool	LibMath::collisionTwoCapsule(Capsule cap1, Capsule cap2)
 
 	float radiusSquared = (cap1.getRadius() + cap2.getRadius()) * (cap1.getRadius() + cap2.getRadius());
 
-	return C1.distanceSquaredFrom(C2) < radiusSquared;
+	return C1.distanceSquaredFrom(C2) <= radiusSquared;
 }
 
 

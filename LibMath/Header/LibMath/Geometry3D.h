@@ -22,10 +22,10 @@ namespace LibMath
 
 		Point3D operator-() noexcept;
 
-		Vector3 operator-(Point3D const) noexcept;
-		Vector3 operator+(Point3D const) noexcept;
-		Vector3 operator-(Vector3 const) noexcept;
-		Vector3 operator+(Vector3 const) noexcept;
+		Vector3 operator-(Point3D const&) const noexcept;
+		Vector3 operator+(Point3D const&) const noexcept;
+		Vector3 operator-(Vector3 const&) const noexcept;
+		Vector3 operator+(Vector3 const&) const noexcept;
 
 		float			getX() const;					// getter for x value
 		float			getY() const;					// getter for y value

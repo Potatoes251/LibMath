@@ -60,7 +60,7 @@ float LibMath::Vector2::dotProduct(Vector2 const& other) const
 
 float LibMath::Vector2::crossProduct(Vector2 const& other) const
 {
-	return m_x * other.m_x - m_y * other.m_y;
+	return m_x * other.m_y - m_y * other.m_x;
 }
 
 LibMath::Vector2& LibMath::Vector2::operator=(Vector2 const& other)
@@ -407,27 +407,32 @@ void LibMath::Vector3::reflectOnto(Vector3 const& other)
 	m_z = 2 * m_z - oldZ;
 }
 
-std::string LibMath::Vector3::string() const
+std::string		LibMath::Vector3::string() const
 {
 	return "{" + std::to_string(m_x) + "," + std::to_string(m_y) + "," + std::to_string(m_z) + "}";
 }
 
-std::string LibMath::Vector3::stringLong() const
+std::string		LibMath::Vector3::stringLong() const
 {
 	return "Vector3{ x:" + std::to_string(m_x) + ", y:" + std::to_string(m_y) + ", z:" + std::to_string(m_z) + " }";
 }
 
 
-void LibMath::Vector3::translate(Vector3 const& other)
+void	LibMath::Vector3::translate(Vector3 const& other)
 {
 	m_x = other.m_x;
 	m_y = other.m_y;
 	m_z = other.m_z;
 }
 
+LibMath::Vector3	LibMath::Vector3::lerp(Vector3 const& A, Vector3 const& B, float t)
+{
+	return A + (B - A) * t;
+}
 
 
-bool LibMath::operator==(Vector3 const& v1, Vector3 const& v2)
+
+bool	LibMath::operator==(Vector3 const& v1, Vector3 const& v2)
 {
 	return v1.m_x == v2.m_x && 
 		v1.m_y == v2.m_y && 
