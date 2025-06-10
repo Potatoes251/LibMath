@@ -12,7 +12,7 @@ namespace LibMath
 		explicit		Vector2(float);									// set all component to the same value
 						Vector2(float, float);							// set all component individually
 						Vector2(Vector2 const&);						// copy constructor
-						Vector2(Vector2 const&&);						// move constructor
+						Vector2(Vector2 const&&) noexcept;				// move constructor
 						~Vector2() = default;
 
 		Vector2&		operator=(Vector2 const&);						// copy asignement

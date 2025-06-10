@@ -270,9 +270,10 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			CHECK_VECTOR3(scale, scaleGlm);
 		}
 
-		{// Rotation
+		SECTION("Rotation")
+		{
 			SECTION("Euler Angle")
-			{// Euler Angle
+			{
 				LibMath::Vector3 rotate = origin;
 				rotate.rotate(LibMath::Radian{ transformation.m_x }, LibMath::Radian{ transformation.m_y }, LibMath::Radian{ transformation.m_z });
 
@@ -280,8 +281,8 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 
 				CHECK_VECTOR3(rotate, rotateGlm);
 			}
-
-			{// Axis
+			SECTION("Axis")
+			{
 				LibMath::Vector3 rotate = origin;
 				rotate.rotate(-3_rad, transformation);
 
@@ -289,8 +290,8 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 
 				CHECK_VECTOR3(rotate, rotateGlm);
 			}
-
-			{// Quaternion
+			SECTION("Quaternion")
+			{
 				// todo
 			}
 		}

@@ -75,10 +75,11 @@ int main(int argc, char* argv[])
 	*    test are ran                    *
 	*                                    *
 	\************************************/
-	arguments.push_back("[all],");
+	//arguments.push_back("[all],");
 	//arguments.push_back("[angle],");
 	//arguments.push_back("[vector],");
 	//arguments.push_back("[geometry],");
+	arguments.push_back("[geometry3D],");
 	//arguments.push_back("[collision],");
 
 

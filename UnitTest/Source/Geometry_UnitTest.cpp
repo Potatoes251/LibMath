@@ -427,7 +427,135 @@ TEST_CASE("Circle", "[.all][geometry][circle]")
 }
 
 
-// 3D tests
+// 3D object tests
+TEST_CASE("Point3D", "[.all][geometry3D][point3d]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Point3D defaultPt;
+		CHECK(defaultPt.getX() == 0.0f);
+		CHECK(defaultPt.getY() == 0.0f);
+		CHECK(defaultPt.getZ() == 0.0f);
+
+		LibMath::Point3D p1(1.0f, 2.0f, 3.0f);
+		CHECK(p1.getX() == 1.0f);
+		CHECK(p1.getY() == 2.0f);
+		CHECK(p1.getZ() == 3.0f);
+
+		LibMath::Point3D copy(p1);
+		CHECK(copy.getX() == 1.0f);
+		CHECK(copy.getY() == 2.0f);
+		CHECK(copy.getZ() == 3.0f);
+
+		LibMath::Point3D moved(std::move(p1));
+		CHECK(moved.getX() == 1.0f);
+		CHECK(moved.getY() == 2.0f);
+		CHECK(moved.getZ() == 3.0f);
+	}
+}
+
+TEST_CASE("Line3D", "[.all][geometry3D][line3d]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Point3D origin(0.0f, 0.0f, 0.0f);
+		LibMath::Vector3 dir(1.0f, 0.0f, 0.0f);
+		LibMath::Line3D l(origin, dir);
+
+		CHECK(l.getCenter().getX() == 0.0f);
+		CHECK(l.getCenter().getY() == 0.0f);
+		CHECK(l.getCenter().getZ() == 0.0f);
+		CHECK(l.getDirection() == dir);
+	}
+}
+
+TEST_CASE("Plane", "[.all][geometry3D][plane]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Vector3 normal(0.0f, 1.0f, 0.0f);
+		float dist = 5.0f;
+		LibMath::Plane plane(normal, dist);
+
+		CHECK(plane.getNormal() == normal);
+		CHECK(plane.getDistance() == 5.0f);
+	}
+}
+
+TEST_CASE("Prism", "[.all][geometry3D][prism]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Point3D center(0.0f, 0.0f, 0.0f);
+		float w = 4.0f, h = 6.0f, d = 2.0f;
+		LibMath::Matrix3x3 rot;
+
+		LibMath::Prism p(center, w, h, d, rot);
+
+		CHECK(p.getCenter().getX() == 0.0f);
+		CHECK(p.getCenter().getY() == 0.0f);
+		CHECK(p.getCenter().getZ() == 0.0f);
+		CHECK(p.getWidth() == w);
+		CHECK(p.getHeight() == h);
+		CHECK(p.getDepth() == d);
+		CHECK(p.extentX() == w / 2.0f);
+		CHECK(p.extentY() == h / 2.0f);
+		CHECK(p.extentZ() == d / 2.0f);
+	}
+}
+
+TEST_CASE("Sphere", "[.all][geometry3D][sphere]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Point3D center(0.0f, 0.0f, 0.0f);
+		float radius = 3.5f;
+		LibMath::Sphere s(center, radius);
+
+		CHECK(s.getCenter().getX() == 0.0f);
+		CHECK(s.getCenter().getY() == 0.0f);
+		CHECK(s.getCenter().getZ() == 0.0f);
+		CHECK(s.getRadius() == 3.5f);
+
+		LibMath::Sphere copy(s);
+		CHECK(copy.getCenter().getX() == 0.0f);
+		CHECK(copy.getCenter().getY() == 0.0f);
+		CHECK(copy.getCenter().getZ() == 0.0f);
+		CHECK(copy.getRadius() == 3.5f);
+	}
+}
+
+TEST_CASE("Capsule", "[.all][geometry3D][capsule]")
+{
+	SECTION("Instantiation")
+	{
+		LibMath::Point3D a(1.0f, 0.0f, 0.0f);
+		LibMath::Point3D b(0.0f, 1.0f, 0.0f);
+		float r = 2.0f;
+
+		LibMath::Capsule c(a, b, r);
+		CHECK(c.getStart().getX() == 1.0f);
+		CHECK(c.getStart().getY() == .0f);
+		CHECK(c.getStart().getZ() == .0f);
+		CHECK(c.getEnd().getX() == .0f);
+		CHECK(c.getEnd().getY() == 1.0f);
+		CHECK(c.getEnd().getZ() == .0f);
+		CHECK(c.getRadius() == 2.0f);
+
+		LibMath::Capsule copy(c);
+		CHECK(copy.getStart().getX() == 1.0f);
+		CHECK(copy.getStart().getY() == .0f);
+		CHECK(copy.getStart().getZ() == .0f);
+		CHECK(copy.getEnd().getX() == .0f);
+		CHECK(copy.getEnd().getY() == 1.0f);
+		CHECK(copy.getEnd().getZ() == .0f);
+		CHECK(copy.getRadius() == 2.0f);
+	}
+}
+
+
+
+// 3D collisions tests
 TEST_CASE("Collision3D", "[.all][collision][point][sphere]")
 {
 	SECTION("Functionality")
@@ -550,7 +678,7 @@ TEST_CASE("Collision3D", "[.all][collision][sphere][capsule]")
 	}
 }
 
-TEST_CASE("Collision3D", "[.all][collision][capsule][capsule]")
+TEST_CASE("Collision3D", "[.all][collision][capsule]")
 {
 	SECTION("Functionality")
 	{
@@ -583,7 +711,7 @@ TEST_CASE("Collision3D", "[.all][collision][line][plane]")
 	}
 }
 
-TEST_CASE("Collision3D", "[.all][collision][plane][plane]")
+TEST_CASE("Collision3D", "[.all][collision][plane]")
 {
 	SECTION("Functionality")
 	{
