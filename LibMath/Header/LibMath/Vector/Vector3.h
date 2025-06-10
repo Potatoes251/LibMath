@@ -6,6 +6,7 @@
 
 #include "LibMath/Angle/Radian.h"
 #include "Vector2.h"
+#include "LibMath/Trigonometry.h"
 
 namespace LibMath
 {

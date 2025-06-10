@@ -24,7 +24,7 @@ namespace LibMath
 
 		Matrix3x3		operator+(Matrix3x3 const) const;
 		Matrix3x3		operator*(float const) const;
-		//Vector3			operator*(Vector3 const);
+		Vector3			operator*(Vector3 const) const;
 		Matrix3x3		operator*(Matrix3x3 const) const;
 
 		bool			operator==(Matrix3x3 const) const;

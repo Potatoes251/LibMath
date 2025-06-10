@@ -53,6 +53,10 @@ TEST_CASE("Matrix2", "[.all][matrix][matrix2]")
 		glm::mat2 identityGlm = glm::mat2(1.0f);
 
 		CHECK_MATRIX2(identity, identityGlm);
+
+		// OpenGL compatibility
+		CHECK(sizeof LibMath::Matrix2x2 == sizeof glm::mat2);
+		CHECK(memcmp(&components, &componentsGlm, sizeof components) == 0);
 	}
 
 	SECTION("Arithmetic")
@@ -266,6 +270,43 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 		glm::mat3 identityGlm = glm::mat3(1.0f);
 
 		CHECK_MATRIX3(identity, identityGlm);
+
+		// OpenGL compatibility
+		CHECK(sizeof LibMath::Matrix3x3 == sizeof glm::mat3);
+		CHECK(memcmp(&components, &componentsGlm, sizeof components) == 0);
+	}
+
+	SECTION("Accessor")
+	{
+		LibMath::Matrix3x3 mat{
+		1.0f, 2.0f, 3.0f,
+		4.0f, 5.0f, 6.0f,
+		7.0f, 8.0f, 9.0f
+		};
+
+		// Const accessor
+		{
+			CHECK(mat[0][0] == 1.0f);
+			CHECK(mat[0][1] == 2.0f);
+			CHECK(mat[0][2] == 3.0f);
+			CHECK(mat[1][0] == 4.0f);
+			CHECK(mat[1][1] == 5.0f);
+			CHECK(mat[1][2] == 6.0f);
+			CHECK(mat[2][0] == 7.0f);
+			CHECK(mat[2][1] == 8.0f);
+			CHECK(mat[2][2] == 9.0f);
+		}
+
+		// Mutator accessor
+		{
+			mat[0][0] += 10.0f;
+			mat[1][1] += 10.0f;
+			mat[2][2] += 10.0f;
+
+			CHECK(mat[0][0] == 11.0f);
+			CHECK(mat[1][1] == 15.0f);
+			CHECK(mat[2][2] == 19.0f);
+		}
 	}
 
 	SECTION("Arithmetic")
@@ -294,6 +335,10 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			{3.0f, 2.0f, 1.0f}
 		};
 
+		LibMath::Vector3 vec{ 0,1,2 };
+
+		glm::vec3 vecGlm{ 0,1,2 };
+
 		{// sum
 			LibMath::Matrix3x3 sum = matA + matB;
 			glm::mat3 resultGlm = matAGlm + matBGlm;
@@ -307,6 +352,16 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			glm::mat3 resultGlm = matAGlm * matBGlm;
 
 			CHECK_MATRIX3(result, resultGlm);
+		}
+
+		// matrix-vector product
+		{
+			LibMath::Vector3 result = matA * vec;
+			glm::vec3 resultGlm = matAGlm * vecGlm;
+
+			CHECK(result.m_x == Catch::Approx(resultGlm.x));
+			CHECK(result.m_y == Catch::Approx(resultGlm.y));
+			CHECK(result.m_z == Catch::Approx(resultGlm.z));
 		}
 
 		{// matrix float product
@@ -471,6 +526,51 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			CHECK(determinant == determinantGlm);
 		}
 
+		
+		{// Minors
+			LibMath::Matrix3x3 matCopy = mat;
+			matCopy.minors();
+
+			LibMath::Matrix3x3 expectedMinors(
+				402.0f, 318.0f, -3.0f,
+				156.0f, 69.0f, -6.0f,
+				-3.0f, -6.0f, -3.0f
+			);
+
+			CHECK(matCopy == expectedMinors);
+		}
+
+		{// Cofactors
+			LibMath::Matrix3x3 matCopy = mat;
+			matCopy.cofactors();
+
+			LibMath::Matrix3x3 expectedCofactors(
+				402.0f, -318.0f, -3.0f,
+				-156.0f, 69.0f, 6.0f,
+				-3.0f, 6.0f, -3.0f
+			);
+
+			CHECK(matCopy == expectedCofactors);
+		}
+
+		{// adjugate
+			LibMath::Matrix3x3 matrix(
+				3, 0, 2,
+				2, 0, -2,
+				0, 1, 1);
+
+			LibMath::Matrix3x3 adjugate = matrix;
+			adjugate.adjugate();
+
+			glm::mat3 glmMat(
+				{ 3, 0, 2 },
+				{ 2, 0, -2 },
+				{ 0, 1, 1 });
+			glm::mat3 glmAdjugate = glm::transpose(glm::inverse(glmMat) * glm::determinant(glmMat));
+
+			CHECK_MATRIX3(adjugate, glmAdjugate);
+		}
+
 		{// inverse
 			LibMath::Matrix3x3 inverseMatrix = mat;
 			inverseMatrix.inverse();
@@ -530,6 +630,10 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 		glm::mat4 identityGlm = glm::mat4(1.0f);
 
 		CHECK_MATRIX4(identity, identityGlm);
+
+		// OpenGL compatibility
+		CHECK(sizeof LibMath::Matrix4 == sizeof glm::mat4);
+		CHECK(memcmp(&components, &componentsGlm, sizeof components) == 0);
 	}
 
 	SECTION("Arithmetic")
@@ -562,6 +666,9 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			{4.0f, 3.0f, 2.0f, 1.0f}
 		};
 
+		LibMath::Vector4 vec{ 0,1,2,3 };
+
+		glm::vec4 vecGlm{ 0,1,2,3 };
 
 		{// sum
 			LibMath::Matrix4 sum = matA + matB;
@@ -576,6 +683,17 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			glm::mat4 resultGlm = matAGlm * matBGlm;
 
 			CHECK_MATRIX4(result, resultGlm);
+		}
+
+		// matrix-vector product
+		{
+			LibMath::Vector4 result = matA * vec;
+			glm::vec4 resultGlm = matAGlm * vecGlm;
+
+			CHECK(result.m_x == Catch::Approx(resultGlm.x));
+			CHECK(result.m_y == Catch::Approx(resultGlm.y));
+			CHECK(result.m_z == Catch::Approx(resultGlm.z));
+			CHECK(result.m_w == Catch::Approx(resultGlm.w));
 		}
 
 		{// matrix float product

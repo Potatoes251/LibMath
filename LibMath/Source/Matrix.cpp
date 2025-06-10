@@ -302,6 +302,20 @@ LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(float const val) const
 	return res;
 }
 
+LibMath::Vector3 LibMath::Matrix3x3::operator*(Vector3 const vec) const
+{
+	Vector3 result;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		result[i] = m_values[0][i] * vec[0] +
+			m_values[1][i] * vec[1] +
+			m_values[2][i] * vec[2];
+	}
+
+	return result;
+}
+
 LibMath::Matrix3x3 LibMath::Matrix3x3::operator*(Matrix3x3 const other) const
 {
 	Matrix3x3 product;
@@ -666,6 +680,20 @@ LibMath::Matrix4 LibMath::Matrix4::operator*(float const val) const
 		{
 			product[i][j] = m_values[i][j] * val;
 		}
+	}
+
+	return product;
+}
+
+LibMath::Vector4 LibMath::Matrix4::operator*(Vector4 const vec) const
+{
+	Vector4 product;
+	for (int i = 0; i < 4; ++i)
+	{
+		product[i] = m_values[0][i] * vec[0] +
+			m_values[1][i] * vec[1] +
+			m_values[2][i] * vec[2] +
+			m_values[3][i] * vec[3];
 	}
 
 	return product;

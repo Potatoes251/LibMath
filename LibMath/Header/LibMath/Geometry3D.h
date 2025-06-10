@@ -92,8 +92,6 @@ namespace LibMath
 		Matrix3x3		getRotation() const;			// getter for the rotation
 		Point3D			getCenter() const;				// getter for the center
 
-		void			getCorners(Point3D corners[8]);	// return the 8 corners
-
 	private:
 		Point3D		m_center;
 		float		m_width;

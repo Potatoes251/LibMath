@@ -196,6 +196,11 @@ LibMath::Vector2 LibMath::Vector2::reflectOnto(const Vector2& other) const
 	return Vector2(2 * projection.m_x - m_x, 2 * projection.m_y - m_y);
 }
 
+LibMath::Vector2 LibMath::Vector2::lerp(Vector2 const& A, Vector2 const& B, float t)
+{
+	return A + (B - A) * t;
+}
+
 
 
 
@@ -407,6 +412,75 @@ void LibMath::Vector3::reflectOnto(Vector3 const& other)
 	m_z = 2 * m_z - oldZ;
 }
 
+void LibMath::Vector3::rotate(Radian roll, Radian pitch, Radian yaw)
+{
+	// Match glm's yawPitchRoll function
+	float tmp_ch = cos(yaw);
+	float tmp_sh = sin(yaw);
+	float tmp_cp = cos(pitch);
+	float tmp_sp = sin(pitch);
+	float tmp_cb = cos(roll);
+	float tmp_sb = sin(roll);
+
+	float xNew = tmp_ch * tmp_cb + tmp_sh * tmp_sp * tmp_sb;
+	float yNew = tmp_sb * tmp_cp;
+	float zNew = -tmp_sh * tmp_cb + tmp_ch * tmp_sp * tmp_sb;
+
+	float xNew2 = -tmp_ch * tmp_sb + tmp_sh * tmp_sp * tmp_cb;
+	float yNew2 = tmp_cb * tmp_cp;
+	float zNew2 = tmp_sb * tmp_sh + tmp_ch * tmp_sp * tmp_cb;
+
+	float xNew3 = tmp_sh * tmp_cp;
+	float yNew3 = -tmp_sp;
+	float zNew3 = tmp_ch * tmp_cp;
+
+	// Multiply vector by rotation matrix (column-major order):
+	float newX = xNew * m_x + xNew2 * m_y + xNew3 * m_z;
+	float newY = yNew * m_x + yNew2 * m_y + yNew3 * m_z;
+	float newZ = zNew * m_x + zNew2 * m_y + zNew3 * m_z;
+
+	m_x = newX;
+	m_y = newY;
+	m_z = newZ;
+}
+
+void	LibMath::Vector3::rotate(Radian angle, Vector3 const& axis)
+{
+	Vector3 normAxis = axis;
+	normAxis.normalize();
+
+	float cosA = cos(angle);
+	float sinA = sin(angle);
+	float oneMinusCos = 1.0f - cosA;
+
+	float x = m_x;
+	float y = m_y;
+	float z = m_z;
+
+	float u = normAxis.m_x;
+	float v = normAxis.m_y;
+	float w = normAxis.m_z;
+
+	m_x = (u * u + (1 - u * u) * cosA) * x +
+		(u * v * (oneMinusCos) - w * sinA) * y +
+		(u * w * (oneMinusCos) + v * sinA) * z;
+
+	m_y = (u * v * (oneMinusCos) + w * sinA) * x +
+		(v * v + (1 - v * v) * cosA) * y +
+		(v * w * (oneMinusCos) - u * sinA) * z;
+
+	m_z = (u * w * (oneMinusCos) - v * sinA) * x +
+		(v * w * (oneMinusCos) + u * sinA) * y +
+		(w * w + (1 - w * w) * cosA) * z;
+}
+
+void	LibMath::Vector3::scale(Vector3 const& factor)
+{
+	m_x *= factor.m_x;
+	m_y *= factor.m_y;
+	m_z *= factor.m_z;
+}
+
 std::string		LibMath::Vector3::string() const
 {
 	return "{" + std::to_string(m_x) + "," + std::to_string(m_y) + "," + std::to_string(m_z) + "}";
@@ -420,9 +494,9 @@ std::string		LibMath::Vector3::stringLong() const
 
 void	LibMath::Vector3::translate(Vector3 const& other)
 {
-	m_x = other.m_x;
-	m_y = other.m_y;
-	m_z = other.m_z;
+	m_x += other.m_x;
+	m_y += other.m_y;
+	m_z += other.m_z;
 }
 
 LibMath::Vector3	LibMath::Vector3::lerp(Vector3 const& A, Vector3 const& B, float t)
@@ -574,9 +648,10 @@ LibMath::Vector4 LibMath::Vector4::operator/(float val) const
 
 LibMath::Vector4& LibMath::Vector4::operator+=(Vector4 const& other)
 {
-	m_x *= other.m_x;
-	m_y *= other.m_y;
-	m_z *= other.m_z;
+	m_x += other.m_x;
+	m_y += other.m_y;
+	m_z += other.m_z;
+	m_w += other.m_w;
 
 	return *this;
 }
@@ -586,6 +661,7 @@ LibMath::Vector4& LibMath::Vector4::operator*=(float val)
 	m_x *= val;
 	m_y *= val;
 	m_z *= val;
+	m_w *= val;
 
 	return *this;
 }
@@ -595,6 +671,7 @@ LibMath::Vector4& LibMath::Vector4::operator/=(float val)
 	m_x /= val;
 	m_y /= val;
 	m_z /= val;
+	m_w /= val;
 
 	return *this;
 }

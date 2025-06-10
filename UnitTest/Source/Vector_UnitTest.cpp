@@ -48,6 +48,14 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 		emptyGlm = allParamGlm;
 		CHECK_VECTOR3(empty, emptyGlm);
 
+		// ctor with vec2 + float
+		LibMath::Vector2 baseVec2{ 1.0f, 2.0f };
+		float z = 3.5f;
+		LibMath::Vector3 fromVec2Float{ baseVec2, z };
+
+		glm::vec3 expectedVec3{ 1.0f, 2.0f, z };
+		CHECK_VECTOR3(fromVec2Float, expectedVec3);
+
 		// OpenGL compatibility
 		CHECK(sizeof LibMath::Vector3 == sizeof glm::vec3);
 		CHECK(memcmp(&allParam, &allParamGlm, sizeof allParam) == 0);
@@ -147,8 +155,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 		glm::vec3 const smallGlm{ 2.5f, .5f, 2.f };
 		glm::vec3 const bigGlm{ 3.75f, 3.f, .75f };
 
-		SECTION("Addition")
-		{
+		{// Addition
 			{
 				LibMath::Vector3 sumAssignment = big;
 				sumAssignment += small;
@@ -168,8 +175,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			}
 		}
 
-		SECTION("Opposite")
-		{
+		{// Opposite
 			LibMath::Vector3 opposite = -LibMath::Vector3{ 3.7f, 3.f, .7f };
 
 			glm::vec3 oppositeGlm = -glm::vec3{ 3.7f, 3.f, .7f };
@@ -177,8 +183,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			CHECK_VECTOR3(opposite, oppositeGlm);
 		}
 
-		SECTION("Substraction")
-		{
+		{// Substraction
 			{
 				LibMath::Vector3 differenceAssignment = big;
 				differenceAssignment -= small;
@@ -198,8 +203,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			}
 		}
 
-		SECTION("Multiplication")
-		{
+		{// Multiplication
 			{
 				LibMath::Vector3 productAssignment = big;
 				productAssignment *= small;
@@ -219,8 +223,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			}
 		}
 
-		SECTION("Division")
-		{
+		{// Division
 			{
 				LibMath::Vector3 quotientAssignment = big;
 				quotientAssignment /= small;
@@ -249,8 +252,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 		glm::vec4 const originGlm{ 2.5f, .5f, 2.f, 1.f };
 		glm::vec3 const transformationGlm{ -2.f, 0.f, 1.25f };
 
-		SECTION("Translation")
-		{
+		{// Translation
 			LibMath::Vector3 translate = origin;
 			translate.translate(transformation);
 
@@ -259,8 +261,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			CHECK_VECTOR3(translate, translateGlm);
 		}
 
-		SECTION("Scale")
-		{
+		{// Scale
 			LibMath::Vector3 scale = origin;
 			scale.scale(transformation);
 
@@ -269,10 +270,9 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			CHECK_VECTOR3(scale, scaleGlm);
 		}
 
-		SECTION("Rotation")
-		{
+		{// Rotation
 			SECTION("Euler Angle")
-			{
+			{// Euler Angle
 				LibMath::Vector3 rotate = origin;
 				rotate.rotate(LibMath::Radian{ transformation.m_x }, LibMath::Radian{ transformation.m_y }, LibMath::Radian{ transformation.m_z });
 
@@ -281,8 +281,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 				CHECK_VECTOR3(rotate, rotateGlm);
 			}
 
-			SECTION("Axis")
-			{
+			{// Axis
 				LibMath::Vector3 rotate = origin;
 				rotate.rotate(-3_rad, transformation);
 
@@ -291,8 +290,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 				CHECK_VECTOR3(rotate, rotateGlm);
 			}
 
-			SECTION("Quaternion")
-			{
+			{// Quaternion
 				// todo
 			}
 		}
@@ -415,6 +413,17 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			glm::vec3 reflectGlm = glm::reflect(baseGlm, glm::normalize(otherGlm));
 
 			CHECK_VECTOR3(reflect, reflectGlm);
+		}
+
+		SECTION("Lerp")
+		{
+			float t = 0.5f;
+
+			LibMath::Vector3 result = LibMath::Vector3::lerp(base, other, t);
+
+			glm::vec3 glmResult = glm::mix(baseGlm, otherGlm, t);
+
+			CHECK_VECTOR3(result, glmResult);
 		}
 	}
 
@@ -732,6 +741,17 @@ TEST_CASE("Vector2", "[.all][vector][vector2]")
 
 			CHECK_VECTOR2(reflect, reflectGlm);
 		}
+
+		SECTION("Lerp")
+		{
+			float t = 0.5f;
+
+			LibMath::Vector2 result = LibMath::Vector2::lerp(base, other, t);
+
+			glm::vec2 glmResult = glm::mix(baseGlm, otherGlm, t);
+
+			CHECK_VECTOR2(result, glmResult);
+		}
 	}
 
 	SECTION("Debug")
@@ -780,9 +800,79 @@ TEST_CASE("Vector4", "[.all][vector][Vector4]")
 		emptyGlm = allParamGlm;
 		CHECK_VECTOR4(empty, emptyGlm);
 
+		// ctor with vec2 + float
+		LibMath::Vector3 baseVec3{ 1.0f, 2.0f, 3.0f };
+		float z = 3.5f;
+		LibMath::Vector4 fromVec3Float{ baseVec3, z };
+
+		glm::vec4 expectedVec4{ 1.0f, 2.0f, 3.0f, z };
+		CHECK_VECTOR4(fromVec3Float, expectedVec4);
+
 		// OpenGL compatibility
 		CHECK(sizeof LibMath::Vector4 == sizeof glm::vec4);
 		CHECK(memcmp(&allParam, &allParamGlm, sizeof allParam) == 0);
+	}
+
+	SECTION("Arithmetic")
+	{
+		LibMath::Vector4 v1{ 1.0f, 2.0f, 3.0f, 4.0f };
+		LibMath::Vector4 v2{ 2.0f, 4.0f, 6.0f, 8.0f };
+		float scalar = 2.0f;
+
+		glm::vec4 glmV1{ 1.0f, 2.0f, 3.0f, 4.0f };
+		glm::vec4 glmV2{ 2.0f, 4.0f, 6.0f, 8.0f };
+		float glmScalar = 2.0f;
+
+		{// Addition
+
+			{
+				LibMath::Vector4 resultAdd = v1 + v2;
+				glm::vec4 glmResultAdd = glmV1 + glmV2;
+				CHECK_VECTOR4(resultAdd, glmResultAdd);
+			}
+
+			{
+				LibMath::Vector4 temp = v1;
+				temp += v2;
+				glm::vec4 glmTemp = glmV1;
+				glmTemp += glmV2;
+				CHECK_VECTOR4(temp, glmTemp);
+			}
+		}
+
+		{// float multiplication
+
+			{
+				LibMath::Vector4 resultMul = v1 * scalar;
+				glm::vec4 glmResultMul = glmV1 * glmScalar;
+				CHECK_VECTOR4(resultMul, glmResultMul);
+			}
+
+			{
+				LibMath::Vector4 temp = v1;
+				temp *= scalar;
+				glm::vec4 glmTemp = glmV1;
+				glmTemp *= glmScalar;
+				CHECK_VECTOR4(temp, glmTemp);
+			}
+		}
+
+		{// float division
+
+			{
+				LibMath::Vector4 resultDiv = v2 / scalar;
+				glm::vec4 glmResultDiv = glmV2 / glmScalar;
+				CHECK_VECTOR4(resultDiv, glmResultDiv);
+			}
+
+			{
+				LibMath::Vector4 temp = v2;
+				temp /= scalar;
+				glm::vec4 glmTemp = glmV2;
+				glmTemp /= glmScalar;
+				CHECK_VECTOR4(temp, glmTemp);
+			}
+		}
 	}
 
 	SECTION("Accessor")
@@ -876,6 +966,16 @@ TEST_CASE("Vector4", "[.all][vector][Vector4]")
 
 				CHECK(magnitudeSquare == Catch::Approx(magnitudeSquareGlm));
 			}
+		}
+
+		{// Homogenize
+			LibMath::Vector4 homogenize{ 2.0f, 4.0f, 6.0f, 2.0f };
+			homogenize.homogenize();
+
+
+			glm::vec4 expected{ 1.0f, 2.0f, 3.0f, 1.0f };
+
+			CHECK_VECTOR4(homogenize, expected);
 		}
 	}
 }

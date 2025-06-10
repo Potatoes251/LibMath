@@ -25,6 +25,7 @@ namespace LibMath
 
 		Matrix4			operator+(Matrix4 const) const;
 		Matrix4			operator*(float const) const;
+		Vector4			operator*(Vector4 const) const;
 		Matrix4			operator*(Matrix4 const) const;
 
 		bool			operator==(Matrix4 const) const;

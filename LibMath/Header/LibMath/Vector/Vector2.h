@@ -50,6 +50,8 @@ namespace LibMath
 		Vector2			projectOnto(const Vector2& other) const;		// project a vector onto an other
 		Vector2			reflectOnto(const Vector2& other) const;		// reflect a vector onto an other
 
+		static Vector2		lerp(Vector2 const&, Vector2 const&, float);
+
 		float m_x;
 		float m_y;
 	};
