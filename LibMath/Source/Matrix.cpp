@@ -1,5 +1,6 @@
 #include "LibMath/Matrix.h"
 #include "LibMath/Trigonometry.h"
+#include "LibMath/Quaternion.h"
 
 
 LibMath::Matrix2x2::Matrix2x2()

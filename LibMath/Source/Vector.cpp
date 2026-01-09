@@ -156,7 +156,7 @@ bool LibMath::Vector2::isUnitVector() const
 	return 1 == magnitudeSquared();
 }
 
-void LibMath::Vector2::normalize()
+LibMath::Vector2& LibMath::Vector2::normalize()
 {
 	if (!isUnitVector())
 	{
@@ -165,6 +165,7 @@ void LibMath::Vector2::normalize()
 		m_x = m_x / magnitude;
 		m_y = m_y / magnitude;
 	}
+	return *this;
 }
 
 LibMath::Radian LibMath::Vector2::angleBetween(Vector2 const& other) const
@@ -375,12 +376,14 @@ float LibMath::Vector3::magnitudeSquared() const
 	return m_x * m_x + m_y * m_y + m_z * m_z;
 }
 
-void LibMath::Vector3::normalize()
+LibMath::Vector3& LibMath::Vector3::normalize()
 {
 	float mag = magnitude();
 	m_x /= mag;
 	m_y /= mag;
 	m_z /= mag;
+
+	return *this;
 }
 
 void LibMath::Vector3::projectOnto(Vector3 const& other)
@@ -696,7 +699,7 @@ float& LibMath::Vector4::operator[](int index)
 	}
 	else
 	{
-		throw std::out_of_range("Invalid index: Vector2 only supports indices 0, 1, 2 and 3.");
+		throw std::out_of_range("Invalid index: Vector4 only supports indices 0, 1, 2 and 3.");
 	}
 }
 

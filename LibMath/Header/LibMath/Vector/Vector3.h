@@ -53,7 +53,7 @@ namespace LibMath
 		float			magnitude() const;								// return vector magnitude
 		float			magnitudeSquared() const;						// return square value of the vector magnitude
 
-		void			normalize();									// scale this vector to have a magnitude of 1
+		Vector3&		normalize();									// scale this vector to have a magnitude of 1
 
 		void			projectOnto(Vector3 const&);					// project this vector onto an other
 

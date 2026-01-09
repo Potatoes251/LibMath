@@ -44,7 +44,7 @@ namespace LibMath
 
 		bool			isUnitVector() const;							// return true if this vector magnitude is 1
 
-		void			normalize();									// scale this vector to have a magnitude of 1
+		Vector2&		normalize();									// scale this vector to have a magnitude of 1
 
 		Radian			angleBetween(const Vector2& other) const;		// find the angle between 2 vector
 		Vector2			projectOnto(const Vector2& other) const;		// project a vector onto an other
