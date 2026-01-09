@@ -88,29 +88,29 @@ LibMath::Quaternion& LibMath::Quaternion::conjugate()
 	return *this;
 }
 
-LibMath::Quaternion LibMath::Quaternion::inverse() const
+LibMath::Quaternion& LibMath::Quaternion::inverse()
 {
-	Quaternion inverse = *this;
 	if (isUnit())
 	{
-		return inverse.conjugate();
+		return *this;
 	}
 
 	float invMagSquared = 1 / magnitudeSquared();
 
-	inverse.m_x = -m_x * invMagSquared;
-	inverse.m_y = -m_y * invMagSquared;
-	inverse.m_z = -m_z * invMagSquared;
-	inverse.m_w = m_w * invMagSquared;
+	m_x = -m_x * invMagSquared;
+	m_y = -m_y * invMagSquared;
+	m_z = -m_z * invMagSquared;
+	m_w = m_w * invMagSquared;
 
-	return inverse;
+	return *this;
 }
 
 LibMath::Vector3 LibMath::Quaternion::rotate(Vector3 const& vec) const
 {
+	Quaternion q = *this;
 	Quaternion qv(vec.m_x, vec.m_y, vec.m_z, 0.0f);
 
-	Quaternion result = (*this) * qv * inverse();
+	Quaternion result = q * qv * q.conjugate();
 
 	return Vector3(
 		result.m_x,
@@ -175,6 +175,14 @@ bool LibMath::Quaternion::operator==(Quaternion const& other) const
 		fabs(m_w - other.m_w) < g_epsilon;
 }
 
+bool LibMath::Quaternion::operator!=(Quaternion const& other) const
+{
+	return fabs(m_x - other.m_x) > g_epsilon ||
+		fabs(m_y - other.m_y) > g_epsilon ||
+		fabs(m_z - other.m_z) > g_epsilon ||
+		fabs(m_w - other.m_w) > g_epsilon;
+}
+
 LibMath::Quaternion LibMath::Quaternion::operator+(Quaternion const& other) const
 {
 	return Quaternion(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z, m_w + other.m_w);
@@ -187,6 +195,11 @@ LibMath::Quaternion LibMath::Quaternion::operator*(Quaternion const& other) cons
 		m_w * other.m_y - m_x * other.m_z + m_y * other.m_w + m_z * other.m_x,
 		m_w * other.m_z + m_x * other.m_y - m_y * other.m_x + m_z * other.m_w,
 		m_w * other.m_w - m_x * other.m_x - m_y * other.m_y - m_z * other.m_z);
+}
+
+LibMath::Quaternion LibMath::Quaternion::operator*(float val) const
+{
+	return Quaternion(m_x * val, m_y * val, m_z * val, m_w * val);
 }
 
 LibMath::Quaternion LibMath::Quaternion::slerp(Quaternion from, Quaternion to, float alpha)

@@ -801,7 +801,7 @@ TEST_CASE("Vector4", "[.all][vector][Vector4]")
 		emptyGlm = allParamGlm;
 		CHECK_VECTOR4(empty, emptyGlm);
 
-		// ctor with vec2 + float
+		// ctor with vec3 + float
 		LibMath::Vector3 baseVec3{ 1.0f, 2.0f, 3.0f };
 		float z = 3.5f;
 		LibMath::Vector4 fromVec3Float{ baseVec3, z };

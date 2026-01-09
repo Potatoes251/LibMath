@@ -104,6 +104,7 @@ int main(int argc, char* argv[])
 	//arguments.push_back("Vector2,");
 	//arguments.push_back("Vector3,");
 	//arguments.push_back("Vector4,");
+	arguments.push_back("Quaternion,");
 	//arguments.push_back("Matrix2,");
 	//arguments.push_back("Matrix3,");
 	//arguments.push_back("Matrix4,");

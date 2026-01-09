@@ -10,10 +10,10 @@ namespace LibMath
 	{
 	public:
 		Quaternion();										// set all component to 0
-		Quaternion(float, float, float, float);				// set all component individually
+		Quaternion(float, float, float, float);				// set all component individually as x, y, z, w
 		Quaternion(Quaternion const&);						// copy all component
 		Quaternion(Radian, Radian, Radian);					// create rotation from euler angles
-		Quaternion(Radian, Vector3);						// create rotation from an angle and an axis
+		Quaternion(Radian , Vector3);						// create rotation from an angle and an axis
 		~Quaternion() = default;
 
 		float				magnitude() const;
@@ -21,13 +21,15 @@ namespace LibMath
 		bool				isUnit() const;
 		Quaternion&			normalize();
 		Quaternion&			conjugate();
-		Quaternion			inverse() const;
+		Quaternion&			inverse();
+		// assume a unit quaternion
 		Vector3 			rotate(Vector3 const&) const;
 
 		float&			operator[](int);					// return this quaternion component value
 		float			operator[](int) const;				// return this quaternion component value
 
 		bool			operator==(Quaternion const&) const;
+		bool			operator!=(Quaternion const&) const;
 
 		Quaternion		operator+(Quaternion const&) const;
 		Quaternion		operator*(Quaternion const&) const;
