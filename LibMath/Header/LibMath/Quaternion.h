@@ -1,11 +1,12 @@
 #ifndef LIBMATH_QUATERNION_H_
 #define LIBMATH_QUATERNION_H_
 
-#include "Angle/Radian.h"
-#include "Vector/Vector3.h"
 
 namespace LibMath
 {
+	class Radian;
+	class Vector3;
+
 	class Quaternion
 	{
 	public:
@@ -19,6 +20,9 @@ namespace LibMath
 		float				magnitude() const;
 		float				magnitudeSquared() const;
 		bool				isUnit() const;
+		Quaternion			normalize() const;
+		Quaternion			conjugate() const;
+		Quaternion			inverse() const;
 		Quaternion&			normalize();
 		Quaternion&			conjugate();
 		Quaternion&			inverse();

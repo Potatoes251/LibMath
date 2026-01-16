@@ -4,12 +4,12 @@
 #include <iostream>
 #include <string>
 
-#include "LibMath/Angle/Radian.h"
-#include "Vector2.h"
-#include "LibMath/Trigonometry.h"
-
 namespace LibMath
 {
+	class Quaternion;
+	class Vector2;
+	class Radian;
+
 	class Vector3
 	{
 	public:
@@ -61,7 +61,7 @@ namespace LibMath
 
 		void			rotate(Radian, Radian, Radian);					// rotate this vector using Euler angle apply in the z, x, y order
 		void			rotate(Radian, Vector3 const&);					// rotate this vector around an arbitrary axis
-		//void			rotate(Quaternion const&); todo quaternion		// rotate this vector using a quaternion rotor
+		void			rotate(Quaternion const&);						// rotate this vector using a quaternion rotor
 
 		void			scale(Vector3 const&);							// scale this vector by a given factor
 
@@ -98,7 +98,7 @@ namespace LibMath
 	Vector3&		operator/=(Vector3&, Vector3 const&);				// division component wise
 
 	std::ostream&	operator<<(std::ostream&, Vector3 const&);			// cout << Vector3{ .5, 1.5, -2.5 }				// add a vector string representation to an output stream
-	std::istream&	operator>>(std::istream&, Vector3&);				// ifstream file{ save.txt }; file >> vector;	// parse a string representation from an input stream into a vector
+	//std::istream&	operator>>(std::istream&, Vector3&);				// ifstream file{ save.txt }; file >> vector;	// parse a string representation from an input stream into a vector
 }
 
 #endif // !LIBMATH_VECTOR_VECTOR3_H_

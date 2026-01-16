@@ -1,5 +1,9 @@
 #include "LibMath/Quaternion.h"
 #include "LibMath/Arithmetic.h"
+#include <LibMath/Angle.h>
+#include <LibMath/Vector/Vector3.h>
+#include "LibMath/Trigonometry.h"
+
 
 LibMath::Quaternion::Quaternion()
 {
@@ -23,6 +27,23 @@ LibMath::Quaternion::Quaternion(Quaternion const& other)
 	m_y = other.m_y;
 	m_z = other.m_z;
 	m_w = other.m_w;
+}
+
+LibMath::Quaternion::Quaternion(Radian pitch, Radian yaw, Radian roll)
+{
+	float cosx = cos(pitch / 2);
+	float sinx = sin(pitch / 2);
+	 
+	float cosy = cos(yaw / 2);
+	float siny = sin(yaw / 2);
+	 
+	float cosz = cos(roll / 2);
+	float sinz = sin(roll / 2);
+
+	m_w = cosx * cosy * cosz + sinx * siny * sinz;
+	m_x = sinx * cosy * cosz - cosx * siny * sinz;
+	m_y = cosx * siny * cosz + sinx * cosy * sinz;
+	m_z = cosx * cosy * sinz - sinx * siny * cosz;
 }
 
 LibMath::Quaternion::Quaternion(Radian angle, Vector3 axis)
@@ -60,10 +81,35 @@ bool LibMath::Quaternion::isUnit() const
 	return fabs(magnitudeSquared() - 1.f) < g_epsilon;
 }
 
-LibMath::Quaternion& LibMath::Quaternion::normalize()
+LibMath::Quaternion LibMath::Quaternion::conjugate() const
+{
+	return Quaternion {-m_x, -m_y, -m_z, m_w};
+}
+
+LibMath::Quaternion LibMath::Quaternion::inverse() const
+{
+	if (isUnit())
+		return *this;
+
+	float invMagSquared = 1 / magnitudeSquared();
+
+	return conjugate() * invMagSquared;
+}
+
+LibMath::Quaternion LibMath::Quaternion::normalize() const
 {
 	float mag = magnitude();
 	
+	if (mag <= g_epsilon)
+		return identity();
+
+	return *this * (1.f / mag);
+}
+
+LibMath::Quaternion& LibMath::Quaternion::normalize()
+{
+	float mag = magnitude();
+
 	if (mag <= g_epsilon)
 	{
 		*this = identity();

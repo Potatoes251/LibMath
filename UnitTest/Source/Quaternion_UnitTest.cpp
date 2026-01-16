@@ -1,4 +1,6 @@
 #include <LibMath/Quaternion.h>
+#include <LibMath/Angle.h>
+#include <LibMath/Vector.h>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
@@ -42,6 +44,11 @@ TEST_CASE("Quaternion", "[.all][Quaternion]")
 		LibMath::Quaternion copy{ allParam };
 		glm::quat copyGlm{ allParamGlm };
 		CHECK_QUATERNION(copy, copyGlm);
+
+		// euler angle constructor
+		LibMath::Quaternion euler{ LibMath::Degree(30.f), LibMath::Degree(45.f), LibMath::Degree(60.f) };
+		glm::quat eulerGlm{ glm::radians(glm::vec3(30.f, 45.f, 60.f)) };
+		CHECK_QUATERNION(euler, eulerGlm);
 
 		// assignment operator
 		empty = allParam;

@@ -1,5 +1,8 @@
 #include "LibMath/Vector.h"
 #include "LibMath/Arithmetic.h"
+#include "LibMath/Trigonometry.h"
+#include "LibMath/Angle/Radian.h"
+#include "LibMath/Quaternion.h"
 
 LibMath::Vector2::Vector2() : m_x(0), m_y(0) {}
 
@@ -475,6 +478,18 @@ void	LibMath::Vector3::rotate(Radian angle, Vector3 const& axis)
 	m_z = (u * w * (oneMinusCos) - v * sinA) * x +
 		(v * w * (oneMinusCos) + u * sinA) * y +
 		(w * w + (1 - w * w) * cosA) * z;
+}
+
+void LibMath::Vector3::rotate(Quaternion const& quaternion)
+{
+	Quaternion q = quaternion;
+	Quaternion qv(m_x, m_y, m_z, 0.0f);
+
+	Quaternion result = q * qv * q.conjugate();
+
+	m_x = result.m_x;
+	m_y = result.m_y;
+	m_z = result.m_z;
 }
 
 void	LibMath::Vector3::scale(Vector3 const& factor)
