@@ -75,11 +75,11 @@ int main(int argc, char* argv[])
 	*    test are ran                    *
 	*                                    *
 	\************************************/
-	//arguments.push_back("[all],");
+	arguments.push_back("[all],");
 	//arguments.push_back("[angle],");
 	//arguments.push_back("[vector],");
 	//arguments.push_back("[geometry],");
-	arguments.push_back("[geometry3D],");
+	//arguments.push_back("[geometry3D],");
 	//arguments.push_back("[collision],");
 
 
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 	//arguments.push_back("Vector2,");
 	//arguments.push_back("Vector3,");
 	//arguments.push_back("Vector4,");
-	arguments.push_back("Quaternion,");
+	//arguments.push_back("Quaternion,");
 	//arguments.push_back("Matrix2,");
 	//arguments.push_back("Matrix3,");
 	//arguments.push_back("Matrix4,");
@@ -125,16 +125,16 @@ int main(int argc, char* argv[])
 	*    all section are ran             *
 	*                                    *
 	\************************************/
-	arguments.push_back("-c Accessor");
-	arguments.push_back("-c Arithmetic");
-	arguments.push_back("-c Comparator");
-	arguments.push_back("-c Constant");
-	arguments.push_back("-c Conversion");
-	arguments.push_back("-c Debug");
+	//arguments.push_back("-c Accessor");
+	//arguments.push_back("-c Arithmetic");
+	//arguments.push_back("-c Comparator");
+	//arguments.push_back("-c Constant");
+	//arguments.push_back("-c Conversion");
+	//arguments.push_back("-c Debug");
 	//arguments.push_back("-c Extra");
-	arguments.push_back("-c Functionality");
-	arguments.push_back("-c Instantiation");
-	arguments.push_back("-c Transformation");
+	//arguments.push_back("-c Functionality");
+	//arguments.push_back("-c Instantiation");
+	//arguments.push_back("-c Transformation");
 
 
 	/************************************\

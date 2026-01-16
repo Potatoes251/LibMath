@@ -197,7 +197,7 @@ LibMath::Vector2 LibMath::Vector2::projectOnto(Vector2 const& other) const
 LibMath::Vector2 LibMath::Vector2::reflectOnto(const Vector2& other) const
 {
 	Vector2 projection = projectOnto(other);
-	return Vector2(2 * projection.m_x - m_x, 2 * projection.m_y - m_y);
+	return -Vector2(2 * projection.m_x - m_x, 2 * projection.m_y - m_y);
 }
 
 LibMath::Vector2 LibMath::Vector2::lerp(Vector2 const& A, Vector2 const& B, float t)
@@ -420,34 +420,33 @@ void LibMath::Vector3::reflectOnto(Vector3 const& other)
 
 void LibMath::Vector3::rotate(Radian roll, Radian pitch, Radian yaw)
 {
-	// Match glm's yawPitchRoll function
-	float tmp_ch = cos(yaw);
-	float tmp_sh = sin(yaw);
-	float tmp_cp = cos(pitch);
-	float tmp_sp = sin(pitch);
-	float tmp_cb = cos(roll);
-	float tmp_sb = sin(roll);
+    float cy = cos(yaw);
+    float sy = sin(yaw);
+    float cp = cos(pitch);
+    float sp = sin(pitch);
+    float cr = cos(roll);
+    float sr = sin(roll);
 
-	float xNew = tmp_ch * tmp_cb + tmp_sh * tmp_sp * tmp_sb;
-	float yNew = tmp_sb * tmp_cp;
-	float zNew = -tmp_sh * tmp_cb + tmp_ch * tmp_sp * tmp_sb;
+    // Build rotation matrix (column-major)
+    float m00 = cy * cr + sy * sp * sr;
+    float m01 = sr * cp;
+    float m02 = -sy * cr + cy * sp * sr;
 
-	float xNew2 = -tmp_ch * tmp_sb + tmp_sh * tmp_sp * tmp_cb;
-	float yNew2 = tmp_cb * tmp_cp;
-	float zNew2 = tmp_sb * tmp_sh + tmp_ch * tmp_sp * tmp_cb;
+    float m10 = -cy * sr + sy * sp * cr;
+    float m11 = cr * cp;
+    float m12 = sr * sy + cy * sp * cr;
 
-	float xNew3 = tmp_sh * tmp_cp;
-	float yNew3 = -tmp_sp;
-	float zNew3 = tmp_ch * tmp_cp;
+    float m20 = sy * cp;
+    float m21 = -sp;
+    float m22 = cy * cp;
 
-	// Multiply vector by rotation matrix (column-major order):
-	float newX = xNew * m_x + xNew2 * m_y + xNew3 * m_z;
-	float newY = yNew * m_x + yNew2 * m_y + yNew3 * m_z;
-	float newZ = zNew * m_x + zNew2 * m_y + zNew3 * m_z;
+    float newX = m00 * m_x + m10 * m_y + m20 * m_z;
+    float newY = m01 * m_x + m11 * m_y + m21 * m_z;
+    float newZ = m02 * m_x + m12 * m_y + m22 * m_z;
 
-	m_x = newX;
-	m_y = newY;
-	m_z = newZ;
+    m_x = newX;
+    m_y = newY;
+    m_z = newZ;
 }
 
 void	LibMath::Vector3::rotate(Radian angle, Vector3 const& axis)
