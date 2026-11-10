@@ -39,6 +39,7 @@ namespace LibMath
 		bool			operator==(Vector4 const&) const;
 		bool			operator!=(Vector4 const&) const;
 
+	private:
 		float m_x;
 		float m_y;
 		float m_z;

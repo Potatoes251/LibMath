@@ -9,15 +9,15 @@
 #include <glm/gtx/quaternion.hpp>
 
 #define CHECK_QUATERNION(quaternion, quaternionGlm) \
-						CHECK(quaternion.m_x == Catch::Approx(quaternionGlm.x)); \
-						CHECK(quaternion.m_y == Catch::Approx(quaternionGlm.y)); \
-						CHECK(quaternion.m_z == Catch::Approx(quaternionGlm.z)); \
-						CHECK(quaternion.m_w == Catch::Approx(quaternionGlm.w));
+						CHECK(quaternion[0] == Catch::Approx(quaternionGlm.x)); \
+						CHECK(quaternion[1] == Catch::Approx(quaternionGlm.y)); \
+						CHECK(quaternion[2] == Catch::Approx(quaternionGlm.z)); \
+						CHECK(quaternion[3] == Catch::Approx(quaternionGlm.w));
 
 #define CHECK_VECTOR3(vector, vectorGlm) \
-						CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); \
-						CHECK(vector.m_y == Catch::Approx(vectorGlm.y)); \
-						CHECK(vector.m_z == Catch::Approx(vectorGlm.z))
+						CHECK(vector[0] == Catch::Approx(vectorGlm.x)); \
+						CHECK(vector[1] == Catch::Approx(vectorGlm.y)); \
+						CHECK(vector[2] == Catch::Approx(vectorGlm.z))
 
 
 TEST_CASE("Quaternion", "[.all][Quaternion]")
@@ -201,6 +201,15 @@ TEST_CASE("Quaternion", "[.all][Quaternion]")
 			}
 		}
 
+		{// Normalize
+			LibMath::Quaternion normalize = base;
+			normalize.normalize();
+
+			glm::quat expected = baseGlm;
+
+			CHECK_QUATERNION(normalize, glm::normalize(expected));
+		}
+
 		{// Unit
 			{
 				LibMath::Quaternion unit = base;
@@ -209,15 +218,6 @@ TEST_CASE("Quaternion", "[.all][Quaternion]")
 				CHECK(unit.normalize().isUnit());
 				CHECK(LibMath::Quaternion::identity().isUnit());
 			}
-		}
-
-		{// Normalize
-			LibMath::Quaternion normalize = base;
-			normalize.normalize();
-
-			glm::quat expected = baseGlm;
-
-			CHECK_QUATERNION(normalize, glm::normalize(expected));
 		}
 		
 		{// Conjugate

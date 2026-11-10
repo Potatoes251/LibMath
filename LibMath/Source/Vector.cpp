@@ -214,7 +214,7 @@ LibMath::Vector3::Vector3(float val) : m_x(val), m_y(val), m_z(val) {}
 
 LibMath::Vector3::Vector3(float x, float y, float z) : m_x(x), m_y(y), m_z(z) {}
 
-LibMath::Vector3::Vector3(Vector2 const& other, float z) : m_x(other.m_x), m_y(other.m_y), m_z(z) {}
+LibMath::Vector3::Vector3(Vector2 const& other, float z) : m_x(other[0]), m_y(other[1]), m_z(z) {}
 
 LibMath::Vector3::Vector3(Vector3 const& other) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z) {}
 
@@ -486,9 +486,9 @@ void LibMath::Vector3::rotate(Quaternion const& quaternion)
 
 	Quaternion result = q * qv * q.conjugate();
 
-	m_x = result.m_x;
-	m_y = result.m_y;
-	m_z = result.m_z;
+	m_x = result[0];
+	m_y = result[1];
+	m_z = result[2];
 }
 
 void	LibMath::Vector3::scale(Vector3 const& factor)
@@ -525,100 +525,100 @@ LibMath::Vector3	LibMath::Vector3::lerp(Vector3 const& A, Vector3 const& B, floa
 
 bool	LibMath::operator==(Vector3 const& v1, Vector3 const& v2)
 {
-	return v1.m_x == v2.m_x && 
-		v1.m_y == v2.m_y && 
-		v1.m_z == v2.m_z;
+	return	v1[0] == v2[0] && 
+			v1[1] == v2[1] && 
+			v1[2] == v2[2];
 }
 
 bool LibMath::operator!=(Vector3 const& v1, Vector3 const& v2)
 {
-	return v1.m_x != v2.m_x ||
-		v1.m_y != v2.m_y || 
-		v1.m_z != v2.m_z;
+	return	v1[0] != v2[0] ||
+			v1[1] != v2[1] || 
+			v1[2] != v2[2];
 }
 
 LibMath::Vector3 LibMath::operator-(Vector3 vec)
 {
-	return Vector3(-vec.m_x, -vec.m_y, -vec.m_z);
+	return Vector3(-vec[0], -vec[1], -vec[2]);
 }
 
 LibMath::Vector3 LibMath::operator*(Vector3 const& v, float val)
 {
-	return Vector3(v.m_x * val, v.m_y * val, v.m_z * val);
+	return Vector3(v[0] * val, v[1] * val, v[2] * val);
 }
 
 LibMath::Vector3 LibMath::operator/(Vector3 const& v, float val)
 {
-	return Vector3(v.m_x / val, v.m_y / val, v.m_z / val);
+	return Vector3(v[0] / val, v[1] / val, v[2] / val);
 }
 
 LibMath::Vector3& LibMath::operator*=(Vector3& v, float val)
 {
-	v.m_x *= val;
-	v.m_y *= val;
-	v.m_z *= val;
+	v[0] *= val;
+	v[1] *= val;
+	v[2] *= val;
 
 	return v;
 }
 
 LibMath::Vector3& LibMath::operator/=(Vector3& v, float val)
 {
-	v.m_x /= val;
-	v.m_y /= val;
-	v.m_z /= val;
+	v[0] /= val;
+	v[1] /= val;
+	v[2] /= val;
 
 	return v;
 }
 
 LibMath::Vector3 LibMath::operator+(Vector3 v1, Vector3 const& v2)
 {
-	return Vector3(v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z);
+	return Vector3(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]);
 }
 
 LibMath::Vector3 LibMath::operator-(Vector3 v1, Vector3 const& v2)
 {
-	return Vector3(v1.m_x - v2.m_x, v1.m_y - v2.m_y, v1.m_z - v2.m_z);
+	return Vector3(v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]);
 }
 
 LibMath::Vector3 LibMath::operator*(Vector3 v1, Vector3 const& v2)
 {
-	return Vector3(v1.m_x * v2.m_x, v1.m_y * v2.m_y, v1.m_z * v2.m_z);
+	return Vector3(v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]);
 }
 
 LibMath::Vector3 LibMath::operator/(Vector3 v1, Vector3 const& v2)
 {
-	return Vector3(v1.m_x / v2.m_x, v1.m_y / v2.m_y, v1.m_z / v2.m_z);
+	return Vector3(v1[0] / v2[0], v1[1] / v2[1], v1[2] / v2[2]);
 }
 
 LibMath::Vector3& LibMath::operator+=(Vector3& v1, Vector3 const& v2)
 {
-	v1.m_x += v2.m_x;
-	v1.m_y += v2.m_y;
-	v1.m_z += v2.m_z;
+	v1[0] += v2[0];
+	v1[1] += v2[1];
+	v1[2] += v2[2];
 	return v1;
 }
 
 LibMath::Vector3& LibMath::operator-=(Vector3& v1, Vector3 const& v2)
 {
-	v1.m_x -= v2.m_x;
-	v1.m_y -= v2.m_y;
-	v1.m_z -= v2.m_z;
+	v1[0] -= v2[0];
+	v1[1] -= v2[1];
+	v1[2] -= v2[2];
 	return v1;
 }
 
 LibMath::Vector3& LibMath::operator*=(Vector3& v1, Vector3 const& v2)
 {
-	v1.m_x *= v2.m_x;
-	v1.m_y *= v2.m_y;
-	v1.m_z *= v2.m_z;
+	v1[0] *= v2[0];
+	v1[1] *= v2[1];
+	v1[2] *= v2[2];
 	return v1;
 }
 
 LibMath::Vector3& LibMath::operator/=(Vector3& v1, Vector3 const& v2)
 {
-	v1.m_x /= v2.m_x;
-	v1.m_y /= v2.m_y;
-	v1.m_z /= v2.m_z;
+	v1[0] /= v2[0];
+	v1[1] /= v2[1];
+	v1[2] /= v2[2];
 	return v1;
 }
 
@@ -634,7 +634,7 @@ LibMath::Vector4::Vector4(float val) : m_x(val), m_y(val), m_z(val), m_w(val) {}
 
 LibMath::Vector4::Vector4(float x, float y, float z, float w) : m_x(x), m_y(y), m_z(z), m_w(w) {}
 
-LibMath::Vector4::Vector4(Vector3 const& other, float w) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z), m_w(w) {}
+LibMath::Vector4::Vector4(Vector3 const& other, float w) : m_x(other[0]), m_y(other[1]), m_z(other[2]), m_w(w) {}
 
 LibMath::Vector4::Vector4(Vector4 const& other) : m_x(other.m_x), m_y(other.m_y), m_z(other.m_z), m_w(other.m_w) {}
 

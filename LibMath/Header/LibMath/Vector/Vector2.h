@@ -52,6 +52,7 @@ namespace LibMath
 
 		static Vector2		lerp(Vector2 const&, Vector2 const&, float);
 
+	private:
 		float m_x;
 		float m_y;
 	};

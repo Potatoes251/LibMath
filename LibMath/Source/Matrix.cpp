@@ -833,39 +833,25 @@ void LibMath::Matrix4::inverse()
 	}
 }
 
-LibMath::Matrix4& LibMath::Matrix4::identity()
+LibMath::Matrix4 LibMath::Matrix4::identity()
 {
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			if (i == j)
-			{
-				m_values[i][j] = 1;
-			}
-			else
-			{
-				m_values[i][j] = 0;
-			}
-		}
-	}
-	return *this;
+	return Matrix4(1.f);
 }
 
-LibMath::Matrix4& LibMath::Matrix4::createScale(Vector3 v)
+LibMath::Matrix4 LibMath::Matrix4::createScale(Vector3 v)
 {
-	m_values[0][0] = v[0];
-	m_values[1][1] = v[1];
-	m_values[2][2] = v[2];
-	m_values[3][3] = 1;
+	Matrix4 scale;
+	scale[0][0] = v[0];
+	scale[1][1] = v[1];
+	scale[2][2] = v[2];
+	scale[3][3] = 1.f;
 
-	return *this;
+	return scale;
 }
 
 LibMath::Matrix4 LibMath::Matrix4::createTranslation(Vector3 vec)
 {
-	Matrix4 TransMatrix{};
-	TransMatrix.identity();
+	Matrix4 TransMatrix = identity();
 	TransMatrix[3][0] = vec[0];
 	TransMatrix[3][1] = vec[1];
 	TransMatrix[3][2] = vec[2];
@@ -881,9 +867,9 @@ LibMath::Matrix4 LibMath::Matrix4::createRotation(Vector3 axis, Radian angle)
 	float sinTheta = sin(angle);
 	float k = 1.0f - cosTheta;
 
-	float x = axis.m_x;
-	float y = axis.m_y;
-	float z = axis.m_z;
+	float x = axis[0];
+	float y = axis[1];
+	float z = axis[2];
 
 	return Matrix4(
 		cosTheta + x * x * k,		y * x * k + z * sinTheta,	z * x * k - y * sinTheta,	0.0f,
@@ -907,8 +893,7 @@ LibMath::Matrix4 LibMath::Matrix4::createTransform(Vector3 position, Vector3 axi
 
 LibMath::Matrix4 LibMath::Matrix4::createRotationX(Radian angle)
 {
-	Matrix4 rotation;
-	rotation.identity();
+	Matrix4 rotation = identity();
 
 	float cosAngle = cos(angle);
 	float sinAngle = sin(angle);
@@ -923,8 +908,7 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationX(Radian angle)
 
 LibMath::Matrix4 LibMath::Matrix4::createRotationY(Radian angle)
 {
-	Matrix4 rotation;
-	rotation.identity();
+	Matrix4 rotation = identity();
 
 	float cosAngle = cos(angle);
 	float sinAngle = sin(angle);
@@ -939,8 +923,7 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationY(Radian angle)
 
 LibMath::Matrix4 LibMath::Matrix4::createRotationZ(Radian angle)
 {
-	Matrix4 rotation;
-	rotation.identity();
+	Matrix4 rotation = identity();
 
 	float cosAngle = cos(angle);
 	float sinAngle = sin(angle);
@@ -953,9 +936,9 @@ LibMath::Matrix4 LibMath::Matrix4::createRotationZ(Radian angle)
 	return rotation;
 }
 
-LibMath::Matrix4 LibMath::Matrix4::perspective(float fov, float aspectRatio, float near, float far)
+LibMath::Matrix4 LibMath::Matrix4::perspective(float fovRadian, float aspectRatio, float near, float far)
 {
-	float tanFov = ::tan(Degree(fov / 2).radian());
+	float tanFov = ::tan((fovRadian / 2));
 
 	return Matrix4(
 		1 / (tanFov * aspectRatio),		0.f,			0.f,								0.f,
@@ -978,8 +961,18 @@ LibMath::Matrix4 LibMath::Matrix4::lookAt(Vector3 eye, Vector3 target, Vector3 u
 	Vector3 yAxis = zAxis.cross(xAxis);
 
 	return LibMath::Matrix4(
-		xAxis.m_x,				yAxis.m_x,			-zAxis.m_x, .0f,
-		xAxis.m_y,				yAxis.m_y,			-zAxis.m_y, .0f,
-		xAxis.m_z,				yAxis.m_z,			-zAxis.m_z, .0f,
-		-xAxis.dot(eye),		-yAxis.dot(eye),	-zAxis.dot(eye), 1.0f);
+		xAxis[0],				yAxis[0],			-zAxis[0], .0f,
+		xAxis[1],				yAxis[1],			-zAxis[1], .0f,
+		xAxis[2],				yAxis[2],			-zAxis[2], .0f,
+		-xAxis.dot(eye),		-yAxis.dot(eye),	zAxis.dot(eye), 1.0f);
+}
+
+LibMath::Matrix4 LibMath::Matrix4::orthogonal(float left, float right, float bottom, float top, float near, float far)
+{
+	return Matrix4(
+		2 / (right - left),					0.f,								0.f,							0.f,
+		0.f,								2 / (top - bottom),					0.f,							0.f,
+		0.f,								0.f,								2 / (near - far),				0.f,
+		(right + left) / (left - right),	(top + bottom) / (bottom - top),	(far + near) / (near - far),	1.f
+	);
 }

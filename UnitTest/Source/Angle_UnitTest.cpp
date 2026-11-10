@@ -314,7 +314,7 @@ TEST_CASE("Radian", "[.all][angle]")
 		CHECK(LibMath::Radian{ 1.2f } == LibMath::Radian{ 1.2f });
 
 		// compare with wrapped value
-		CHECK(LibMath::Radian{ 1.2f } == LibMath::Radian(1.2f + radianCircle));
+		CHECK(LibMath::Radian{ 1.f } == LibMath::Radian(1.f + radianCircle));
 
 		// compare with wrap edge value
 		CHECK(LibMath::Radian{ 0.f } == LibMath::Radian{ radianCircle });

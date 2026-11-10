@@ -4,6 +4,7 @@
 #include <LibMath/Vector/Vector3.h>
 #include "LibMath/Trigonometry.h"
 
+#include <cassert>
 
 LibMath::Quaternion::Quaternion()
 {
@@ -55,20 +56,20 @@ LibMath::Quaternion::Quaternion(Radian angle, Vector3 axis)
 	}
 	axis.normalize();
 
-	float halfAngle = angle.radian() * 0.5f;
+	angle *= 0.5f;
 
-	float sin = std::sin(halfAngle);
-	float cos = std::cos(halfAngle);
+	float sin = LibMath::sin(angle);
+	float cos = LibMath::cos(angle);
 
-	m_x = axis.m_x * sin;
-	m_y = axis.m_y * sin;
-	m_z = axis.m_z * sin;
+	m_x = axis[0] * sin;
+	m_y = axis[1] * sin;
+	m_z = axis[2] * sin;
 	m_w = cos;
 }
 
 float LibMath::Quaternion::magnitude() const
 {
-	return std::sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
+	return std::sqrt(magnitudeSquared());
 }
 
 float LibMath::Quaternion::magnitudeSquared() const
@@ -81,27 +82,27 @@ bool LibMath::Quaternion::isUnit() const
 	return fabs(magnitudeSquared() - 1.f) < g_epsilon;
 }
 
-LibMath::Quaternion LibMath::Quaternion::conjugate() const
+LibMath::Quaternion LibMath::Quaternion::conjugated() const
 {
 	return Quaternion {-m_x, -m_y, -m_z, m_w};
 }
 
-LibMath::Quaternion LibMath::Quaternion::inverse() const
+LibMath::Quaternion LibMath::Quaternion::inversed() const
 {
 	if (isUnit())
-		return *this;
+		return conjugated();
 
 	float invMagSquared = 1 / magnitudeSquared();
 
-	return conjugate() * invMagSquared;
+	return conjugated() * invMagSquared;
 }
 
-LibMath::Quaternion LibMath::Quaternion::normalize() const
+LibMath::Quaternion LibMath::Quaternion::normalized() const
 {
 	float mag = magnitude();
 	
-	if (mag <= g_epsilon)
-		return identity();
+	//if (mag <= g_epsilon)
+	//	return identity();
 
 	return *this * (1.f / mag);
 }
@@ -110,12 +111,11 @@ LibMath::Quaternion& LibMath::Quaternion::normalize()
 {
 	float mag = magnitude();
 
-	if (mag <= g_epsilon)
-	{
-		*this = identity();
-		return *this;
-	}
-
+	//if (mag <= g_epsilon)
+	//{
+	//	*this = identity();
+	//	return *this;
+	//}
 
 	m_x /= mag;
 	m_y /= mag;
@@ -138,7 +138,7 @@ LibMath::Quaternion& LibMath::Quaternion::inverse()
 {
 	if (isUnit())
 	{
-		return *this;
+		return conjugate();
 	}
 
 	float invMagSquared = 1 / magnitudeSquared();
@@ -153,8 +153,10 @@ LibMath::Quaternion& LibMath::Quaternion::inverse()
 
 LibMath::Vector3 LibMath::Quaternion::rotate(Vector3 const& vec) const
 {
+	assert(isUnit());
+
 	Quaternion q = *this;
-	Quaternion qv(vec.m_x, vec.m_y, vec.m_z, 0.0f);
+	Quaternion qv(vec[0], vec[1], vec[2], 0.0f);
 
 	Quaternion result = q * qv * q.conjugate();
 
@@ -163,6 +165,22 @@ LibMath::Vector3 LibMath::Quaternion::rotate(Vector3 const& vec) const
 		result.m_y,
 		result.m_z
 	);
+}
+
+float LibMath::Quaternion::angleBetween(Quaternion const& other) const
+{
+	assert(isUnit());
+	assert(other.isUnit());
+
+	float dotProduct =
+		m_x * other.m_x +
+		m_y * other.m_y +
+		m_z * other.m_z +
+		m_w * other.m_w;
+	
+	dotProduct = std::min(std::abs(dotProduct), 1.f);
+
+	return 2.f * std::acos(dotProduct);
 }
 
 float& LibMath::Quaternion::operator[](int index)
@@ -246,6 +264,27 @@ LibMath::Quaternion LibMath::Quaternion::operator*(Quaternion const& other) cons
 LibMath::Quaternion LibMath::Quaternion::operator*(float val) const
 {
 	return Quaternion(m_x * val, m_y * val, m_z * val, m_w * val);
+}
+
+LibMath::Quaternion::operator LibMath::Matrix4() const
+{
+	assert(isUnit);
+
+	float xx = m_x * m_x;
+	float yy = m_y * m_y;
+	float zz = m_z * m_z;
+	float xy = m_x * m_y;
+	float xz = m_x * m_z;
+	float yz = m_y * m_z;
+	float wx = m_w * m_x;
+	float wy = m_w * m_y;
+	float wz = m_w * m_z;
+
+	return Matrix4(
+		1.f - 2.f * (yy + zz),	2.f * (xy - wz),		2.f * (xz + wy),		0.f,
+		2.f * (xy + wz),		1.f - 2.f * (xx + zz),	2.f * (yz - wx),		0.f,
+		2.f * (xz - wy),		2.f * (yz + wx),		1.f - 2.f * (xx + yy),	0.f,
+		0.f,					0.f,					0.f,					1.f);
 }
 
 LibMath::Quaternion LibMath::Quaternion::slerp(Quaternion from, Quaternion to, float alpha)

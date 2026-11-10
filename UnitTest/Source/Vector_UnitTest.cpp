@@ -13,7 +13,7 @@
 
 using namespace LibMath::Literal;
 
-#define CHECK_VECTOR3(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y)); CHECK(vector.m_z == Catch::Approx(vectorGlm.z))
+#define CHECK_VECTOR3(vector, vectorGlm) CHECK(vector[0] == Catch::Approx(vectorGlm.x)); CHECK(vector[1] == Catch::Approx(vectorGlm.y)); CHECK(vector[2] == Catch::Approx(vectorGlm.z))
 
 TEST_CASE("Vector3", "[.all][vector][Vector3]")
 {
@@ -275,7 +275,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 			SECTION("Euler Angle")
 			{
 				LibMath::Vector3 rotate = origin;
-				rotate.rotate(LibMath::Radian{ transformation.m_x }, LibMath::Radian{ transformation.m_y }, LibMath::Radian{ transformation.m_z });
+				rotate.rotate(LibMath::Radian{ transformation[0]}, LibMath::Radian{transformation[1]}, LibMath::Radian{transformation[2]});
 
 				glm::vec4 rotateGlm = glm::orientate4(transformationGlm) * originGlm;
 
@@ -467,7 +467,7 @@ TEST_CASE("Vector3", "[.all][vector][Vector3]")
 
 
 
-#define CHECK_VECTOR2(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y));
+#define CHECK_VECTOR2(vector, vectorGlm) CHECK(vector[0] == Catch::Approx(vectorGlm.x)); CHECK(vector[1] == Catch::Approx(vectorGlm.y));
 
 TEST_CASE("Vector2", "[.all][vector][vector2]")
 {
@@ -764,7 +764,7 @@ TEST_CASE("Vector2", "[.all][vector][vector2]")
 	}
 }
 
-#define CHECK_VECTOR4(vector, vectorGlm) CHECK(vector.m_x == Catch::Approx(vectorGlm.x)); CHECK(vector.m_y == Catch::Approx(vectorGlm.y)); CHECK(vector.m_z == Catch::Approx(vectorGlm.z)); CHECK(vector.m_w == Catch::Approx(vectorGlm.w));
+#define CHECK_VECTOR4(vector, vectorGlm) CHECK(vector[0] == Catch::Approx(vectorGlm.x)); CHECK(vector[1] == Catch::Approx(vectorGlm.y)); CHECK(vector[2] == Catch::Approx(vectorGlm.z)); CHECK(vector[3] == Catch::Approx(vectorGlm.w));
 
 TEST_CASE("Vector4", "[.all][vector][Vector4]")
 {

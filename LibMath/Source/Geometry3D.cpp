@@ -62,12 +62,12 @@ LibMath::Vector3	LibMath::Point3D::operator+(Point3D const& other) const noexcep
 
 LibMath::Vector3	LibMath::Point3D::operator-(Vector3 const& other) const noexcept
 {
-	return Vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
+	return Vector3(m_x - other[0], m_y - other[1], m_z - other[2]);
 }
 
 LibMath::Vector3	LibMath::Point3D::operator+(Vector3 const& other) const noexcept
 {
-	return Vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+	return Vector3(m_x + other[0], m_y + other[1], m_z + other[2]);
 }
 
 float		LibMath::Point3D::getX() const
@@ -215,7 +215,7 @@ LibMath::Point3D LibMath::Plane::getPointOnPlane()
 {
 	m_normal.normalize();
 	Vector3 point = m_normal * m_distance;
-	return Point3D(point.m_x, point.m_y, point.m_z);
+	return Point3D(point[0], point[1], point[2]);
 }
 
 

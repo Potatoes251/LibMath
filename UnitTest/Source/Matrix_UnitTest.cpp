@@ -359,9 +359,9 @@ TEST_CASE("Matrix3", "[.all][matrix][matrix3]")
 			LibMath::Vector3 result = matA * vec;
 			glm::vec3 resultGlm = matAGlm * vecGlm;
 
-			CHECK(result.m_x == Catch::Approx(resultGlm.x));
-			CHECK(result.m_y == Catch::Approx(resultGlm.y));
-			CHECK(result.m_z == Catch::Approx(resultGlm.z));
+			CHECK(result[0] == Catch::Approx(resultGlm.x));
+			CHECK(result[1] == Catch::Approx(resultGlm.y));
+			CHECK(result[2] == Catch::Approx(resultGlm.z));
 		}
 
 		{// matrix float product
@@ -625,8 +625,7 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 
 		CHECK_MATRIX4(copy, copyGlm);
 
-		LibMath::Matrix4 identity;
-		identity.identity();
+		LibMath::Matrix4 identity = LibMath::Matrix4::identity();
 		glm::mat4 identityGlm = glm::mat4(1.0f);
 
 		CHECK_MATRIX4(identity, identityGlm);
@@ -690,10 +689,10 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			LibMath::Vector4 result = matA * vec;
 			glm::vec4 resultGlm = matAGlm * vecGlm;
 
-			CHECK(result.m_x == Catch::Approx(resultGlm.x));
-			CHECK(result.m_y == Catch::Approx(resultGlm.y));
-			CHECK(result.m_z == Catch::Approx(resultGlm.z));
-			CHECK(result.m_w == Catch::Approx(resultGlm.w));
+			CHECK(result[0] == Catch::Approx(resultGlm.x));
+			CHECK(result[1] == Catch::Approx(resultGlm.y));
+			CHECK(result[2] == Catch::Approx(resultGlm.z));
+			CHECK(result[3] == Catch::Approx(resultGlm.w));
 		}
 
 		{// matrix float product
@@ -846,7 +845,7 @@ TEST_CASE("Matrix4", "[.all][matrix][matrix4]")
 			float far = 100.0f;  // Far plane
 
 			// LibMath perspective matrix
-			LibMath::Matrix4 perspective = LibMath::Matrix4::perspective(fov, aspectRatio, near, far);
+			LibMath::Matrix4 perspective = LibMath::Matrix4::perspective(LibMath::Degree(fov).radian(), aspectRatio, near, far);
 
 			// GLM perspective matrix
 			glm::mat4 perspectiveGlm = glm::perspective(glm::radians(fov), aspectRatio, near, far);

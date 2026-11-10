@@ -1,6 +1,7 @@
 #ifndef LIBMATH_QUATERNION_H_
 #define LIBMATH_QUATERNION_H_
 
+#include "Matrix.h"
 
 namespace LibMath
 {
@@ -20,14 +21,16 @@ namespace LibMath
 		float				magnitude() const;
 		float				magnitudeSquared() const;
 		bool				isUnit() const;
-		Quaternion			normalize() const;
-		Quaternion			conjugate() const;
-		Quaternion			inverse() const;
+		Quaternion			normalized() const;
+		Quaternion			conjugated() const;
+		Quaternion			inversed() const;
 		Quaternion&			normalize();
 		Quaternion&			conjugate();
 		Quaternion&			inverse();
-		// assume a unit quaternion
+		// assumes a unit quaternion
 		Vector3 			rotate(Vector3 const&) const;
+		// assume two unit quaternions
+		float				angleBetween(Quaternion const&) const;
 
 		float&			operator[](int);					// return this quaternion component value
 		float			operator[](int) const;				// return this quaternion component value
@@ -39,9 +42,13 @@ namespace LibMath
 		Quaternion		operator*(Quaternion const&) const;
 		Quaternion		operator*(float) const;
 
-		static Quaternion	slerp(Quaternion, Quaternion, float);
-		static Quaternion	identity();						// return a valid quaternion with a rotation of 0
+		// assumes a unit quaternion
+		operator Matrix4() const;
 
+		static Quaternion	slerp(Quaternion, Quaternion, float);
+		static Quaternion	identity();						// return { 0, 0, 0, 1 }
+
+	private:
 		float m_x;
 		float m_y;
 		float m_z;

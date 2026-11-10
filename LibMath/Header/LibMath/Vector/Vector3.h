@@ -72,6 +72,7 @@ namespace LibMath
 
 		static Vector3		lerp(Vector3 const&, Vector3 const&, float);
 
+	private:
 		float m_x;
 		float m_y;
 		float m_z;

@@ -315,9 +315,9 @@ bool	LibMath::collisionCapsulePrism(Capsule capsule, Prism prism)	// AABB collis
 
 	// Clamp closest point to AABB
 	Vector3 clampedPoint;
-	clampedPoint.m_x = clamp(closestPointOnSegment.m_x, minPoint.m_x, maxPoint.m_x);
-	clampedPoint.m_y = clamp(closestPointOnSegment.m_y, minPoint.m_y, maxPoint.m_y);
-	clampedPoint.m_z = clamp(closestPointOnSegment.m_z, minPoint.m_z, maxPoint.m_z);
+	clampedPoint[0] = clamp(closestPointOnSegment[0], minPoint[0], maxPoint[0]);
+	clampedPoint[1] = clamp(closestPointOnSegment[1], minPoint[1], maxPoint[1]);
+	clampedPoint[2] = clamp(closestPointOnSegment[2], minPoint[2], maxPoint[2]);
 
 	// Compute squared distance
 	Vector3 delta = closestPointOnSegment - clampedPoint;
@@ -349,9 +349,9 @@ bool	LibMath::intersectionCapsulePrism(Capsule capsule, Prism prism, Vector3& ou
 
 	// Clamp closest point to AABB
 	Vector3 clampedPoint;
-	clampedPoint.m_x = clamp(closestPointOnSegment.m_x, minPoint.m_x, maxPoint.m_x);
-	clampedPoint.m_y = clamp(closestPointOnSegment.m_y, minPoint.m_y, maxPoint.m_y);
-	clampedPoint.m_z = clamp(closestPointOnSegment.m_z, minPoint.m_z, maxPoint.m_z);
+	clampedPoint[0] = clamp(closestPointOnSegment[0], minPoint[0], maxPoint[0]);
+	clampedPoint[1] = clamp(closestPointOnSegment[1], minPoint[1], maxPoint[1]);
+	clampedPoint[2] = clamp(closestPointOnSegment[2], minPoint[2], maxPoint[2]);
 
 	// Compute squared distance
 	Vector3 delta = closestPointOnSegment - clampedPoint;
