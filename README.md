@@ -29,7 +29,7 @@ while building an intuition for their performance cost. It is split into two CMa
 - **UnitTest**: an application that tests the library exhaustively
 
 The library has no external dependency: only `<cmath>`, `<climits>`, `<cfloat>` and compiler intrinsics are allowed. 
-It compiles in Debug and Release with `/W4 /WX` (warnings level 4 treated as errors).
+It compiles in Debug and Release with `/Wall /WX` (all warnings treated as errors).
 
 ## Core Features
 
@@ -95,7 +95,11 @@ Floating-point comparisons use a tolerance-based comparison rather than `==`, as
 ## Implementation Highlights
 
 - **No dependencies**: pure C++ with the standard math header only
-- **Warning-free**: builds with `/W4 /WX` in Debug and Release
+- **Warning-free**: builds with `/Wall /WX` in Debug and Release. Three purely informational
+  MSVC warnings that `/Wall` enables are suppressed with `/wd`:
+  - `C4514`: unreferenced inline function removed
+  - `C5045`: compiler inserted Spectre mitigation (informational)
+  - `C4464`: relative include path contains `..` (used for the library's include layout)
 - **Float-safe comparisons**: combined absolute and relative tolerance for equality checks, including comparisons around zero
 - **Clean structs**: structs only hold data, constructors, accessors and overloaded operators
 - **Quaternion rotations**: rotation uses quaternions rather than Euler angles, and `slerp` gives mathematically correct interpolation
@@ -161,5 +165,6 @@ target_link_libraries(MyProject PRIVATE LibMath)
 ```
 
 ### Notes
-- Both Debug and Release build with `/W4 /WX`.
+- Both Debug and Release build with `/Wall /WX`, minus the three suppressed warnings
+  listed in [Implementation Highlights](#implementation-highlights).
 - Build outputs (`build/`, `.exe`, `.obj`, `.vs/`) are excluded from the repository via `.gitignore`.
