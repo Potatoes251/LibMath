@@ -13,7 +13,8 @@ namespace LibMath
 		Matrix2x2(float);							// construct a matrix with the diagonal
 		Matrix2x2(float, float, float, float);		// construct a matrix with all components
 
-		Matrix2x2&		operator=(Matrix2x2 const);	// copy asignement
+		Matrix2x2(Matrix2x2 const&);				// copy constructor
+		Matrix2x2&		operator=(Matrix2x2 const&);// copy assignement
 
 		float*			operator[](int);
 

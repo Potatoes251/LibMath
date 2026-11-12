@@ -25,7 +25,7 @@ namespace LibMath
 
 		float		degree(bool = false) const;	// return angle in degree	// true -> return value in range [-180, 180[	// false -> return value in range [0, 360[
 		float		radian(bool = true) const;	// return angle in radian	// true -> return value in range [-pi, pi[		// false -> return value in range [0, 2 pi[
-		float		raw() const;				// return m_angle
+		float		raw() const { return m_value; }	// return m_angle
 
 	private:
 		float m_value;

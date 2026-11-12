@@ -27,7 +27,18 @@ LibMath::Matrix2x2::Matrix2x2(float val1, float val2, float val3, float val4)
 	m_values[1][1] = val4;
 }
 
-LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2 const other)
+LibMath::Matrix2x2::Matrix2x2(Matrix2x2 const& other)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2;j++)
+		{
+			m_values[i][j] = other.m_values[i][j];
+		}
+	}
+}
+
+LibMath::Matrix2x2& LibMath::Matrix2x2::operator=(Matrix2x2 const& other)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -259,7 +270,18 @@ float* LibMath::Matrix3x3::data()
 }
 
 
-LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3 const other)
+LibMath::Matrix3x3::Matrix3x3(Matrix3x3 const& other)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3;j++)
+		{
+			m_values[i][j] = other.m_values[i][j];
+		}
+	}
+}
+
+LibMath::Matrix3x3& LibMath::Matrix3x3::operator=(Matrix3x3 const& other)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -641,7 +663,18 @@ float* LibMath::Matrix4::data()
 	return &m_values[0][0];
 }
 
-LibMath::Matrix4& LibMath::Matrix4::operator=(Matrix4 const other)
+LibMath::Matrix4::Matrix4(Matrix4 const& other)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			m_values[i][j] = other.m_values[i][j];
+		}
+	}
+}
+
+LibMath::Matrix4& LibMath::Matrix4::operator=(Matrix4 const& other)
 {
 	for (int i = 0; i < 4; i++)
 	{

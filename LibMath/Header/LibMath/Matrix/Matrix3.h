@@ -18,7 +18,8 @@ namespace LibMath
 
 		float*			data();
 
-		Matrix3x3&		operator=(Matrix3x3 const);							// copy asignement
+		Matrix3x3(Matrix3x3 const& other);									// copy constructor
+		Matrix3x3&		operator=(Matrix3x3 const& other);					// copy assignment
 
 		float*			operator[](int);
 

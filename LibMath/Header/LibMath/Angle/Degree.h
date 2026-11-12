@@ -25,7 +25,7 @@ namespace LibMath
 
 		float		degree(bool = false) const;	// return angle in degree	// true -> return value in range [-180, 180[	// false -> return value in range [0, 360[
 		float		radian(bool = true) const;	// return angle in radian	// true -> return value in range [-pi, pi[		// false -> return value in range [0, 2 pi[
-		float		raw() const { return m_value;  };				// return m_angle
+		float		raw() const { return m_value; };				// return m_angle
 
 	private:
 		float m_value;
@@ -43,8 +43,8 @@ namespace LibMath
 
 	inline namespace Literal
 	{
-		LibMath::Degree operator""_deg(long double);			// Degree angle = 7.5_deg;
-		LibMath::Degree operator""_deg(unsigned long long int);	// Degree angle = 45_deg;
+		inline LibMath::Degree operator""_deg(long double value) { return Degree(static_cast<float>(value)); }			// Degree angle = 7.5_deg;
+		inline LibMath::Degree operator""_deg(unsigned long long value) { return Degree(static_cast<float>(value)); }	// Degree angle = 45_deg;
 	}
 }
 

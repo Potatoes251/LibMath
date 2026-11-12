@@ -8,7 +8,7 @@ LibMath::Degree::Degree(Degree const& other) : m_value(other.m_value) {}
 
 LibMath::Degree::operator LibMath::Radian() const
 {
-	return Radian(m_value * (3.14159265358979323f / 180.0f));
+	return Radian(m_value * (g_Pi / 180.0f));
 }
 
 LibMath::Degree& LibMath::Degree::operator=(Degree const& other)
@@ -77,7 +77,7 @@ float LibMath::Degree::degree(bool boolean) const
 
 float LibMath::Degree::radian(bool boolean) const
 {
-	return degree(boolean) * 3.1415927f / 180;
+	return degree(boolean) * g_Pi / 180;
 }
 
 bool LibMath::operator==(Degree a1, Degree a2)
@@ -115,16 +115,6 @@ LibMath::Degree LibMath::operator/(Degree angle, float val)
 	return Degree(angle.raw() / val);
 }
 
-LibMath::Degree LibMath::Literal::operator""_deg(long double value)
-{
-	return Degree(static_cast<float>(value));
-}
-
-LibMath::Degree LibMath::Literal::operator""_deg(unsigned long long int value)
-{
-	return LibMath::Degree(static_cast<float>(value));
-}
-
 
 
 
@@ -136,7 +126,7 @@ LibMath::Radian::Radian(Radian const& other) : m_value(other.m_value) {}
 
 LibMath::Radian::operator LibMath::Degree() const
 {
-	return Degree(m_value * 180.0f / 3.14159265358979323f);
+	return Degree(m_value * 180.0f / g_Pi);
 }
 
 LibMath::Radian& LibMath::Radian::operator=(Radian other)
@@ -178,18 +168,13 @@ void LibMath::Radian::wrap(bool rangePi)
 
 float LibMath::Radian::degree(bool boolean) const
 {
-	return radian(boolean) * 180 / 3.14159265358979323f;
+	return radian(boolean) * 180 / g_Pi;
 }
 
 float LibMath::Radian::radian(bool rangePi) const
 {
 	float rad = wrapWithinRange(m_value, 0.0f, g_twoPi);
 	return (rangePi && rad >= g_Pi) ? rad - g_twoPi : rad;
-}
-
-float LibMath::Radian::raw() const
-{
-	return m_value;
 }
 
 bool LibMath::operator==(Radian a1, Radian a2)

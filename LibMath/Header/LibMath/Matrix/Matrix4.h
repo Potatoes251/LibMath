@@ -19,7 +19,8 @@ namespace LibMath
 
 		float*			data();
 
-		Matrix4&		operator=(Matrix4 const);						// copy asignement
+		Matrix4(Matrix4 const&);										// copy constructor
+		Matrix4&		operator=(Matrix4 const&);						// copy asignement
 
 		float*			operator[](int);
 

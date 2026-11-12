@@ -46,7 +46,7 @@ target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Hea
 # "PUBLIC" means target_link_libraries( [LibMath] ) will also target_include_directories( [LibMath/Header] )
 
 if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+	target_compile_options(${TARGET_NAME} PRIVATE /Wall /WX /wd4514 /wd5045 /wd4464) 
 else()
 	message("not using MSVC")
 endif()

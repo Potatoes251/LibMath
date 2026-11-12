@@ -18,6 +18,8 @@ namespace LibMath
 		Quaternion(Radian , Vector3);						// create rotation from an angle and an axis
 		~Quaternion() = default;
 
+		Quaternion& operator=(Quaternion const&);						// copy all component
+
 		float				magnitude() const;
 		float				magnitudeSquared() const;
 		bool				isUnit() const;

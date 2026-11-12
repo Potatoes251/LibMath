@@ -67,6 +67,16 @@ LibMath::Quaternion::Quaternion(Radian angle, Vector3 axis)
 	m_w = cos;
 }
 
+LibMath::Quaternion& LibMath::Quaternion::operator=(Quaternion const& other)
+{
+	m_x = other.m_x;
+	m_y = other.m_y;
+	m_z = other.m_z;
+	m_w = other.m_w;
+
+	return *this;
+}
+
 float LibMath::Quaternion::magnitude() const
 {
 	return std::sqrt(magnitudeSquared());
@@ -268,7 +278,7 @@ LibMath::Quaternion LibMath::Quaternion::operator*(float val) const
 
 LibMath::Quaternion::operator LibMath::Matrix4() const
 {
-	assert(isUnit);
+	assert(isUnit());
 
 	float xx = m_x * m_x;
 	float yy = m_y * m_y;
