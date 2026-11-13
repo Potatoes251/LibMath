@@ -97,7 +97,6 @@ Floating-point comparisons use a tolerance-based comparison rather than `==`, as
 - **No dependencies**: pure C++ with the standard math header only
 - **Warning-free**: builds with `/Wall /WX` in Debug and Release. Three purely informational
   MSVC warnings that `/Wall` enables are suppressed with `/wd`:
-  - `C4514`: unreferenced inline function removed
   - `C5045`: compiler inserted Spectre mitigation (informational)
   - `C4464`: relative include path contains `..` (used for the library's include layout)
 - **Float-safe comparisons**: combined absolute and relative tolerance for equality checks, including comparisons around zero
